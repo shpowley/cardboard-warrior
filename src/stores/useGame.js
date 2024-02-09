@@ -19,11 +19,14 @@ const useGame = create(
   subscribeWithSelector(
     set => ({
       /** PROPERTIES */
+      controls: null, // ORBIT CONTROLS REF TO GRANDCHILD COMPONENT
       level: null,
       log: null,
       phase: GAME_PHASE.GAME_INIT,
 
       /** METHODS */
+      setControls: controls => { set({ controls }) },
+
       setLevel: data => { set({ level: data }) },
 
       setLog: data => { set({ log: data }) },

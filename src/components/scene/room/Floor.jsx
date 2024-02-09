@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
 import { ROOM_COLLIDER } from './Constants'
+import { memo } from 'react'
 
 const geometry_floor = new THREE.PlaneGeometry(
   ROOM_COLLIDER.floor_extents[0] * 2,
@@ -11,6 +12,8 @@ const geometry_floor = new THREE.PlaneGeometry(
 const material_floor = new THREE.MeshStandardMaterial({ color: '#93836c' })
 
 const Floor = () => {
+  console.log('RENDER: Floor')
+
   return <>
     <RigidBody
       type='fixed'
@@ -34,4 +37,4 @@ const Floor = () => {
   </>
 }
 
-export default Floor
+export default memo(Floor)

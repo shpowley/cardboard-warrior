@@ -7,7 +7,8 @@ const LEVA_SORT_ORDER = {
   ACTIONS: 3,
   PLAYER: 4,
   ENEMY: 5,
-  PHYSICS: 6
+  MONSTER: 6,
+  PHYSICS: 7
 }
 
 const TONE_MAPPING_OPTIONS = {

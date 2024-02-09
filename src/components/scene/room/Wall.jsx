@@ -1,7 +1,9 @@
 import * as THREE from 'three'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
-import { ROOM_COLLIDER, THICKNESS_EXTENT } from './Constants'
+import { ROOM_COLLIDER, ROOM_EXTENTS, THICKNESS_EXTENT } from './Constants'
+import Door from './Door'
+import { memo } from 'react'
 
 const geometry_wall = new THREE.PlaneGeometry(
   ROOM_COLLIDER.wall_extents[0] * 2,
@@ -10,7 +12,9 @@ const geometry_wall = new THREE.PlaneGeometry(
 
 const material_wall = new THREE.MeshStandardMaterial({ color: '#dbd7d2' })
 
-const Wall = ({ position, rotation, visible = true }) => {
+const Wall = ({ forward_ref, position, rotation, visible = true }) => {
+  console.log('RENDER: Wall')
+
   return <>
     <RigidBody
       type='fixed'
@@ -25,10 +29,15 @@ const Wall = ({ position, rotation, visible = true }) => {
       />
     </RigidBody>
     <group
+      ref={forward_ref}
       position={position}
       rotation={rotation}
       visible={visible}
     >
+      <Door
+        position={[0, -ROOM_EXTENTS.height, 0.35]}
+        scale={[1.5, 1.5, 1.5]}
+      />
       <mesh
         receiveShadow
         position={[0, -ROOM_COLLIDER.wall_extents[1] * 0.5, THICKNESS_EXTENT]}
@@ -39,4 +48,4 @@ const Wall = ({ position, rotation, visible = true }) => {
   </>
 }
 
-export default Wall
+export default memo(Wall)

@@ -5,11 +5,12 @@ import { useControls } from "leva"
 import { GAME_PHASE, useGame } from "../../stores/useGame"
 import { LEVA_SORT_ORDER } from "../../common/Constants"
 import Room from "./room/Room"
+import Sign from "./Sign"
 
 /**
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
  */
-const SceneContent = (props) => {
+const SceneContent = () => {
   console.log('RENDER: SceneContent')
 
   // ZUSTAND GAME STATE
@@ -27,7 +28,7 @@ const SceneContent = (props) => {
   )
 
   // DETERMINE COMPONENTS TO RENDER
-  const show_scene = [
+  const render_scene = [
     GAME_PHASE.HUD_SHOWING,
     GAME_PHASE.ROOM_SHOWING,
     GAME_PHASE.ROOM_HIDING,
@@ -56,13 +57,19 @@ const SceneContent = (props) => {
     }
   }, [])
 
-  return show_scene ?
+  return render_scene ?
     <Suspense fallback={null}>
       <Physics
         gravity={[0, -9.81, 0]}
         debug={controls_physics.debug}
       >
         <Room />
+        <Sign
+          castShadow
+          position={[-1, 0, -1]}
+          scale={2}
+          rotation={[0, Math.PI * 0.25, 0]}
+        />
       </Physics>
     </Suspense>
     :
@@ -70,15 +77,3 @@ const SceneContent = (props) => {
 }
 
 export default SceneContent
-
-// GAME_INIT: 0,
-// TITLE_SHOWING: 1,
-// TITLE_VISIBLE: 2,
-// TITLE_HIDING: 3,
-// GAME_START: 4,
-// HUD_SHOWING: 5,
-// ROOM_SHOWING: 6,
-// ROOM_HIDING: 7,
-// PLAYER_MOVEMENT: 8,
-// PLAYER_COMBAT: 9,
-// GAME_OVER: 10

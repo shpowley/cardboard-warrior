@@ -76,7 +76,8 @@ const Experience = () => {
     setRoom = usePlayer(state => state.setRoom),
     setGamePhase = useGame(state => state.setGamePhase),
     setLevel = useGame(state => state.setLevel),
-    setLog = useGame(state => state.setLog)
+    setLog = useGame(state => state.setLog),
+    setControls = useGame(state => state.setControls)
 
   // LEVA CAMERA & ORBIT CONTROLS
   const camera = useThree((state) => state.camera)
@@ -469,6 +470,9 @@ const Experience = () => {
   )
 
   useEffect(() => {
+    // SET ORBIT CONTROLS REFERENCE TO BE ACCESSIBLE GLOBALY
+    setControls(ref_orbit_controls.current)
+
     // -- START GAME ON MOUNT --
     // NEED TO USE setTimeout HERE TO EXECUTE ASYNCHRONOUSLY,
     // OTHERWISE THE SUBSCRIBERS WILL NOT BE READY AND THE CALLBACKS WILL NOT EXECUTE
