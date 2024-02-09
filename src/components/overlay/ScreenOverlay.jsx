@@ -1,15 +1,16 @@
 import { ScreenSpace } from "@react-three/drei"
+
 import { GAME_PHASE, useGame } from "../../stores/useGame"
 import TitleScreen from "./TitleScreen"
 import HUDScreen from "./HUDScreen"
 
 const ScreenOverlay = () => {
-  console.log('RENDER: Overlay')
+  console.log('RENDER: ScreenOverlay')
 
   // ZUSTAND GAME STATE
   const phase = useGame(state => state.phase)
 
-  // RENDER
+  // DETERMINE COMPONENTS TO RENDER
   const
     show_title = [
       GAME_PHASE.GAME_INIT,
@@ -20,6 +21,8 @@ const ScreenOverlay = () => {
 
     show_hud = [
       GAME_PHASE.TITLE_HIDING, // REQUIRED! ALLOWS GAME PHASE SUBSCRIPTION & REFS TO BE CREATED AND BE VALID PRIOR TO GAME_PHASE.ROOM_SHOWING
+      GAME_PHASE.GAME_START,
+      GAME_PHASE.HUD_SHOWING,
       GAME_PHASE.ROOM_SHOWING,
       GAME_PHASE.ROOM_HIDING,
       GAME_PHASE.PLAYER_MOVEMENT,

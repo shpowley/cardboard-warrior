@@ -48,12 +48,12 @@ const drawMap = (rooms, current_room) => {
         room_x = CANVAS.start.x + (i % 4) * (CANVAS.room.w + CANVAS.spacing),
         room_y = CANVAS.start.y + Math.floor(i / 4) * (CANVAS.room.h + CANVAS.spacing)
 
-      CTX.fillStyle = '#89a8e1'
+      CTX.fillStyle = '#5481d6'
       CTX.fillRect(room_x, room_y, CANVAS.room.w, CANVAS.room.h)
 
       // DRAW THE PLAYER ON THE MINI-MAP
       if (current_room && current_room.index === i) {
-        CTX.fillStyle = '#279337'
+        CTX.fillStyle = '#f02626'
         CTX.fillRect(
           room_x + (CANVAS.room.w - CANVAS.player.w) / 2,
           room_y + (CANVAS.room.h - CANVAS.player.h) / 2,
@@ -95,7 +95,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
       // CALLBACK
       level_subscribed => {
-        // console.log('MiniMap > useEffect > subscribeLevel', level_subscribed)
+        console.log('useEffect > MiniMap > subscribeLevel', level_subscribed)
 
         level_data = level_subscribed
 
@@ -111,7 +111,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
       // CALLBACK
       room_subscribed => {
-        // console.log('MiniMap > useEffect > subscribeRoom', room_subscribed)
+        console.log('useEffect > MiniMap > subscribeRoom', room_subscribed)
 
         active_room = room_subscribed
 

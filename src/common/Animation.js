@@ -58,7 +58,7 @@ const
   },
 
   /** ANIMATION TIMELINE - GAME ELEMENTS */
-  animateStartGame = ({ target_controls, target_player, target_minimap, target_log }) => {
+  animateHUDShow = ({ target_controls, target_player, target_minimap, target_log }) => {
     const timeline = anime.timeline()
 
     // CONTROLS SLIDE UP
@@ -142,7 +142,7 @@ const
   }
 
 const ANIMATIONS = {
-  animateStartGame,
+  animateHUDShow,
   animateTimeline,
   animateTitleHide,
   animateTitleShow

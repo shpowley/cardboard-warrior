@@ -31,6 +31,9 @@ const HUDScreen = () => {
   // ANIMATIONS (anime.js)
   const animation = useRef()
 
+  // ZUSTAND GAME STATE
+  const setGamePhase = useGame(state => state.setGamePhase)
+
   // USED TO HELP POSITION 2D HUD ELEMENTS
   const aspect_ratio = useThree(state => state.viewport.aspect)
 
@@ -44,18 +47,24 @@ const HUDScreen = () => {
 
       // CALLBACK
       phase_subscribed => {
-        if (phase_subscribed === GAME_PHASE.ROOM_SHOWING) {
-          console.log('useEffect > HUDGame: GAME_PHASE.ROOM_SHOWING')
+        if (phase_subscribed === GAME_PHASE.HUD_SHOWING) {
+          console.log('useEffect > HUDScreen: GAME_PHASE.HUD_SHOWING')
 
           // INITIAL VALUES
           ref_hud.controls.current.position.set(POSITIONS.KEYS.x, POSITIONS.KEYS.y.hidden, 0)
 
-          animation.current = ANIMATIONS.animateStartGame({
+          animation.current = ANIMATIONS.animateHUDShow({
             target_controls: ref_hud.controls.current.position,
             target_player: ref_hud.player.current,
             target_minimap: ref_hud.minimap.current,
             target_log: ref_hud.game_log.current.material
           })
+
+          // DON'T WAIT FOR ANIMATION TO BE FINISHED COMPLETELY AS IT TAKES ~2.5 SECONDS
+          // START THE ROOM CONSTRUCTION A BIT EARLY (ROOM SHOWING PHASE)
+          setTimeout(() => {
+            setGamePhase(GAME_PHASE.ROOM_SHOWING)
+          }, 1000)
         }
       }
     )

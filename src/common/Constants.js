@@ -6,7 +6,8 @@ const LEVA_SORT_ORDER = {
   LIGHTING: 2,
   ACTIONS: 3,
   PLAYER: 4,
-  ENEMY: 5
+  ENEMY: 5,
+  PHYSICS: 6
 }
 
 const TONE_MAPPING_OPTIONS = {
@@ -21,8 +22,8 @@ const CAMERA_DEFAULTS = {
   fov: 45,
   near: 0.5,
   far: 60,
-  position: [1.7, 2.4, 5.9],
-  look_at: [0, 1, 0],
+  position: [0, 10, 16.5],
+  look_at: [0, 0, 0],
   leva_min_max: 100
 }
 

@@ -7,11 +7,12 @@ const GAME_PHASE = {
   TITLE_VISIBLE: 2,
   TITLE_HIDING: 3,
   GAME_START: 4,
-  ROOM_SHOWING: 5,
-  ROOM_HIDING: 6,
-  PLAYER_MOVEMENT: 7,
-  PLAYER_COMBAT: 8,
-  GAME_OVER: 9
+  HUD_SHOWING: 5,
+  ROOM_SHOWING: 6,
+  ROOM_HIDING: 7,
+  PLAYER_MOVEMENT: 8,
+  PLAYER_COMBAT: 9,
+  GAME_OVER: 10
 }
 
 const useGame = create(
@@ -28,47 +29,55 @@ const useGame = create(
       setLog: data => { set({ log: data }) },
 
       // STATE MACHINE
-      setGamePhase: new_phase => {
+      setGamePhase: phase => {
         set(state => {
-          if (state.phase !== new_phase) {
+          if (state.phase !== phase) {
             switch (state.phase) {
 
               // GAME_INIT -> TITLE_SHOWING
               case GAME_PHASE.GAME_INIT:
-                if (new_phase === GAME_PHASE.TITLE_SHOWING) {
-                  return { phase: GAME_PHASE.TITLE_SHOWING }
+                if (phase === GAME_PHASE.TITLE_SHOWING) {
+                  return { phase }
                 }
 
                 break
 
               // TITLE_SHOWING -> TITLE_VISIBLE
               case GAME_PHASE.TITLE_SHOWING:
-                if (new_phase === GAME_PHASE.TITLE_VISIBLE) {
-                  return { phase: GAME_PHASE.TITLE_VISIBLE }
+                if (phase === GAME_PHASE.TITLE_VISIBLE) {
+                  return { phase }
                 }
 
                 break
 
               // TITLE_VISIBLE -> TITLE_HIDING (INITIATED BY 'NEW GAME')
               case GAME_PHASE.TITLE_VISIBLE:
-                if (new_phase === GAME_PHASE.TITLE_HIDING) {
-                  return { phase: GAME_PHASE.TITLE_HIDING }
+                if (phase === GAME_PHASE.TITLE_HIDING) {
+                  return { phase }
                 }
 
                 break
 
               // TITLE_HIDING -> GAME_START
               case GAME_PHASE.TITLE_HIDING:
-                if (new_phase === GAME_PHASE.GAME_START) {
-                  return { phase: GAME_PHASE.GAME_START }
+                if (phase === GAME_PHASE.GAME_START) {
+                  return { phase }
                 }
 
                 break
 
-              // GAME_START -> ROOM_SHOWING
+              // GAME_START -> HUD_SHOWING
               case GAME_PHASE.GAME_START:
-                if (new_phase === GAME_PHASE.ROOM_SHOWING) {
-                  return { phase: GAME_PHASE.ROOM_SHOWING }
+                if (phase === GAME_PHASE.HUD_SHOWING) {
+                  return { phase }
+                }
+
+                break
+
+              // HUD_SHOWING -> ROOM_SHOWING
+              case GAME_PHASE.HUD_SHOWING:
+                if (phase === GAME_PHASE.ROOM_SHOWING) {
+                  return { phase }
                 }
 
                 break

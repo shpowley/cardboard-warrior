@@ -11,6 +11,7 @@ import ANIMATIONS from './common/Animation'
 import ScreenOverlay from './components/overlay/ScreenOverlay'
 import { generateLevel } from './common/Level'
 import { usePlayer } from './stores/usePlayer'
+import SceneContent from './components/scene/SceneContent'
 
 // LEVA DEBUG
 const debug_enabled = parameterEnabled('DEBUG') || parameterEnabled('debug')
@@ -493,7 +494,7 @@ const Experience = () => {
           setLevel(level_data)
           setFloorIndex(level_data.floor_number)
           setRoom(active_room)
-          setGamePhase(GAME_PHASE.ROOM_SHOWING)
+          setGamePhase(GAME_PHASE.HUD_SHOWING)
           setLog('THE ADVENTURE BEGINS...')
         }
       }
@@ -504,6 +505,8 @@ const Experience = () => {
       subscribeGamePhase()
     }
   }, [])
+
+  const show_cubes = false
 
   return <>
     {Perf && <Perf position='top-left' />}
@@ -569,41 +572,50 @@ const Experience = () => {
     <ScreenOverlay />
 
     {/* 3D SCENE */}
-    <mesh
-      ref={ref_cubes.left}
-      position={[-1.5, 0.7, 0]}
-      material={material_box}
-      geometry={geometry_box}
-      castShadow
-    />
+    <SceneContent />
 
-    <mesh
-      ref={ref_cubes.center}
-      position={[0, 0.7, 0]}
-      material={material_box}
-      geometry={geometry_box}
-      castShadow
-    />
 
-    <mesh
-      ref={ref_cubes.right}
-      position={[1.5, 0.7, 0]}
-      material={material_box}
-      geometry={geometry_box}
-      castShadow
-    />
 
-    <mesh
-      position={[0, 0, 0]}
-      rotation={[-Math.PI / 2, 0, 0]}
-      receiveShadow
-    >
-      <planeGeometry args={[10, 10]} />
-      <shadowMaterial
-        color={controls_lighting.shadow_color}
-        opacity={controls_lighting.shadow_opacity}
-      />
-    </mesh>
+    {/* TESTING ONLY -- DELETE THIS AND LEVA DEBUG */}
+    {show_cubes &&
+      <>
+        <mesh
+          ref={ref_cubes.left}
+          position={[-1.5, 0.7, 0]}
+          material={material_box}
+          geometry={geometry_box}
+          castShadow
+        />
+
+        <mesh
+          ref={ref_cubes.center}
+          position={[0, 0.7, 0]}
+          material={material_box}
+          geometry={geometry_box}
+          castShadow
+        />
+
+        <mesh
+          ref={ref_cubes.right}
+          position={[1.5, 0.7, 0]}
+          material={material_box}
+          geometry={geometry_box}
+          castShadow
+        />
+
+        <mesh
+          position={[0, 0, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[10, 10]} />
+          <shadowMaterial
+            color={controls_lighting.shadow_color}
+            opacity={controls_lighting.shadow_opacity}
+          />
+        </mesh>
+      </>
+    }
   </>
 }
 
