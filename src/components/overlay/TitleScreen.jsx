@@ -33,7 +33,9 @@ const TitleScreen = () => {
   const animation_title = useRef()
 
   // ZUSTAND GAME STATE
-  const setGamePhase = useGame(state => state.setGamePhase)
+  const
+    setGamePhase = useGame(state => state.setGamePhase),
+    phase = useGame(state => state.phase)
 
   // HANDLERS
   const handlerNewGame = () => {
@@ -126,7 +128,7 @@ const TitleScreen = () => {
       text='NEW GAME'
 
       onClick={handlerNewGame}
-      onPointerOver={mouse_pointer.over}
+      onPointerOver={phase === GAME_PHASE.TITLE_VISIBLE && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
     />
     <Text

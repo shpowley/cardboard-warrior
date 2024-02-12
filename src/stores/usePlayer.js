@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
+import { MESH_ANIMATIONS } from '../components/scene/Warrior'
 
 const PLAYER_DEFAULTS = {
   attack: 10,
@@ -20,6 +21,7 @@ const usePlayer = create(
       potions: PLAYER_DEFAULTS.potions,
       gold: PLAYER_DEFAULTS.gold,
       key: PLAYER_DEFAULTS.key,
+      animation: MESH_ANIMATIONS.NONE,
 
       /** METHODS */
       setFloorIndex: floor_index => set({ floor_index }),
@@ -55,6 +57,11 @@ const usePlayer = create(
 
       useKey: () => {
         set({ key: false })
+      },
+
+      // ANIMATION
+      setAnimation: animation => {
+        set({ animation })
       }
     })
   )
