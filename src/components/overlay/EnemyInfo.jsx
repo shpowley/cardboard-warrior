@@ -24,11 +24,12 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
   )
 
   return <group
-    scale={0.021}
     position={[controls_enemy.position_x * aspect_ratio, 0.39, 0]}
+    scale={0.021}
     anchorX='right'
     anchorY='top'
     visible={false}
+    dispose={null}
   >
     {/* MONSTER NAME */}
     <Text

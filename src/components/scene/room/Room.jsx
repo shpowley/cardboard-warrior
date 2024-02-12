@@ -68,9 +68,9 @@ const Room = () => {
 
 
   return <>
+    <Ceiling />
     <Floor />
     <Arrows />
-    <Ceiling />
 
     <Wall
       forward_ref={ref_walls.north}

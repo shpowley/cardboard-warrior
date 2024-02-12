@@ -12,6 +12,7 @@ const HUDKeys = ({ forward_ref }) => {
     ref={forward_ref}
     position={[POSITIONS.KEYS.x, POSITIONS.KEYS.y.hidden, 0]}
     scale={0.04}
+    dispose={null}
   >
     {/* NORTH KEY */}
     <Image

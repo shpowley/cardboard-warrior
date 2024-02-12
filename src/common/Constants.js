@@ -8,7 +8,8 @@ const LEVA_SORT_ORDER = {
   PLAYER: 4,
   ENEMY: 5,
   MONSTER: 6,
-  PHYSICS: 7
+  PHYSICS: 7,
+  WARRIOR_ANIMATIONS: 8,
 }
 
 const TONE_MAPPING_OPTIONS = {
@@ -30,21 +31,21 @@ const CAMERA_DEFAULTS = {
 
 const LIGHTING_DEFAULTS = {
   ambient_intensity: 0.5,
-  ambient_color: '#ffffff',
+  ambient_color: '#ff8c00',
 
   directional_intensity: 1.0,
-  directional_position: [1, 10, 1],
+  directional_position: [5, 12, 5],
   directional_target: [0, 0, 0],
-  directional_color: '#ffffff',
+  directional_color: '#dc3a3a',
   leva_min_max: 100,
 
-  shadow_near: 2,
-  shadow_far: 11,
+  shadow_near: 1.5,
+  shadow_far: 20,
   shadow_map_size: [256, 256],
-  shadow_left: -5,
-  shadow_right: 5,
-  shadow_top: 5,
-  shadow_bottom: -5,
+  shadow_left: -12,
+  shadow_right: 12,
+  shadow_top: 12,
+  shadow_bottom: -10,
   shadow_color: '#000000',
   shadow_opacity: 0.2
 }

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import * as THREE from 'three'
 import { useGLTF, useTexture } from '@react-three/drei'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
@@ -70,6 +71,7 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
     <RigidBody
       type='fixed'
       colliders={false}
+      dispose={null}
     >
       <CuboidCollider
         args={[1.3, EXTENT_HEIGHT, 0.26]}
@@ -81,6 +83,7 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
       position={position}
       rotation={rotation}
       scale={scale}
+      dispose={null}
     >
       <mesh
         castShadow={castShadow}
@@ -110,4 +113,4 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
   </>
 }
 
-export default Sign
+export default memo(Sign)

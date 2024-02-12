@@ -1,7 +1,7 @@
 import { useEffect, useRef, lazy } from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
-import { OrbitControls, useHelper } from '@react-three/drei'
+import { Environment, OrbitControls, useHelper } from '@react-three/drei'
 import { useControls, folder, button } from 'leva'
 
 import { GAME_PHASE, useGame } from './stores/useGame'
@@ -532,6 +532,8 @@ const Experience = () => {
         })
       }}
     />
+
+    <Environment preset='sunset' />
 
     <color
       attach="background"

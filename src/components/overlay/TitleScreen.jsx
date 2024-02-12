@@ -104,6 +104,7 @@ const TitleScreen = () => {
   return <group
     scale={0.1}
     visible={true}
+    dispose={null}
   >
     <Text
       ref={ref_text.title}

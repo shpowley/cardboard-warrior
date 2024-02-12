@@ -9,19 +9,16 @@ useGLTF.preload(FILE_DOOR)
  * - THIS ISN'T VERY TAXING ON PERFORMANCE, BUT EXPLORE THE USE OF INSTANCING FOR
  *   OTHER SCENARIOES (E.G. COIN DROP)
  */
-const Door = (props) => {
+const Door = ({ position, scale }) => {
   const { nodes, materials } = useGLTF(FILE_DOOR)
 
   return (
-    <group
-      {...props}
-      ref={props.inner_ref}
-    >
-      <mesh
-        geometry={nodes.door.geometry}
-        material={materials.material_2}
-      />
-    </group>
+    <mesh
+      position={position}
+      scale={scale}
+      geometry={nodes.door.geometry}
+      material={materials.material_2}
+    />
   )
 }
 

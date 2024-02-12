@@ -20,6 +20,7 @@ const Floor = () => {
       restitution={0.5}
       friction={0.3}
       colliders={false}
+      dispose={null}
     >
       <CuboidCollider
         args={ROOM_COLLIDER.floor_extents}
@@ -33,6 +34,7 @@ const Floor = () => {
       rotation={[-Math.PI * 0.5, 0, 0]}
       geometry={geometry_floor}
       material={material_floor}
+      dispose={null}
     />
   </>
 }

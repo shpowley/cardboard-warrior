@@ -9,6 +9,7 @@ const Ceiling = () => {
     restitution={0.5}
     friction={0}
     colliders={false}
+    dispose={null}
   >
     <CuboidCollider
       args={ROOM_COLLIDER.top_extents}

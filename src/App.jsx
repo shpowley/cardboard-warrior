@@ -25,7 +25,7 @@ const App = () => {
 
       tone_exposure: {
         label: 'exposure',
-        value: 1.5,
+        value: 1.0,
         min: 0,
         max: 5,
         step: 0.1,
@@ -50,7 +50,7 @@ const App = () => {
     <Canvas
       gl={{
         toneMapping: controls_gl.tone_mapping,
-        toneMappingExposure: controls_gl.tone_exposure
+        toneMappingExposure: controls_gl.tone_exposure,
       }}
 
       shadows={{

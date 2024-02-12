@@ -6,8 +6,8 @@ import Door from './Door'
 import { memo } from 'react'
 
 const geometry_wall = new THREE.PlaneGeometry(
-  ROOM_COLLIDER.wall_extents[0] * 2,
-  ROOM_COLLIDER.wall_extents[1]
+  ROOM_EXTENTS.width * 2,
+  ROOM_EXTENTS.visible_height * 2
 )
 
 const material_wall = new THREE.MeshStandardMaterial({ color: '#dbd7d2' })
@@ -21,6 +21,7 @@ const Wall = ({ forward_ref, position, rotation, visible = true }) => {
       restitution={0.5}
       friction={0}
       colliders={false}
+      dispose={null}
     >
       <CuboidCollider
         args={ROOM_COLLIDER.wall_extents}
@@ -33,14 +34,15 @@ const Wall = ({ forward_ref, position, rotation, visible = true }) => {
       position={position}
       rotation={rotation}
       visible={visible}
+      dispose={null}
     >
       <Door
         position={[0, -ROOM_EXTENTS.height, 0.35]}
-        scale={[1.5, 1.5, 1.5]}
+        scale={1.5}
       />
       <mesh
         receiveShadow
-        position={[0, -ROOM_COLLIDER.wall_extents[1] * 0.5, THICKNESS_EXTENT]}
+        position={[0, -(ROOM_EXTENTS.height - ROOM_EXTENTS.visible_height), THICKNESS_EXTENT]}
         geometry={geometry_wall}
         material={material_wall}
       />

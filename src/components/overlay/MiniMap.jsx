@@ -132,12 +132,13 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
   return <group
     ref={forward_ref}
-    scale={0.021}
     position={[0.405 * aspect_ratio, 0.39, 0]}
+    scale={0.021}
     anchorX='right'
     anchorY='top'
     opacity={0}
     visible={false}
+    dispose={null}
   >
     {/* FLOOR NUMBER */}
     <Text

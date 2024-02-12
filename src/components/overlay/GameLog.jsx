@@ -31,12 +31,13 @@ const GameLog = ({ forward_ref, aspect_ratio = 1 }) => {
   return <Text
     ref={forward_ref}
     font={FILE_FONT_BEBAS_NEUE}
+    position={[-0.4 * aspect_ratio, -0.23, 0]}
     scale={0.025}
     anchorX='left'
     anchorY='bottom'
-    position={[-0.4 * aspect_ratio, -0.23, 0]}
     text='...'
     visible={false}
+    dispose={null}
   >
     <meshBasicMaterial
       toneMapped={false}

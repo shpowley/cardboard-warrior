@@ -7,7 +7,9 @@ import { mouse_pointer } from "../../../common/Utils"
 const Arrows = () => {
   console.log('RENDER: Arrows')
 
-  return <>
+  return <group
+    dispose={null}
+  >
     <Image
       url={HUDImages.DIRECTION_NORTH.path}
       scale={HUDImages.DIRECTION_NORTH.scale}
@@ -52,7 +54,7 @@ const Arrows = () => {
       onPointerOver={mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
     />
-  </>
+  </group>
 }
 
 export default memo(Arrows)

@@ -2,7 +2,8 @@ const THICKNESS_EXTENT = 0.3
 
 const ROOM_EXTENTS = {
   width: 8,
-  height: 4
+  height: 8,
+  visible_height: 2
 }
 
 const POSITIONING_ADJUST = ROOM_EXTENTS.width + THICKNESS_EXTENT

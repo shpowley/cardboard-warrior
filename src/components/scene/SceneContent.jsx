@@ -6,6 +6,7 @@ import { GAME_PHASE, useGame } from "../../stores/useGame"
 import { LEVA_SORT_ORDER } from "../../common/Constants"
 import Room from "./room/Room"
 import Sign from "./Sign"
+import Warrior from "./Warrior"
 
 /**
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
@@ -64,11 +65,17 @@ const SceneContent = () => {
         debug={controls_physics.debug}
       >
         <Room />
+        <Warrior
+          castShadow
+          position={[1.5, 0.8, 1.5]}
+          rotation={[0, -Math.PI * 0.75, 0]}
+          scale={1.3}
+        />
         <Sign
           castShadow
           position={[-1, 0, -1]}
-          scale={2}
           rotation={[0, Math.PI * 0.25, 0]}
+          scale={2}
         />
       </Physics>
     </Suspense>
