@@ -9,7 +9,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
   // LEVA DEBUG ENEMY STATE
   const controls_enemy = useControls(
-    'enemy',
+    'enemy info',
     {
       position_x: {
         label: 'position-x',

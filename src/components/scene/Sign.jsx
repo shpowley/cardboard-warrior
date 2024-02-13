@@ -1,11 +1,12 @@
-import { memo } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useGLTF, useTexture } from '@react-three/drei'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 import { useControls } from 'leva'
 
-import { MONSTERS} from '../../common/Monsters'
+import { MONSTERS } from '../../common/Monsters'
 import { LEVA_SORT_ORDER } from '../../common/Constants'
+import { useEnemy } from '../../stores/useEnemy'
 
 const EXTENT_HEIGHT = 1.85
 const FILE_SIGN = './models/sign-compressed.glb'
@@ -31,15 +32,57 @@ const getCanvasTexture = (texture, x, y, scale) => {
   return new THREE.CanvasTexture(ctx.canvas)
 }
 
+/**
+ * texture_url, x, y, scale PROPS ARE ONLY FOR THE INITIAL VALUES
+ * ZUSTAND EVENT SUBSCRIPTIONS WILL OVERRIDE THESE VALUES AS NEEDED
+ */
 const SignMaterial = ({ material, texture_url, x, y, scale }) => {
-  let texture, canvas_texture
+  console.log('RENDER: SignMaterial')
+
+  const ref_material = useRef()
+
+  let canvas_texture
 
   if (texture_url) {
-    texture = useTexture(texture_url)
+    const texture = useTexture(texture_url)
     canvas_texture = getCanvasTexture(texture, x, y, scale)
   }
 
+  useEffect(() => {
+
+    // ENEMY IMAGE SUBSCRIPTION (ZUSTAND)
+    const subscribeEnemyImage = useEnemy.subscribe(
+      // SELECTOR
+      state => state.image_data,
+
+      // CALLBACK
+      image_data => {
+        if (!ref_material.current) {
+          return
+        }
+
+        if (image_data?.path) {
+          const loader = new THREE.TextureLoader()
+          loader.load(
+            image_data.path,
+
+            texture => ref_material.current.map = getCanvasTexture(texture, image_data.x, image_data.y, image_data.scale)
+          )
+        }
+        else {
+          ref_material.current.map = material.map
+        }
+      }
+    )
+
+    // CLEAN UP
+    return () => {
+      subscribeEnemyImage()
+    }
+  }, [])
+
   return <meshStandardMaterial
+    ref={ref_material}
     map={canvas_texture ? canvas_texture : material.map}
     roughness={material.roughness}
     side={material.side}
@@ -51,13 +94,20 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
 
   const { nodes, materials } = useGLTF(FILE_SIGN)
 
+  // ZUSTAND MONSTER DATA
+  const setImageData = useEnemy(state => state.setImageData)
+
   const controls_monster = useControls(
     'monster sign',
 
     {
       image: {
         value: 'NONE',
-        options: MONSTERS
+        options: MONSTERS,
+
+        onChange: value => {
+          setImageData(value)
+        }
       }
     },
 
@@ -102,10 +152,6 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
       >
         <SignMaterial
           material={materials['paper-sign']}
-          texture_url={controls_monster.image?.path}
-          x={controls_monster.image?.x}
-          y={controls_monster.image?.y}
-          scale={controls_monster.image?.scale}
         />
       </mesh>
 

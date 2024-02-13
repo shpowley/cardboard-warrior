@@ -1,6 +1,8 @@
 const MONSTER_IMAGE_PATH = './images/monsters/'
 
 const MONSTERS = {
+  NONE: null,
+
   BLUE_SLIME: {
     label: 'Blue Slime',
     path: MONSTER_IMAGE_PATH + 'blue-slime.webp',

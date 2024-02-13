@@ -67,4 +67,7 @@ const usePlayer = create(
   )
 )
 
-export { PLAYER_DEFAULTS, usePlayer }
+export {
+  PLAYER_DEFAULTS,
+  usePlayer
+}

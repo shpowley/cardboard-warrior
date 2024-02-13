@@ -26,7 +26,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
   // LEVA DEBUG PLAYER STATE
   const controls_player = useControls(
-    'player',
+    'player info',
 
     {
       position_x: {
