@@ -1,5 +1,5 @@
-import { useGLTF } from "@react-three/drei"
-import { memo } from "react"
+import { useGLTF } from '@react-three/drei'
+import { memo } from 'react'
 
 const FILE_DOOR = './models/door-compressed.glb'
 

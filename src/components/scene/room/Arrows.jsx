@@ -1,8 +1,8 @@
-import { memo } from "react"
-import { Image } from "@react-three/drei"
+import { memo } from 'react'
+import { Image } from '@react-three/drei'
 
-import HUDImages from "../../../common/HUDImages"
-import { mouse_pointer } from "../../../common/Utils"
+import HUDImages from '../../../common/HUDImages'
+import { mouse_pointer } from '../../../common/Utils'
 
 const Arrows = () => {
   console.log('RENDER: Arrows')

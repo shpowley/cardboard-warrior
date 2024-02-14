@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Image, Text } from '@react-three/drei'
 import { useControls } from 'leva'
 
-import { FILE_FONT_BEBAS_NEUE, LEVA_SORT_ORDER } from '../../common/Constants'
+import { FILES, LEVA_SORT_ORDER } from '../../common/Constants'
 import HUDImages from '../../common/HUDImages'
 
 const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
@@ -33,7 +33,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
   >
     {/* MONSTER NAME */}
     <Text
-      font={FILE_FONT_BEBAS_NEUE}
+      font={FILES.FONT_BEBAS_NEUE}
       material={material_text}
       anchorX='right'
       text='ENEMY: -'
@@ -51,7 +51,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         transparent
       />
       <Text
-        font={FILE_FONT_BEBAS_NEUE}
+        font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         position={[0.7, -0.01, 0]}
         anchorX='left'
@@ -71,7 +71,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         transparent
       />
       <Text
-        font={FILE_FONT_BEBAS_NEUE}
+        font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         position={[0.7, -0.01, 0]}
         anchorX='left'

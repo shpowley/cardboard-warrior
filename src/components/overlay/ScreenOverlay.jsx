@@ -1,8 +1,8 @@
-import { ScreenSpace } from "@react-three/drei"
+import { ScreenSpace } from '@react-three/drei'
 
-import { GAME_PHASE, useGame } from "../../stores/useGame"
-import TitleScreen from "./TitleScreen"
-import HUDScreen from "./HUDScreen"
+import { GAME_PHASE, useGame } from '../../stores/useGame'
+import TitleScreen from './TitleScreen'
+import HUDScreen from './HUDScreen'
 
 const ScreenOverlay = () => {
   console.log('RENDER: ScreenOverlay')

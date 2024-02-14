@@ -1,5 +1,5 @@
-import { ITEM_KEYS } from "./Constants"
-import { MONSTERS } from "./Monsters"
+import { ITEM_KEYS } from './Constants'
+import { MONSTERS } from './Monsters'
 
 const FLOOR_ITEMS = {
   HEALTH_POTION: {

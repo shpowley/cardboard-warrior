@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import { Text } from "@react-three/drei"
+import { Text } from '@react-three/drei'
 
-import { FILE_FONT_BEBAS_NEUE } from "../../common/Constants"
+import { FILES } from '../../common/Constants'
 import { memo, useEffect, useRef } from 'react'
 import { useGame } from '../../stores/useGame'
 import { usePlayer } from '../../stores/usePlayer'
@@ -143,7 +143,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     {/* FLOOR NUMBER */}
     <Text
       ref={ref_minimap.floor}
-      font={FILE_FONT_BEBAS_NEUE}
+      font={FILES.FONT_BEBAS_NEUE}
       material={material_text}
       anchorX='right'
       text='FLOOR: -'

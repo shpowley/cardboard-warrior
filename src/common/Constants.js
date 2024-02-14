@@ -10,6 +10,7 @@ const LEVA_SORT_ORDER = {
   MONSTER: 6,
   PHYSICS: 7,
   WARRIOR_ANIMATIONS: 8,
+  DICE_ROLL: 9
 }
 
 const TONE_MAPPING_OPTIONS = {
@@ -50,9 +51,16 @@ const LIGHTING_DEFAULTS = {
   shadow_opacity: 0.2
 }
 
-const FILE_FONT_BEBAS_NEUE = './fonts/bebas-neue-v9-latin-regular.woff'
+const FILES = {
+  FONT_BEBAS_NEUE: './fonts/bebas-neue-v9-latin-regular.woff',
+  D20_MODEL: './models/d20-compressed.glb',
+  D20_ENEMY_MODEL: './models/d20-obsidian-compressed.glb',
+  SOUND_HIT: './sounds/hit.mp3'
+}
 
-const LINK_GITHUB = 'https://github.com/shpowley/cardboard-warrior/blob/master/credits.txt'
+const LINKS = {
+  GITHUB: 'https://github.com/shpowley/cardboard-warrior/blob/master/credits.txt'
+}
 
 const ITEM_KEYS = {
   HEALTH_POTION: 0,
@@ -65,7 +73,7 @@ export {
   CAMERA_DEFAULTS,
   LIGHTING_DEFAULTS,
   LEVA_SORT_ORDER,
-  FILE_FONT_BEBAS_NEUE,
-  LINK_GITHUB,
+  FILES,
+  LINKS,
   ITEM_KEYS
 }

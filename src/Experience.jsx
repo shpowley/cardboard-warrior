@@ -536,7 +536,7 @@ const Experience = () => {
     <Environment preset='sunset' />
 
     <color
-      attach="background"
+      attach='background'
       args={['#6c323d']}
     />
 

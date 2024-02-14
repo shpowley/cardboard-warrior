@@ -1,7 +1,7 @@
-import { memo } from "react"
-import { CuboidCollider, RigidBody } from "@react-three/rapier"
+import { memo } from 'react'
+import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
-import { ROOM_COLLIDER } from "./Constants"
+import { ROOM_COLLIDER } from './Constants'
 
 const Ceiling = () => {
   return <RigidBody

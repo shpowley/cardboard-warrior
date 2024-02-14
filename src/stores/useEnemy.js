@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { subscribeWithSelector } from "zustand/middleware";
+import { create } from 'zustand'
+import { subscribeWithSelector } from 'zustand/middleware'
 
 const useEnemy = create(
   subscribeWithSelector(

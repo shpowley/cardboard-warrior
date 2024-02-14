@@ -1,9 +1,9 @@
-import { Image } from "@react-three/drei"
+import { Image } from '@react-three/drei'
 
-import HUDImages from "../../common/HUDImages"
-import { mouse_pointer } from "../../common/Utils"
-import { POSITIONS } from "../../common/Positions"
-import { memo } from "react"
+import HUDImages from '../../common/HUDImages'
+import { mouse_pointer } from '../../common/Utils'
+import { POSITIONS } from '../../common/Positions'
+import { memo } from 'react'
 
 const HUDKeys = ({ forward_ref }) => {
   console.log('RENDER: HUDKeys')

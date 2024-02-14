@@ -1,10 +1,10 @@
-import * as THREE from "three"
-import { Canvas } from "@react-three/fiber"
-import { Leva, useControls } from "leva"
+import * as THREE from 'three'
+import { Canvas } from '@react-three/fiber'
+import { Leva, useControls } from 'leva'
 
-import Experience from "./Experience"
-import { parameterEnabled } from "./common/Utils"
-import { CAMERA_DEFAULTS, LEVA_SORT_ORDER, TONE_MAPPING_OPTIONS } from "./common/Constants"
+import Experience from './Experience'
+import { parameterEnabled } from './common/Utils'
+import { CAMERA_DEFAULTS, LEVA_SORT_ORDER, TONE_MAPPING_OPTIONS } from './common/Constants'
 
 // LEVA DEBUG
 const debug_enabled = parameterEnabled('DEBUG') || parameterEnabled('debug')

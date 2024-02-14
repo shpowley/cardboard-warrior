@@ -1,12 +1,13 @@
-import { Suspense, useEffect } from "react"
+import { Suspense, useEffect } from 'react'
 import { Physics } from '@react-three/rapier'
-import { useControls } from "leva"
+import { useControls } from 'leva'
 
-import { GAME_PHASE, useGame } from "../../stores/useGame"
-import { LEVA_SORT_ORDER } from "../../common/Constants"
-import Room from "./room/Room"
-import Sign from "./Sign"
-import Warrior from "./Warrior"
+import { GAME_PHASE, useGame } from '../../stores/useGame'
+import { LEVA_SORT_ORDER } from '../../common/Constants'
+import Room from './room/Room'
+import Sign from './Sign'
+import Warrior from './Warrior'
+import Dice from './dice/Dice'
 
 /**
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
@@ -77,6 +78,7 @@ const SceneContent = () => {
           rotation={[0, Math.PI * 0.25, 0]}
           scale={2}
         />
+        <Dice />
       </Physics>
     </Suspense>
     :

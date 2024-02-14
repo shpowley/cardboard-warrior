@@ -2,7 +2,7 @@ import { memo, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { Text } from '@react-three/drei'
 
-import { FILE_FONT_BEBAS_NEUE, LINK_GITHUB } from '../../common/Constants'
+import { FILES, LINKS } from '../../common/Constants'
 import { GAME_PHASE, useGame } from '../../stores/useGame'
 import ANIMATIONS from '../../common/Animation'
 import { POSITIONS } from '../../common/Positions'
@@ -110,7 +110,7 @@ const TitleScreen = () => {
   >
     <Text
       ref={ref_text.title}
-      font={FILE_FONT_BEBAS_NEUE}
+      font={FILES.FONT_BEBAS_NEUE}
       material={material_title}
       color='#745f40'
       position={[0, POSITIONS.TITLE.y.start, 0]} // OFFSCREEN START POSITIONS
@@ -121,7 +121,7 @@ const TitleScreen = () => {
     />
     <Text
       ref={ref_text.new_game}
-      font={FILE_FONT_BEBAS_NEUE}
+      font={FILES.FONT_BEBAS_NEUE}
       material={material_title_details}
       position={[0, -1, 0]}
       scale={0.45}
@@ -133,7 +133,7 @@ const TitleScreen = () => {
     />
     <Text
       ref={ref_text.github}
-      font={FILE_FONT_BEBAS_NEUE}
+      font={FILES.FONT_BEBAS_NEUE}
       material={material_title_details}
       position={[0, -3.6, 0]}
       scale={0.23}
@@ -141,7 +141,7 @@ const TitleScreen = () => {
       textAlign={'left'}
       text='GITHUB / ATTRIBUTIONS'
 
-      onClick={() => window.open(LINK_GITHUB, '_blank')}
+      onClick={() => window.open(LINKS.GITHUB, '_blank')}
       onPointerOver={mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
     />

@@ -1,10 +1,10 @@
-import { memo, useEffect, useRef } from "react"
-import { Image, Text } from "@react-three/drei"
-import { button, useControls } from "leva"
+import { memo, useEffect, useRef } from 'react'
+import { Image, Text } from '@react-three/drei'
+import { button, useControls } from 'leva'
 
-import { PLAYER_DEFAULTS, usePlayer } from "../../stores/usePlayer"
-import { FILE_FONT_BEBAS_NEUE, LEVA_SORT_ORDER } from "../../common/Constants"
-import HUDImages from "../../common/HUDImages"
+import { PLAYER_DEFAULTS, usePlayer } from '../../stores/usePlayer'
+import { FILES, LEVA_SORT_ORDER } from '../../common/Constants'
+import HUDImages from '../../common/HUDImages'
 
 const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
   console.log('RENDER: PlayerInfo')
@@ -134,7 +134,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
   >
     {/* TITLE */}
     <Text
-      font={FILE_FONT_BEBAS_NEUE}
+      font={FILES.FONT_BEBAS_NEUE}
       material={material_text}
       anchorX='left'
       text='CARDBOARD WARRIOR'
@@ -150,7 +150,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       />
       <Text
         ref={ref_player.health}
-        font={FILE_FONT_BEBAS_NEUE}
+        font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         position={[0.7, -0.1, 0]}
         anchorX='left'
@@ -167,7 +167,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         transparent
       />
       <Text
-        font={FILE_FONT_BEBAS_NEUE}
+        font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         position={[0.7, -0.1, 0]}
         anchorX='left'
@@ -185,7 +185,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       />
       <Text
         ref={ref_player.potions}
-        font={FILE_FONT_BEBAS_NEUE}
+        font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         position={[0.9, -0.1, 0]}
         anchorX='left'
@@ -203,7 +203,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       />
       <Text
         ref={ref_player.gold}
-        font={FILE_FONT_BEBAS_NEUE}
+        font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         position={[1, -0.05, 0]}
         anchorX='left'

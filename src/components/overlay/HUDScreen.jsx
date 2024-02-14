@@ -1,15 +1,15 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { useThree } from "@react-three/fiber"
+import { useThree } from '@react-three/fiber'
 
-import { GAME_PHASE, useGame } from "../../stores/useGame"
-import { POSITIONS } from "../../common/Positions"
-import HUDKeys from "./HUDKeys"
-import ANIMATIONS from "../../common/Animation"
-import PlayerInfo from "./PlayerInfo"
-import EnemyInfo from "./EnemyInfo"
-import MiniMap from "./MiniMap"
-import GameLog from "./GameLog"
+import { GAME_PHASE, useGame } from '../../stores/useGame'
+import { POSITIONS } from '../../common/Positions'
+import HUDKeys from './HUDKeys'
+import ANIMATIONS from '../../common/Animation'
+import PlayerInfo from './PlayerInfo'
+import EnemyInfo from './EnemyInfo'
+import MiniMap from './MiniMap'
+import GameLog from './GameLog'
 
 // COMMON MATERIALS
 const material_text = new THREE.MeshBasicMaterial({
