@@ -1,10 +1,10 @@
 import anime from 'animejs'
 import { POSITIONS } from './Positions'
 
-/** ANIME.JS - ANIMATION TIMELINE */
+/** ANIME.JS - ANIMATIONS */
 const
 
-  /** ANIMATION TIMELINE - SHOW TITLE SCREEN */
+  /** ANIMATION - SHOW TITLE SCREEN */
   animateTitleShow = ({ target_title, target_new_game, target_github }) => {
     const timeline = anime.timeline()
 
@@ -31,7 +31,7 @@ const
     return timeline
   },
 
-  /** ANIMATION TIMELINE - HIDE TITLE SCREEN */
+  /** ANIMATION - HIDE TITLE SCREEN */
   animateTitleHide = ({ target_title, target_new_game, target_github }) => {
     const timeline = anime.timeline()
 
@@ -58,7 +58,7 @@ const
     return timeline
   },
 
-  /** ANIMATION TIMELINE - GAME ELEMENTS */
+  /** ANIMATION - HUD ELEMENTS */
   animateHUDShow = ({ target_controls, target_player, target_minimap, target_log }) => {
     const timeline = anime.timeline()
 
@@ -99,54 +99,143 @@ const
     return timeline
   },
 
-  // REFERENCE CODE - REMOVE LATER
-  /** ANIMATE A GROUP OF ELEMENTS
-   *  targets: [elements]
-   *  y: y-position
-   *  duration: duration in ms
-   *  timeline_offset: timeline offset in ms
-   */
-  animateTimeline = ({ targets, y, duration, timeline_offset = 0, autoplay = true }) => {
-    if (!targets) return
+  /** ANIMATION - SHOW ROOM */
+  animateRoomShow = ({ target_walls }) => {
+    // NOTE HERE ONLY "anime" IS USED VS. "anime.timeline"
+    // - timeline ALLOWS FOR A SEQUENCE OF ANIMATIONS, EACH WITH IT'S OWN .complete CALLBACK
+    //   AND ALSO A .complete CALLBACK FOR THE ENTIRE TIMELINE
+    // - HERE, ONLY A SINGLE ANIMATION / .complete IS NEEDED
+    //   ...SEE Room.jsx >> useEffect > subscribeAnimation
+    const animation = anime({
+      targets: [
+        target_walls.north.current.position,
+        target_walls.south.current.position,
+        target_walls.east.current.position,
+        target_walls.west.current.position
+      ],
 
-    const timeline = anime.timeline({
-      autoplay
+      y: POSITIONS.WALLS.y.visible,
+      duration: 1000,
+      delay: anime.stagger([0, 400]),
+      easing: 'easeInOutSine'
     })
 
-    const
-      offset_min = duration * 0.1,
-      offset_max = duration * 0.6
+    return animation
+  },
 
-    Object.values(targets).forEach(
-      (target, index) => {
-        const animation_offset = index === 0
-          ? 0
-          : offset_min + Math.random() * (offset_max - offset_min)
+  /** ANIMATION - HIDE ROOM */
+  animateRoomHide = ({ target_walls }) => {
+    const timeline = anime.timeline()
 
-        timeline.add(
-          {
-            targets: target.current.position,
-            y,
-            duration,
-            easing: 'easeInOutSine',
-            autoplay
-          },
+    timeline.add(
+      {
+        targets: [
+          target_walls.north.current.position,
+          target_walls.south.current.position,
+          target_walls.east.current.position,
+          target_walls.west.current.position
+        ],
 
-          animation_offset
-        )
-      },
+        y: POSITIONS.WALLS.y.hidden,
+        duration: 1000,
+        delay: anime.stagger([0, 400]),
+        easing: 'easeInOutSine',
 
-      timeline_offset // timeline offset
+        complete: () => {
+          target_walls.north.current.visible = false
+          target_walls.south.current.visible = false
+          target_walls.east.current.visible = false
+          target_walls.west.current.visible = false
+        }
+      }
     )
 
     return timeline
+  },
+
+  /** ANIMATION - SHOW PLAYER */
+  animatePlayerShow = ({ target_player }) => {
+    const animation = anime.timeline()
+
+    target_player.current.visible = true
+
+    animation.add(
+      {
+        targets: target_player.current.position,
+        y: POSITIONS.PLAYER.y.visible,
+        duration: 1000,
+        easing: 'easeInOutSine'
+      }
+    )
+
+    return animation
+  },
+
+  /** ANIMATION - HIDE PLAYER */
+  animatePlayerHide = ({ target_player }) => {
+    const animation = anime.timeline()
+
+    animation.add(
+      {
+        targets: target_player.current.position,
+        y: POSITIONS.PLAYER.y.hidden,
+        duration: 1000,
+        easing: 'easeInOutSine',
+        complete: () => target_player.current.visible = false
+      }
+    )
+
+    return animation
+  },
+
+  /** ANIMATION - SHOW MONSTER SIGN */
+  animateSignShow = ({ target_sign }) => {
+    const animation = anime.timeline()
+
+    target_sign.current.visible = true
+
+    animation.add(
+      {
+        targets: target_sign.current.position,
+        y: POSITIONS.MONSTER_SIGN.y.visible,
+        duration: 1000,
+        easing: 'spring(0.8, 60, 9, 3)'
+      }
+    )
+
+    return animation
+  },
+
+  /** ANIMATION - HIDE MONSTER SIGN */
+  animateSignHide = ({ target_sign }) => {
+    const animation = anime.timeline()
+
+    animation.add(
+      {
+        targets: target_sign.current.position,
+        y: POSITIONS.MONSTER_SIGN.y.hidden,
+        duration: 500,
+        easing: 'easeInOutSine',
+        complete: () => target_sign.current.visible = false
+      }
+    )
+
+    return animation
   }
+
+/** ANIMATION - SHOW DICE */
+/** ANIMATION - HIDE DICE */
 
 const ANIMATIONS = {
   animateHUDShow,
-  animateTimeline,
+  animatePlayerHide,
+  animatePlayerShow,
+  animateRoomHide,
+  animateRoomShow,
+  animateSignHide,
+  animateSignShow,
   animateTitleHide,
-  animateTitleShow
+  animateTitleShow,
 }
 
 

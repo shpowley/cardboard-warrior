@@ -14,7 +14,28 @@ const POSITIONS = {
       visible: -0.34,
       hidden: -0.5
     }
-  }
+  },
+
+  WALLS: {
+    y: {
+      visible: 8,
+      hidden: 20
+    }
+  },
+
+  PLAYER: {
+    y: {
+      visible: 0,
+      hidden: 14
+    }
+  },
+
+  MONSTER_SIGN: {
+    y: {
+      visible: 0,
+      hidden: -4
+    }
+  },
 }
 
 export { POSITIONS }

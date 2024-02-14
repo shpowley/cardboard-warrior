@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useAnimations, useGLTF } from '@react-three/drei'
 import { CylinderCollider, RigidBody } from '@react-three/rapier'
@@ -6,6 +6,9 @@ import { useControls } from 'leva'
 
 import { LEVA_SORT_ORDER } from '../../common/Constants'
 import { useStatePlayer } from '../../stores/useStatePlayer'
+import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
+import { POSITIONS } from '../../common/Positions'
+import ANIMATIONS from '../../common/Animation'
 
 
 /** BUILT-IN MESH ANIMATIONS
@@ -24,13 +27,20 @@ const FILE_WARRIOR = './models/warrior-compressed.glb'
 
 useGLTF.preload(FILE_WARRIOR)
 
-const Warrior = ({ position, rotation, scale, castShadow }) => {
+const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => {
   console.log('RENDER: Warrior')
 
   const { nodes, materials, animations } = useGLTF(FILE_WARRIOR)
 
-  // ZUSTAND PLAYER ANIMATION
-  const setAnimation = useStatePlayer(state => state.setAnimation)
+  const ref_player = useRef()
+
+  // ANIMATIONS (anime.js)
+  const animation_player = useRef()
+
+  // ZUSTAND STATE
+  const
+    setAnimation = useStatePlayer(state => state.setAnimation),
+    setPlayerAnimationState = useStateAnimation(state => state.setPlayerAnimationState)
 
   // LEVA DEBUG CONTROLS
   useControls(
@@ -93,10 +103,10 @@ const Warrior = ({ position, rotation, scale, castShadow }) => {
           // SMOOTH TRANSITION TO IDLE
           setTimeout(() => {
             actions[MESH_ANIMATIONS.IDLE]
-            .reset()
-            .setLoop(THREE.LoopRepeat)
-            .crossFadeFrom(actions[selected_animation], 0.5)
-            .play()
+              .reset()
+              .setLoop(THREE.LoopRepeat)
+              .crossFadeFrom(actions[selected_animation], 0.5)
+              .play()
           }, 3000)
 
           break
@@ -118,27 +128,47 @@ const Warrior = ({ position, rotation, scale, castShadow }) => {
     }
   }
 
-  // NOT MEANT FOR STATE RE-RENDER.. RATHER FOR ZUSTAND ANIMATION SUBSCRIPTION CHANGES
-  let prev_animation = MESH_ANIMATIONS.NONE
-
   useEffect(() => {
 
-    // PLAYER ANIMATION SUBSCRIPTION (ZUSTAND)
-    const subscribePlayerAnimation = useStatePlayer.subscribe(
+    // MODEL ANIMATION SUBSCRIPTION (ZUSTAND) (GLTF ANIMATION)
+    const subscribeModelAnimation = useStatePlayer.subscribe(
       // SELECTOR
       state => state.animation,
 
       // CALLBACK
-      animation_subscribed => {
-        actions[prev_animation]?.fadeOut(0.5)
+      (animation, prev) => {
+        actions[prev]?.fadeOut(0.5)
         mixer.stopAllAction()
-        handleAnimation(animation_subscribed)
-        prev_animation = animation_subscribed
+        handleAnimation(animation)
+        prev = animation
+      }
+    )
+
+    // PLAYER ANIMATION SUBSCRIPTION (ZUSTAND) (ANIME.JS ANIMATION)
+    const subscribePlayerAnimation = useStateAnimation.subscribe(
+      // SELECTOR
+      state => state.player_animation_state,
+
+      // CALLBACK
+      animation_state => {
+        if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          animation_player.current = ANIMATIONS.animatePlayerShow({ target_player: ref_player })
+          animation_player.current.complete = () => {
+            setPlayerAnimationState(ANIMATION_STATE.VISIBLE)
+          }
+        }
+        else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
+          animation_player.current = ANIMATIONS.animatePlayerHide({ target_player: ref_player })
+          animation_player.current.complete = () => {
+            setPlayerAnimationState(ANIMATION_STATE.HIDDEN)
+          }
+        }
       }
     )
 
     // CLEANUP
     return () => {
+      subscribeModelAnimation()
       subscribePlayerAnimation()
     }
   }, [])
@@ -156,9 +186,11 @@ const Warrior = ({ position, rotation, scale, castShadow }) => {
       />
     </RigidBody>
     <group
-      position={[position[0], 0, position[2] + 0.2]}
+      ref={ref_player}
+      position={[position[0], POSITIONS.PLAYER.y.hidden, position[2] + 0.2]}
       rotation={rotation}
       scale={scale}
+      visible={visible}
       dispose={null}
     >
       <primitive object={nodes._rootJoint} />

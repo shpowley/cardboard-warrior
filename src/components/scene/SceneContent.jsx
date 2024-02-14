@@ -51,9 +51,38 @@ const SceneContent = () => {
         }
       }),
 
-      'box warrior': button(() => console.log('warrior animation')),
-      'monster sign': button(() => console.log('sign animation')),
-      'dice': button(() => console.log('dice animation'))
+      'box warrior': button(() => {
+        const player_state = useStateAnimation.getState().player_animation_state
+
+        if (player_state === ANIMATION_STATE.HIDDEN) {
+          setPlayerAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
+        }
+        else if (player_state === ANIMATION_STATE.VISIBLE) {
+          setPlayerAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
+        }
+      }),
+
+      'monster sign': button(() => {
+        const monster_sign_state = useStateAnimation.getState().monster_sign_animation_state
+
+        if (monster_sign_state === ANIMATION_STATE.HIDDEN) {
+          setMonsterSignAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
+        }
+        else if (monster_sign_state === ANIMATION_STATE.VISIBLE) {
+          setMonsterSignAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
+        }
+      }),
+
+      'dice': button(() => {
+        const dice_state = useStateAnimation.getState().dice_animation_state
+
+        if (dice_state === ANIMATION_STATE.HIDDEN) {
+          setDiceAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
+        }
+        else if (dice_state === ANIMATION_STATE.VISIBLE) {
+          setDiceAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
+        }
+      })
     },
 
     {

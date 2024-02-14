@@ -2,13 +2,14 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
-import { POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
 import Floor from './Floor'
 import Wall from './Wall'
-import { useStateGame } from '../../../stores/useStateGame'
 import Ceiling from './Ceiling'
 import Arrows from './Arrows'
-import { useStateAnimation } from '../../../stores/useStateAnimation'
+import { useStateGame } from '../../../stores/useStateGame'
+import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
+import { POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
+import ANIMATIONS from '../../../common/Animation'
 
 // CALCULATE THE CAMERA'S ANGLE IN DEGREES
 const calculateRange = (prime_angle, camera_yaw) => {
@@ -32,8 +33,14 @@ const Room = () => {
     west: useRef()
   }
 
+  // ANIMATIONS (anime.js)
+  const animation_room = useRef()
+
   const camera = useThree(state => state.camera)
   const controls = useStateGame(state => state.controls)
+
+  // ZUSTAND ANIMATION STATE
+  const setRoomAnimationState = useStateAnimation(state => state.setRoomAnimationState)
 
   /** WALL VISIBLE LOGIC
    * - WALLS ARE AUTOMATICALLY HIDDEN DUE TO BACKFACE CULLING, BUT DOORS ARE NOT
@@ -41,7 +48,7 @@ const Room = () => {
    * ! THIS ASSUMES THE CAMERA IS ALWAYS LOOKING AT [0, 0, 0]
    */
   const checkWallsVisible = () => {
-    if (camera) {
+    if (camera && useStateAnimation.getState().room_animation_state !== ANIMATION_STATE.HIDDEN) {
       let angle_radians = Math.atan2(
         camera.position.x,
         camera.position.z
@@ -75,7 +82,15 @@ const Room = () => {
 
       // CALLBACK
       animation_state => {
-        console.log('Room > useEffect > animation_state:', animation_state)
+        if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          checkWallsVisible()
+          animation_room.current = ANIMATIONS.animateRoomShow({ target_walls: ref_walls })
+          animation_room.current.complete = () => setRoomAnimationState(ANIMATION_STATE.VISIBLE)
+        }
+        else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
+          animation_room.current = ANIMATIONS.animateRoomHide({ target_walls: ref_walls })
+          animation_room.current.complete = () => setRoomAnimationState(ANIMATION_STATE.HIDDEN)
+        }
       }
     )
 
@@ -93,28 +108,24 @@ const Room = () => {
     <Wall
       forward_ref={ref_walls.north}
       position={[0, ROOM_COLLIDER.wall_position_y, -POSITIONING_ADJUST]}
-      visible={true}
     />
 
     <Wall
       forward_ref={ref_walls.south}
       position={[0, ROOM_COLLIDER.wall_position_y, POSITIONING_ADJUST]}
       rotation={[0, Math.PI, 0]}
-      visible={false}
     />
 
     <Wall
       forward_ref={ref_walls.east}
       position={[POSITIONING_ADJUST, ROOM_COLLIDER.wall_position_y, 0]}
       rotation={[0, -Math.PI * 0.5, 0]}
-      visible={true}
     />
 
     <Wall
       forward_ref={ref_walls.west}
       position={[-POSITIONING_ADJUST, ROOM_COLLIDER.wall_position_y, 0]}
       rotation={[0, Math.PI * 0.5, 0]}
-      visible={true}
     />
   </>
 }

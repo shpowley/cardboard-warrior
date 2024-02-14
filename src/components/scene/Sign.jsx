@@ -7,6 +7,9 @@ import { useControls } from 'leva'
 import { MONSTERS } from '../../common/Monsters'
 import { LEVA_SORT_ORDER } from '../../common/Constants'
 import { useStateEnemy } from '../../stores/useStateEnemy'
+import { POSITIONS } from '../../common/Positions'
+import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
+import ANIMATIONS from '../../common/Animation'
 
 const EXTENT_HEIGHT = 1.85
 const FILE_SIGN = './models/sign-compressed.glb'
@@ -89,15 +92,22 @@ const SignMaterial = ({ material, texture_url, x, y, scale }) => {
   />
 }
 
-const Sign = ({ castShadow = false, position, rotation, scale }) => {
+const Sign = ({ castShadow = false, position, rotation, scale, visible = false }) => {
   console.log('RENDER: Sign')
 
   const { nodes, materials } = useGLTF(FILE_SIGN)
 
-  // ZUSTAND MONSTER DATA
-  const setImageData = useStateEnemy(state => state.setImageData)
+  const ref_sign = useRef()
 
-  const controls_monster = useControls(
+  // ANIMATIONS (anime.js)
+  const animation_sign = useRef()
+
+  // ZUSTAND MONSTER STATE
+  const
+    setImageData = useStateEnemy(state => state.setImageData),
+    setMonsterSignAnimationState = useStateAnimation(state => state.setMonsterSignAnimationState)
+
+  useControls(
     'monster sign',
 
     {
@@ -117,6 +127,35 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
     }
   )
 
+  useEffect(() => {
+    // SIGN ANIMATION SUBSCRIPTION (ZUSTAND)
+    const subscribeSignAnimation = useStateAnimation.subscribe(
+      // SELECTOR
+      state => state.monster_sign_animation_state,
+
+      // CALLBACK
+      animation_state => {
+        if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          animation_sign.current = ANIMATIONS.animateSignShow({ target_sign: ref_sign })
+          animation_sign.current.complete = () => {
+            setMonsterSignAnimationState(ANIMATION_STATE.VISIBLE)
+          }
+        }
+        else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
+          animation_sign.current = ANIMATIONS.animateSignHide({ target_sign: ref_sign })
+          animation_sign.current.complete = () => {
+            setMonsterSignAnimationState(ANIMATION_STATE.HIDDEN)
+          }
+        }
+      }
+    )
+
+    // CLEAN UP
+    return () => {
+      subscribeSignAnimation()
+    }
+  }, [])
+
   return <>
     <RigidBody
       type='fixed'
@@ -130,9 +169,11 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
       />
     </RigidBody>
     <group
-      position={position}
+      ref={ref_sign}
+      position={[position[0], POSITIONS.MONSTER_SIGN.y.hidden, position[2]]}
       rotation={rotation}
       scale={scale}
+      visible={visible}
       dispose={null}
     >
       <mesh

@@ -398,64 +398,6 @@ const Experience = () => {
     { collapsed: true, order: LEVA_SORT_ORDER.LIGHTING }
   )
 
-  // LEVA TEST ACTIONS
-  useControls(
-    'miscellaneous',
-
-    {
-      'animate up': button(() => {
-        if (animation.current && !animation.current.completed) {
-          console.warn('ANIMATION ALREADY RUNNING -- ABORTING')
-          return
-        }
-
-        animation.current = ANIMATIONS.animateTimeline({
-          ...TIMELINES.up,
-          targets: ref_cubes
-        })
-      }),
-
-      'animate down': button(() => {
-        if (animation.current && !animation.current.completed) {
-          console.warn('ANIMATION ALREADY RUNNING -- ABORTING')
-          return
-        }
-
-        animation.current = ANIMATIONS.animateTimeline({
-          ...TIMELINES.down,
-          targets: ref_cubes
-        })
-      }),
-
-      // while animation can be hard-coded, this method allows for random animation offsets on each play
-      'animate up/down': button(() => {
-        if (animation.current && !animation.current.completed) {
-          console.warn('ANIMATION ALREADY RUNNING -- ABORTING')
-          return
-        }
-
-        animation.current = ANIMATIONS.animateTimeline({
-          ...TIMELINES.up,
-          targets: ref_cubes,
-          timeline_offset: 500, // offset between animation timelines
-          // autoplay: false // if you want to manually play the animation ..animation.current.play()
-        })
-
-        // animation.current.play()
-
-        animation.current.finished.then(() => {
-          animation.current = ANIMATIONS.animateTimeline({
-            ...TIMELINES.down,
-            targets: ref_cubes,
-            autoplay: true
-          })
-        })
-      }),
-    },
-
-    { collapsed: true, order: LEVA_SORT_ORDER.ACTIONS }
-  )
-
   // HELPERS
   useHelper(
     controls_lighting.shadow_helper && ref_shadow_camera,
@@ -509,8 +451,6 @@ const Experience = () => {
       subscribeGamePhase()
     }
   }, [])
-
-  const show_cubes = false
 
   return <>
     {Perf && <Perf position='top-left' />}
@@ -579,49 +519,6 @@ const Experience = () => {
 
     {/* 3D SCENE */}
     <SceneContent />
-
-
-
-    {/* TESTING ONLY -- DELETE THIS AND LEVA DEBUG */}
-    {show_cubes &&
-      <>
-        <mesh
-          ref={ref_cubes.left}
-          position={[-1.5, 0.7, 0]}
-          material={material_box}
-          geometry={geometry_box}
-          castShadow
-        />
-
-        <mesh
-          ref={ref_cubes.center}
-          position={[0, 0.7, 0]}
-          material={material_box}
-          geometry={geometry_box}
-          castShadow
-        />
-
-        <mesh
-          ref={ref_cubes.right}
-          position={[1.5, 0.7, 0]}
-          material={material_box}
-          geometry={geometry_box}
-          castShadow
-        />
-
-        <mesh
-          position={[0, 0, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          receiveShadow
-        >
-          <planeGeometry args={[10, 10]} />
-          <shadowMaterial
-            color={controls_lighting.shadow_color}
-            opacity={controls_lighting.shadow_opacity}
-          />
-        </mesh>
-      </>
-    }
   </>
 }
 
