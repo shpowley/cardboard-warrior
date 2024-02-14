@@ -4,13 +4,13 @@ import { useThree } from '@react-three/fiber'
 import { Environment, OrbitControls, useHelper } from '@react-three/drei'
 import { useControls, folder, button } from 'leva'
 
-import { GAME_PHASE, useGame } from './stores/useGame'
+import { GAME_PHASE, useStateGame } from './stores/useStateGame'
 import { parameterEnabled } from './common/Utils'
 import { CAMERA_DEFAULTS, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
 import ANIMATIONS from './common/Animation'
 import ScreenOverlay from './components/overlay/ScreenOverlay'
 import { generateLevel } from './common/Level'
-import { usePlayer } from './stores/usePlayer'
+import { useStatePlayer } from './stores/useStatePlayer'
 import SceneContent from './components/scene/SceneContent'
 
 // LEVA DEBUG
@@ -72,12 +72,12 @@ const Experience = () => {
 
   // ZUSTAND GAME STATE
   const
-    setFloorIndex = usePlayer(state => state.setFloorIndex),
-    setRoom = usePlayer(state => state.setRoom),
-    setGamePhase = useGame(state => state.setGamePhase),
-    setLevel = useGame(state => state.setLevel),
-    setLog = useGame(state => state.setLog),
-    setControls = useGame(state => state.setControls)
+    setFloorIndex = useStatePlayer(state => state.setFloorIndex),
+    setRoom = useStatePlayer(state => state.setRoom),
+    setGamePhase = useStateGame(state => state.setGamePhase),
+    setLevel = useStateGame(state => state.setLevel),
+    setLog = useStateGame(state => state.setLog),
+    setControls = useStateGame(state => state.setControls)
 
   // LEVA CAMERA & ORBIT CONTROLS
   const camera = useThree((state) => state.camera)
@@ -481,7 +481,7 @@ const Experience = () => {
     }, 500)
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeGamePhase = useGame.subscribe(
+    const subscribeGamePhase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 

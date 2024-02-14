@@ -5,9 +5,10 @@ import { useThree } from '@react-three/fiber'
 import { POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
 import Floor from './Floor'
 import Wall from './Wall'
-import { useGame } from '../../../stores/useGame'
+import { useStateGame } from '../../../stores/useStateGame'
 import Ceiling from './Ceiling'
 import Arrows from './Arrows'
+import { useStateAnimation } from '../../../stores/useStateAnimation'
 
 // CALCULATE THE CAMERA'S ANGLE IN DEGREES
 const calculateRange = (prime_angle, camera_yaw) => {
@@ -32,7 +33,7 @@ const Room = () => {
   }
 
   const camera = useThree(state => state.camera)
-  const controls = useGame(state => state.controls)
+  const controls = useStateGame(state => state.controls)
 
   /** WALL VISIBLE LOGIC
    * - WALLS ARE AUTOMATICALLY HIDDEN DUE TO BACKFACE CULLING, BUT DOORS ARE NOT
@@ -66,6 +67,23 @@ const Room = () => {
     }
   }, [controls])
 
+  useEffect(() => {
+    // ANIMATION SUBSCRIPTION (ZUSTAND)
+    const subscribeAnimation = useStateAnimation.subscribe(
+      // SELECTOR
+      state => state.room_animation_state,
+
+      // CALLBACK
+      animation_state => {
+        console.log('Room > useEffect > animation_state:', animation_state)
+      }
+    )
+
+    // CLEANUP
+    return () => {
+      subscribeAnimation()
+    }
+  }, [])
 
   return <>
     <Ceiling />

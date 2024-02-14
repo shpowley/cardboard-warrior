@@ -2,7 +2,7 @@ import { memo, useEffect, useRef } from 'react'
 import { Image, Text } from '@react-three/drei'
 import { button, useControls } from 'leva'
 
-import { PLAYER_DEFAULTS, usePlayer } from '../../stores/usePlayer'
+import { PLAYER_DEFAULTS, useStatePlayer } from '../../stores/useStatePlayer'
 import { FILES, LEVA_SORT_ORDER } from '../../common/Constants'
 import HUDImages from '../../common/HUDImages'
 
@@ -18,11 +18,11 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
   // ZUSTAND GAME STATE
   const
-    takePotion = usePlayer(state => state.takePotion),
-    takeDamage = usePlayer(state => state.takeDamage),
-    addGold = usePlayer(state => state.addGold),
-    getKey = usePlayer(state => state.getKey),
-    useKey = usePlayer(state => state.useKey)
+    takePotion = useStatePlayer(state => state.takePotion),
+    takeDamage = useStatePlayer(state => state.takeDamage),
+    addGold = useStatePlayer(state => state.addGold),
+    getKey = useStatePlayer(state => state.getKey),
+    useKey = useStatePlayer(state => state.useKey)
 
   // LEVA DEBUG PLAYER STATE
   const controls_player = useControls(
@@ -73,7 +73,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     forward_ref.current.visible = true
 
     // PLAYER STATE SUBSCRIPTIONS (ZUSTAND)
-    const subscribeHealth = usePlayer.subscribe(
+    const subscribeHealth = useStatePlayer.subscribe(
       // SELECTOR
       state => state.health,
 
@@ -83,7 +83,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribePotions = usePlayer.subscribe(
+    const subscribePotions = useStatePlayer.subscribe(
       // SELECTOR
       state => state.potions,
 
@@ -93,7 +93,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribeGold = usePlayer.subscribe(
+    const subscribeGold = useStatePlayer.subscribe(
       // SELECTOR
       state => state.gold,
 
@@ -103,7 +103,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribeKey = usePlayer.subscribe(
+    const subscribeKey = useStatePlayer.subscribe(
       // SELECTOR
       state => state.key,
 

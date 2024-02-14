@@ -5,7 +5,7 @@ import { CylinderCollider, RigidBody } from '@react-three/rapier'
 import { useControls } from 'leva'
 
 import { LEVA_SORT_ORDER } from '../../common/Constants'
-import { usePlayer } from '../../stores/usePlayer'
+import { useStatePlayer } from '../../stores/useStatePlayer'
 
 
 /** BUILT-IN MESH ANIMATIONS
@@ -30,7 +30,7 @@ const Warrior = ({ position, rotation, scale, castShadow }) => {
   const { nodes, materials, animations } = useGLTF(FILE_WARRIOR)
 
   // ZUSTAND PLAYER ANIMATION
-  const setAnimation = usePlayer(state => state.setAnimation)
+  const setAnimation = useStatePlayer(state => state.setAnimation)
 
   // LEVA DEBUG CONTROLS
   useControls(
@@ -53,7 +53,7 @@ const Warrior = ({ position, rotation, scale, castShadow }) => {
     }
   )
 
-  // https://github.com/pmndrs/drei?tab=readme-ov-file#useanimations
+  // https://github.com/pmndrs/drei?tab=readme-ov-file#useStateAnimation
   // https://threejs.org/docs/#api/en/animation/AnimationMixer
   // https://threejs.org/docs/#api/en/animation/AnimationAction
   // https://codesandbox.io/s/pecl6
@@ -124,7 +124,7 @@ const Warrior = ({ position, rotation, scale, castShadow }) => {
   useEffect(() => {
 
     // PLAYER ANIMATION SUBSCRIPTION (ZUSTAND)
-    const subscribePlayerAnimation = usePlayer.subscribe(
+    const subscribePlayerAnimation = useStatePlayer.subscribe(
       // SELECTOR
       state => state.animation,
 

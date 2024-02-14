@@ -3,8 +3,8 @@ import { Text } from '@react-three/drei'
 
 import { FILES } from '../../common/Constants'
 import { memo, useEffect, useRef } from 'react'
-import { useGame } from '../../stores/useGame'
-import { usePlayer } from '../../stores/usePlayer'
+import { useStateGame } from '../../stores/useStateGame'
+import { useStatePlayer } from '../../stores/useStatePlayer'
 
 const CANVAS = {
   size: {
@@ -89,7 +89,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     forward_ref.current.visible = true
 
     // STATE DATA SUBSCRIPTION (ZUSTAND)
-    const subscribeLevel = useGame.subscribe(
+    const subscribeLevel = useStateGame.subscribe(
       // SELECTOR
       state => state.level,
 
@@ -105,7 +105,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribeRoom = usePlayer.subscribe(
+    const subscribeRoom = useStatePlayer.subscribe(
       // SELECTOR
       state => state.room,
 

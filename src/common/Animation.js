@@ -1,6 +1,7 @@
 import anime from 'animejs'
 import { POSITIONS } from './Positions'
 
+/** ANIME.JS - ANIMATION TIMELINE */
 const
 
   /** ANIMATION TIMELINE - SHOW TITLE SCREEN */
@@ -38,7 +39,7 @@ const
       {
         targets: [target_new_game, target_github],
         opacity: 0,
-        duration: 500,
+        duration: 1000,
         easing: 'easeOutSine'
       }
     )
@@ -66,7 +67,7 @@ const
       {
         targets: target_controls,
         y: POSITIONS.KEYS.y.visible,
-        duration: 1000
+        duration: 2000
       }
     )
 
@@ -75,7 +76,7 @@ const
       {
         targets: [target_player, target_minimap, target_log],
         opacity: 1,
-        duration: 1500,
+        duration: 3000,
 
         update: () => {
           target_player.traverse(child => {

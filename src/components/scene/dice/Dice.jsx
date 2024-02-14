@@ -4,12 +4,12 @@ import { button, useControls } from 'leva'
 import D20 from './D20'
 import D20Enemy from './D20Enemy'
 import { LEVA_SORT_ORDER } from '../../../common/Constants'
-import { DICE_STATE, useDice } from '../../../stores/useDice'
+import { DICE_STATE, useStateDice } from '../../../stores/useStateDice'
 
 const Dice = () => {
   const
-    setDiceStatePlayer = useDice(state => state.setDiceStatePlayer),
-    setDiceStateEnemy = useDice(state => state.setDiceStateEnemy)
+    setDiceStatePlayer = useStateDice(state => state.setDiceStatePlayer),
+    setDiceStateEnemy = useStateDice(state => state.setDiceStateEnemy)
 
   useControls(
     'dice rolling',
@@ -33,7 +33,7 @@ const Dice = () => {
   useEffect(() => {
     // DICE SUBSCRIPTION (ZUSTAND)
     const
-      subscribePlayerDice = useDice.subscribe(
+      subscribePlayerDice = useStateDice.subscribe(
         // SELECTOR
         state => state.dice_value_player,
 
@@ -43,7 +43,7 @@ const Dice = () => {
         }
       ),
 
-      subscribeEnemyDice = useDice.subscribe(
+      subscribeEnemyDice = useStateDice.subscribe(
         // SELECTOR
         state => state.dice_value_enemy,
 

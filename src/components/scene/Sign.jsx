@@ -6,7 +6,7 @@ import { useControls } from 'leva'
 
 import { MONSTERS } from '../../common/Monsters'
 import { LEVA_SORT_ORDER } from '../../common/Constants'
-import { useEnemy } from '../../stores/useEnemy'
+import { useStateEnemy } from '../../stores/useStateEnemy'
 
 const EXTENT_HEIGHT = 1.85
 const FILE_SIGN = './models/sign-compressed.glb'
@@ -51,7 +51,7 @@ const SignMaterial = ({ material, texture_url, x, y, scale }) => {
   useEffect(() => {
 
     // ENEMY IMAGE SUBSCRIPTION (ZUSTAND)
-    const subscribeEnemyImage = useEnemy.subscribe(
+    const subscribeEnemyImage = useStateEnemy.subscribe(
       // SELECTOR
       state => state.image_data,
 
@@ -95,7 +95,7 @@ const Sign = ({ castShadow = false, position, rotation, scale }) => {
   const { nodes, materials } = useGLTF(FILE_SIGN)
 
   // ZUSTAND MONSTER DATA
-  const setImageData = useEnemy(state => state.setImageData)
+  const setImageData = useStateEnemy(state => state.setImageData)
 
   const controls_monster = useControls(
     'monster sign',

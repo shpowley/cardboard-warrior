@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { Text } from '@react-three/drei'
 
 import { FILES, LINKS } from '../../common/Constants'
-import { GAME_PHASE, useGame } from '../../stores/useGame'
+import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import ANIMATIONS from '../../common/Animation'
 import { POSITIONS } from '../../common/Positions'
 import { mouse_pointer } from '../../common/Utils'
@@ -34,8 +34,8 @@ const TitleScreen = () => {
 
   // ZUSTAND GAME STATE
   const
-    setGamePhase = useGame(state => state.setGamePhase),
-    phase = useGame(state => state.phase)
+    setGamePhase = useStateGame(state => state.setGamePhase),
+    phase = useStateGame(state => state.phase)
 
   // HANDLERS
   const handlerNewGame = () => {
@@ -46,7 +46,7 @@ const TitleScreen = () => {
   useEffect(() => {
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeGamePhase = useGame.subscribe(
+    const subscribeGamePhase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 

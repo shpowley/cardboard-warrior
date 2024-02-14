@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
-import { GAME_PHASE, useGame } from '../../stores/useGame'
+import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import { POSITIONS } from '../../common/Positions'
 import HUDKeys from './HUDKeys'
 import ANIMATIONS from '../../common/Animation'
@@ -32,7 +32,7 @@ const HUDScreen = () => {
   const animation = useRef()
 
   // ZUSTAND GAME STATE
-  const setGamePhase = useGame(state => state.setGamePhase)
+  const setGamePhase = useStateGame(state => state.setGamePhase)
 
   // USED TO HELP POSITION 2D HUD ELEMENTS
   const aspect_ratio = useThree(state => state.viewport.aspect)
@@ -41,7 +41,7 @@ const HUDScreen = () => {
   useEffect(() => {
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeGamePhase = useGame.subscribe(
+    const subscribeGamePhase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 

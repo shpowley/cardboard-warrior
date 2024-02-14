@@ -8,7 +8,7 @@ const DICE_STATE = {
   ROLL_COMPLETE: 3
 }
 
-const useDice = create(
+const useStateDice = create(
   subscribeWithSelector(
     set => ({
       /** PROPERTIES */
@@ -30,5 +30,5 @@ const useDice = create(
 
 export {
   DICE_STATE,
-  useDice
+  useStateDice
 }

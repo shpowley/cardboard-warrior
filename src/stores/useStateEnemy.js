@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
-const useEnemy = create(
+const useStateEnemy = create(
   subscribeWithSelector(
     set => ({
       /** PROPERTIES */
@@ -13,4 +13,4 @@ const useEnemy = create(
   )
 )
 
-export { useEnemy }
+export { useStateEnemy }

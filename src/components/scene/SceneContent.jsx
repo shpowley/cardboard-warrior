@@ -1,13 +1,14 @@
 import { Suspense, useEffect } from 'react'
 import { Physics } from '@react-three/rapier'
-import { useControls } from 'leva'
+import { button, useControls } from 'leva'
 
-import { GAME_PHASE, useGame } from '../../stores/useGame'
+import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import { LEVA_SORT_ORDER } from '../../common/Constants'
 import Room from './room/Room'
 import Sign from './Sign'
 import Warrior from './Warrior'
 import Dice from './dice/Dice'
+import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 
 /**
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
@@ -15,9 +16,15 @@ import Dice from './dice/Dice'
 const SceneContent = () => {
   console.log('RENDER: SceneContent')
 
-  // ZUSTAND GAME STATE
-  const phase = useGame(state => state.phase)
+  // ZUSTAND STATES
+  const
+    phase = useStateGame(state => state.phase),
+    setRoomAnimationState = useStateAnimation(state => state.setRoomAnimationState),
+    setMonsterSignAnimationState = useStateAnimation(state => state.setMonsterSignAnimationState),
+    setPlayerAnimationState = useStateAnimation(state => state.setPlayerAnimationState),
+    setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState)
 
+  // LEVA DEBUG CONTROLS
   const controls_physics = useControls(
     'physics',
 
@@ -26,6 +33,32 @@ const SceneContent = () => {
     {
       collapsed: true,
       order: LEVA_SORT_ORDER.PHYSICS
+    }
+  )
+
+  useControls(
+    'construction animations',
+
+    {
+      'room': button(() => {
+        const room_state = useStateAnimation.getState().room_animation_state
+
+        if (room_state === ANIMATION_STATE.HIDDEN) {
+          setRoomAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
+        }
+        else if (room_state === ANIMATION_STATE.VISIBLE) {
+          setRoomAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
+        }
+      }),
+
+      'box warrior': button(() => console.log('warrior animation')),
+      'monster sign': button(() => console.log('sign animation')),
+      'dice': button(() => console.log('dice animation'))
+    },
+
+    {
+      collapsed: true,
+      order: LEVA_SORT_ORDER.CONSTRUCTION_ANIMATIONS
     }
   )
 
@@ -41,7 +74,7 @@ const SceneContent = () => {
   useEffect(() => {
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeGamePhase = useGame.subscribe(
+    const subscribeGamePhase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 

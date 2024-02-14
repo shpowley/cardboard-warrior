@@ -1,6 +1,6 @@
 import { ScreenSpace } from '@react-three/drei'
 
-import { GAME_PHASE, useGame } from '../../stores/useGame'
+import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import TitleScreen from './TitleScreen'
 import HUDScreen from './HUDScreen'
 
@@ -8,7 +8,7 @@ const ScreenOverlay = () => {
   console.log('RENDER: ScreenOverlay')
 
   // ZUSTAND GAME STATE
-  const phase = useGame(state => state.phase)
+  const phase = useStateGame(state => state.phase)
 
   // DETERMINE COMPONENTS TO RENDER
   const

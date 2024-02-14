@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react'
 import { Text } from '@react-three/drei'
 
 import { FILES } from '../../common/Constants'
-import { useGame } from '../../stores/useGame'
+import { useStateGame } from '../../stores/useStateGame'
 
 const GameLog = ({ forward_ref, aspect_ratio = 1 }) => {
   console.log('RENDER: GameLog')
@@ -11,7 +11,7 @@ const GameLog = ({ forward_ref, aspect_ratio = 1 }) => {
     forward_ref.current.visible = true
 
     // LOG DATA SUBSCRIPTION (ZUSTAND)
-    const subscribeLog = useGame.subscribe(
+    const subscribeLog = useStateGame.subscribe(
       // SELECTOR
       state => state.log,
 

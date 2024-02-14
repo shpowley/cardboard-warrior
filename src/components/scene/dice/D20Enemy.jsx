@@ -4,7 +4,7 @@ import { useGLTF } from '@react-three/drei'
 import { RigidBody } from '@react-three/rapier'
 
 import { FILES } from '../../../common/Constants'
-import { DICE_STATE, useDice } from '../../../stores/useDice'
+import { DICE_STATE, useStateDice } from '../../../stores/useStateDice'
 import { randomFloat } from '../../../common/Utils'
 
 // FACE ID LOOKUP TABLE -- SPECIFIC TO THIS MODEL ONLY!
@@ -44,8 +44,8 @@ const D20Enemy = ({ castShadow = false, position }) => {
 
   // ZUSTAND DICE STATE
   const
-    setDiceState = useDice(state => state.setDiceStateEnemy),
-    setDiceValue = useDice(state => state.setDiceValueEnemy)
+    setDiceState = useStateDice(state => state.setDiceStateEnemy),
+    setDiceValue = useStateDice(state => state.setDiceValueEnemy)
 
   const { nodes, materials } = useGLTF(FILES.D20_ENEMY_MODEL)
 
@@ -132,7 +132,7 @@ const D20Enemy = ({ castShadow = false, position }) => {
 
   useEffect(() => {
     // DICE SUBSCRIPTION (ZUSTAND)
-    const subscribeDice = useDice.subscribe(
+    const subscribeDice = useStateDice.subscribe(
       // SELECTOR
       state => state.dice_state_enemy,
 

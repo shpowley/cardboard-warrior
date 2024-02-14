@@ -15,7 +15,7 @@ const GAME_PHASE = {
   GAME_OVER: 10
 }
 
-const useGame = create(
+const useStateGame = create(
   subscribeWithSelector(
     set => ({
       /** PROPERTIES */
@@ -82,11 +82,6 @@ const useGame = create(
                 if (phase === GAME_PHASE.ROOM_SHOWING) {
                   return { phase }
                 }
-
-                break
-
-              default:
-                return {}
             }
           }
 
@@ -99,5 +94,5 @@ const useGame = create(
 
 export {
   GAME_PHASE,
-  useGame
+  useStateGame
 }

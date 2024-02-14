@@ -10,7 +10,7 @@ const PLAYER_DEFAULTS = {
   key: false
 }
 
-const usePlayer = create(
+const useStatePlayer = create(
   subscribeWithSelector(
     set => ({
       /** PROPERTIES */
@@ -69,5 +69,5 @@ const usePlayer = create(
 
 export {
   PLAYER_DEFAULTS,
-  usePlayer
+  useStatePlayer
 }
