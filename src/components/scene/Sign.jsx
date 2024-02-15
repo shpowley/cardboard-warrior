@@ -159,6 +159,7 @@ const Sign = ({ castShadow = false, position, rotation, scale, visible = false }
   return <>
     <RigidBody
       type='fixed'
+      friction={0}
       colliders={false}
       dispose={null}
     >

@@ -6,6 +6,8 @@ import { RigidBody } from '@react-three/rapier'
 import { FILES } from '../../../common/Constants'
 import { DICE_STATE, useStateDice } from '../../../stores/useStateDice'
 import { randomFloat } from '../../../common/Utils'
+import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
+import { useFrame } from '@react-three/fiber'
 
 // FACE ID LOOKUP TABLE -- SPECIFIC TO THIS MODEL ONLY!
 // SEE NOTES.TXT ON HOW TO DETERMINE FACE IDS -- PROGRAMATIC RAYCASTER TRIAL-AND-ERROR
@@ -34,7 +36,13 @@ const FACE_ID_LOOKUP = {
 
 useGLTF.preload(FILES.D20_ENEMY_MODEL)
 
-const D20Enemy = ({ castShadow = false, position }) => {
+const getRandomPosition = () => ({
+  x: randomFloat(-4, -1),
+  y: randomFloat(6, 10),
+  z: randomFloat(1, 6)
+})
+
+const D20Enemy = ({ castShadow = false, position, visible = false }) => {
   console.log('RENDER: D20Enemy')
 
   const ref_d20 = {
@@ -42,7 +50,7 @@ const D20Enemy = ({ castShadow = false, position }) => {
     mesh: useRef(),
   }
 
-  // ZUSTAND DICE STATE
+  // ZUSTAND STATE
   const
     setDiceState = useStateDice(state => state.setDiceStateEnemy),
     setDiceValue = useStateDice(state => state.setDiceValueEnemy)
@@ -63,20 +71,6 @@ const D20Enemy = ({ castShadow = false, position }) => {
 
     // don't roll if the d20 is already rolling
     if (!ref_d20.body.current || !ref_d20.body.current.isSleeping()) return
-
-    // COMMENT: REMOVED, BUT KEEPING AS REFERENCE CODE IF I NEED TO RESET THE ACTUAL POSITION / ROTATION
-    // // randomize the roll position
-    // const roll_start_pos = new THREE.Vector3(
-    //   randomFloat(-5, 5), // roll left/right position
-    //   2, // roll height
-    //   6 // how far back to roll
-    // )
-
-    // // reset the d20 position and rotation
-    // ref_d20.body.current.setTranslation(roll_start_pos, true)
-    // ref_d20.body.current.setRotation({ x: 0, y: 0, z: 0, w: 0 }, true)
-
-
 
     // reset the d20 prior to rolling
     ref_d20.body.current.setAngvel({ x: 0, y: 0, z: 0 })
@@ -107,63 +101,109 @@ const D20Enemy = ({ castShadow = false, position }) => {
     }
   }
 
-  let dice_state = DICE_STATE.NONE
-
   // GET THE FACE OF THE D20 THAT IS FACING UP
   const handleRollComplete = () => {
-    if (dice_state !== DICE_STATE.ROLLING) return
+    // DICE ROLL COMPLETE
+    if (useStateDice.getState().dice_state_enemy === DICE_STATE.ROLLING) {
+      const d20_position = ref_d20.mesh.current.getWorldPosition(new THREE.Vector3())
+      const raycaster = new THREE.Raycaster()
 
-    const d20_position = ref_d20.mesh.current.getWorldPosition(new THREE.Vector3())
-    const raycaster = new THREE.Raycaster()
+      raycaster.set(
+        new THREE.Vector3(d20_position.x, d20_position.y + 1, d20_position.z), // START POSITION ABOVE THE D20
+        new THREE.Vector3(0, -1, 0) // DIRECTION DOWN
+      )
 
-    raycaster.set(
-      new THREE.Vector3(d20_position.x, d20_position.y + 1, d20_position.z), // START POSITION ABOVE THE D20
-      new THREE.Vector3(0, -1, 0) // DIRECTION DOWN
-    )
+      const intersect = raycaster.intersectObject(ref_d20.mesh.current, true)
 
-    const intersect = raycaster.intersectObject(ref_d20.mesh.current, true)
+      const dice_roll_value = FACE_ID_LOOKUP[intersect[0].faceIndex] ?? 1
 
-    const dice_roll_value = FACE_ID_LOOKUP[intersect[0].faceIndex] ?? 1
+      // ZUSTAND DICE ROLL COMPLETE
+      setDiceValue(dice_roll_value)
+      setDiceState(DICE_STATE.ROLL_COMPLETE)
+    }
 
-    // ZUSTAND DICE ROLL COMPLETE
-    setDiceValue(dice_roll_value)
-    setDiceState(DICE_STATE.ROLL_COMPLETE)
+    // DICE SHOW ANIMATION COMPLETE
+    else if (useStateDice.getState().dice_state_enemy === DICE_STATE.FALLING) {
+      setDiceState(DICE_STATE.FALL_COMPLETE)
+    }
   }
 
+  useFrame(() => {
+    if (
+      useStateDice.getState().dice_state_enemy === DICE_STATE.HIDING
+      && ref_d20.body.current.translation().y >= 12
+    ) {
+      ref_d20.body.current.setLinvel({ x: 0, y: 0, z: 0 })
+      ref_d20.body.current.setAngvel({ x: 0, y: 0, z: 0 })
+      ref_d20.body.current.setGravityScale(0)
+      ref_d20.body.current.sleep()
+      ref_d20.mesh.current.visible = false
+      setDiceState(DICE_STATE.HIDE_COMPLETE)
+    }
+  })
+
   useEffect(() => {
-    // DICE SUBSCRIPTION (ZUSTAND)
-    const subscribeDice = useStateDice.subscribe(
+    // DICE ROLL TRIGGER SUBSCRIPTION (ZUSTAND)
+    const subscribeDiceRoll = useStateDice.subscribe(
       // SELECTOR
       state => state.dice_state_enemy,
 
       // CALLBACK
       dice_state_subscribed => {
         if (dice_state_subscribed === DICE_STATE.ROLLING) {
-          dice_state = DICE_STATE.ROLLING
+          setDiceState(DICE_STATE.ROLLING)
           rollD20()
+        }
+      }
+    )
+
+    // DICE HIDE/SHOW ANIMATION SUBSCRIPTION (ZUSTAND)
+    const subscribeDiceAnimation = useStateAnimation.subscribe(
+      // SELECTOR
+      state => state.dice_animation_state,
+
+      // CALLBACK
+      dice_animation_state => {
+        if (dice_animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          ref_d20.body.current.setTranslation(getRandomPosition())
+          ref_d20.body.current.setGravityScale(1)
+          ref_d20.body.current.wakeUp()
+          ref_d20.mesh.current.visible = true
+          setDiceState(DICE_STATE.FALLING)
+        }
+        else if (dice_animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
+          ref_d20.body.current.setGravityScale(-(0.2 + 0.5 * Math.random()))
+          ref_d20.body.current.wakeUp()
+          setDiceState(DICE_STATE.HIDING)
         }
       }
     )
 
     // CLEANUP
     return () => {
-      subscribeDice()
+      subscribeDiceRoll()
+      subscribeDiceAnimation()
     }
   }, [])
 
   return <RigidBody
     ref={ref_d20.body}
-    position={position ?? [randomFloat(-2, -0.5), randomFloat(4, 8), randomFloat(4.5, 6.5)]}
+    position={position ?? Object.values(getRandomPosition())}
     rotation={[Math.random(), 0, Math.random()]}
     colliders='hull'
     mass={1}
     restitution={0.4}
     friction={0.3}
+    gravityScale={0}
+    includeInvisible={true}
 
     onSleep={handleRollComplete}
-    onContactForce={payload => { handleDiceSound(payload.totalForceMagnitude) }}
+    onContactForce={payload => handleDiceSound(payload.totalForceMagnitude)}
   >
-    <group ref={ref_d20.mesh} >
+    <group
+      ref={ref_d20.mesh}
+      visible={visible}
+    >
       <mesh
         geometry={nodes.d20_obsidian.geometry}
         material={materials.obsidian}

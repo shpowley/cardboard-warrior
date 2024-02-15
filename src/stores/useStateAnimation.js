@@ -14,7 +14,7 @@ const ANIMATION_STATE = {
 
 const useStateAnimation = create(
   subscribeWithSelector(
-    (set, get) => ({
+    set => ({
       /** PROPERTIES */
       room_animation_state: ANIMATION_STATE.HIDDEN,
       player_animation_state: ANIMATION_STATE.HIDDEN,
@@ -133,7 +133,41 @@ const useStateAnimation = create(
         })
       },
 
-      setDiceAnimationState: dice_state => set({ dice_state })
+      setDiceAnimationState: new_state => {
+        set(state => {
+          if (state.dice_animation_state !== new_state) {
+            switch (state.dice_animation_state) {
+              case ANIMATION_STATE.HIDDEN:
+                if (new_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+                  return { dice_animation_state: new_state }
+                }
+
+                break
+
+              case ANIMATION_STATE.ANIMATING_TO_VISIBLE:
+                if (new_state === ANIMATION_STATE.VISIBLE) {
+                  return { dice_animation_state: new_state }
+                }
+
+                break
+
+              case ANIMATION_STATE.VISIBLE:
+                if (new_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
+                  return { dice_animation_state: new_state }
+                }
+
+                break
+
+              case ANIMATION_STATE.ANIMATING_TO_HIDE:
+                if (new_state === ANIMATION_STATE.HIDDEN) {
+                  return { dice_animation_state: new_state }
+                }
+            }
+          }
+
+          return {}
+        })
+      }
     })
   )
 )

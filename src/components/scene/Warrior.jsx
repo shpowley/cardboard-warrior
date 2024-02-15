@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useAnimations, useGLTF } from '@react-three/drei'
-import { CylinderCollider, RigidBody } from '@react-three/rapier'
+import { CapsuleCollider, RigidBody } from '@react-three/rapier'
 import { useControls } from 'leva'
 
 import { LEVA_SORT_ORDER } from '../../common/Constants'
@@ -176,12 +176,13 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
   return <>
     <RigidBody
       type='fixed'
+      friction={0}
       colliders={false}
       dispose={null}
     >
-      <CylinderCollider
-        args={[1.1, 0.9]}
-        position={[position[0], position[1] + 0.3, position[2]]}
+      <CapsuleCollider
+        args={[0.6, 0.9]}
+        position={[position[0], position[1], position[2] - 0.1]}
         rotation={rotation}
       />
     </RigidBody>

@@ -25,11 +25,9 @@ const useStateGame = create(
       phase: GAME_PHASE.GAME_INIT,
 
       /** METHODS */
-      setControls: controls => { set({ controls }) },
-
-      setLevel: data => { set({ level: data }) },
-
-      setLog: data => { set({ log: data }) },
+      setControls: controls => set({ controls }),
+      setLevel: data => set({ level: data }),
+      setLog: data => set({ log: data }),
 
       // STATE MACHINE
       setGamePhase: phase => {

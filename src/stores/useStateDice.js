@@ -4,8 +4,11 @@ import { subscribeWithSelector } from 'zustand/middleware'
 const DICE_STATE = {
   NONE: 0,
   FALLING: 1,
-  ROLLING: 2,
-  ROLL_COMPLETE: 3
+  FALL_COMPLETE: 2,
+  ROLLING: 3,
+  ROLL_COMPLETE: 4,
+  HIDING: 5,
+  HIDE_COMPLETE: 6
 }
 
 const useStateDice = create(
@@ -19,11 +22,11 @@ const useStateDice = create(
       dice_value_enemy: 1,
 
       /** METHODS */
-      setDiceStatePlayer: dice_state_player => { set({ dice_state_player }) },
-      setDiceValuePlayer: dice_value_player => { set({ dice_value_player }) },
+      setDiceStatePlayer: dice_state_player => set({ dice_state_player }),
+      setDiceValuePlayer: dice_value_player => set({ dice_value_player }),
 
-      setDiceStateEnemy: dice_state_enemy => { set({ dice_state_enemy }) },
-      setDiceValueEnemy: dice_value_enemy => { set({ dice_value_enemy }) }
+      setDiceStateEnemy: dice_state_enemy => set({ dice_state_enemy }),
+      setDiceValueEnemy: dice_value_enemy => set({ dice_value_enemy })
     })
   )
 )
