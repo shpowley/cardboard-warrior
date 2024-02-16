@@ -117,13 +117,7 @@ const Room = () => {
             delay: useStateAnimation.getState().wall_animation_delay
           })
 
-          animation_room.current.complete = () => {
-            setWallAnimationState(ANIMATION_STATE.VISIBLE)
-
-            if (useStateAnimation.getState().room_animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
-              setRoomAnimationState(ANIMATION_STATE.VISIBLE)
-            }
-          }
+          animation_room.current.complete = () => setWallAnimationState(ANIMATION_STATE.VISIBLE)
         }
         else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
           animation_room.current = ANIMATIONS.animateRoomHide({
@@ -131,13 +125,7 @@ const Room = () => {
             delay: useStateAnimation.getState().wall_animation_delay
           })
 
-          animation_room.current.complete = () => {
-            setWallAnimationState(ANIMATION_STATE.HIDDEN)
-
-            if (useStateAnimation.getState().room_animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-              setRoomAnimationState(ANIMATION_STATE.HIDDEN)
-            }
-          }
+          animation_room.current.complete = () => setWallAnimationState(ANIMATION_STATE.HIDDEN)
         }
       }
     )
