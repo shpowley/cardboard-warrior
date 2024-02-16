@@ -9,11 +9,12 @@ useGLTF.preload(FILE_DOOR)
  * - THIS ISN'T VERY TAXING ON PERFORMANCE, BUT EXPLORE THE USE OF INSTANCING FOR
  *   OTHER SCENARIOES (E.G. COIN DROP)
  */
-const Door = ({ position, scale }) => {
+const Door = ({ forward_ref, position, scale }) => {
   const { nodes, materials } = useGLTF(FILE_DOOR)
 
   return (
     <mesh
+      ref={forward_ref}
       position={position}
       scale={scale}
       geometry={nodes.door.geometry}

@@ -31,13 +31,14 @@ const Wall = ({ forward_ref, position, rotation, visible = false }) => {
       />
     </RigidBody>
     <group
-      ref={forward_ref}
+      ref={forward_ref.wall}
       position={[position[0], POSITIONS.WALLS.y.hidden, position[2]]}
       rotation={rotation}
       visible={visible}
       dispose={null}
     >
       <Door
+        forward_ref={forward_ref.door}
         position={[0, -ROOM_EXTENTS.height, 0.35]}
         scale={1.5}
       />

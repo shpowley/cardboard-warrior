@@ -2,13 +2,13 @@ import { Suspense, useEffect } from 'react'
 import { Physics } from '@react-three/rapier'
 import { button, useControls } from 'leva'
 
-import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import { LEVA_SORT_ORDER } from '../../common/Constants'
+import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
+import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 import Room from './room/Room'
 import Sign from './Sign'
 import Warrior from './Warrior'
 import Dice from './dice/Dice'
-import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 
 /**
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
@@ -20,6 +20,7 @@ const SceneContent = () => {
   const
     phase = useStateGame(state => state.phase),
     setRoomAnimationState = useStateAnimation(state => state.setRoomAnimationState),
+    setWallAnimationState = useStateAnimation(state => state.setWallAnimationState),
     setMonsterSignAnimationState = useStateAnimation(state => state.setMonsterSignAnimationState),
     setPlayerAnimationState = useStateAnimation(state => state.setPlayerAnimationState),
     setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState)
@@ -40,14 +41,63 @@ const SceneContent = () => {
     'construction animations',
 
     {
-      'room': button(() => {
-        const room_state = useStateAnimation.getState().room_animation_state
+      'dungeon room': button(() => {
+        const {
+          room_animation_state,
+          wall_animation_state,
+          player_animation_state,
+          monster_sign_animation_state,
+          dice_animation_state
+        } = useStateAnimation.getState()
 
-        if (room_state === ANIMATION_STATE.HIDDEN) {
+        if (room_animation_state === ANIMATION_STATE.HIDDEN) {
+          if (player_animation_state === ANIMATION_STATE.HIDDEN) {
+            setPlayerAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
+          }
+
+          if (wall_animation_state === ANIMATION_STATE.HIDDEN) {
+            setWallAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE, 1000)
+          }
+
+          if (monster_sign_animation_state === ANIMATION_STATE.HIDDEN) {
+            setMonsterSignAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE, 2500)
+          }
+
+          if (dice_animation_state === ANIMATION_STATE.HIDDEN) {
+            setDiceAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE, 3000)
+          }
+
           setRoomAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
         }
-        else if (room_state === ANIMATION_STATE.VISIBLE) {
+        else if (room_animation_state === ANIMATION_STATE.VISIBLE) {
+          if (dice_animation_state === ANIMATION_STATE.VISIBLE) {
+            setDiceAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
+          }
+
+          if (monster_sign_animation_state === ANIMATION_STATE.VISIBLE) {
+            setMonsterSignAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, 1000)
+          }
+
+          if (wall_animation_state === ANIMATION_STATE.VISIBLE) {
+            setWallAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, 2000)
+          }
+
+          if (player_animation_state === ANIMATION_STATE.VISIBLE) {
+            setPlayerAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, 3000)
+          }
+
           setRoomAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
+        }
+      }),
+
+      'walls only': button(() => {
+        const walls_state = useStateAnimation.getState().wall_animation_state
+
+        if (walls_state === ANIMATION_STATE.HIDDEN) {
+          setWallAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
+        }
+        else if (walls_state === ANIMATION_STATE.VISIBLE) {
+          setWallAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
         }
       }),
 

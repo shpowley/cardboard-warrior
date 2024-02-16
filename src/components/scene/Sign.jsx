@@ -136,13 +136,21 @@ const Sign = ({ castShadow = false, position, rotation, scale, visible = false }
       // CALLBACK
       animation_state => {
         if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
-          animation_sign.current = ANIMATIONS.animateSignShow({ target_sign: ref_sign })
+          animation_sign.current = ANIMATIONS.animateSignShow({
+            target_sign: ref_sign,
+            delay: useStateAnimation.getState().monster_sign_animation_delay
+          })
+
           animation_sign.current.complete = () => {
             setMonsterSignAnimationState(ANIMATION_STATE.VISIBLE)
           }
         }
         else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-          animation_sign.current = ANIMATIONS.animateSignHide({ target_sign: ref_sign })
+          animation_sign.current = ANIMATIONS.animateSignHide({
+            target_sign: ref_sign,
+            delay: useStateAnimation.getState().monster_sign_animation_delay
+          })
+
           animation_sign.current.complete = () => {
             setMonsterSignAnimationState(ANIMATION_STATE.HIDDEN)
           }

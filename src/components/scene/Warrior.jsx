@@ -10,7 +10,6 @@ import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimati
 import { POSITIONS } from '../../common/Positions'
 import ANIMATIONS from '../../common/Animation'
 
-
 /** BUILT-IN MESH ANIMATIONS
  *  - idle, idle_block, slash, walk.f, run.f
  */
@@ -152,16 +151,20 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
       // CALLBACK
       animation_state => {
         if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
-          animation_player.current = ANIMATIONS.animatePlayerShow({ target_player: ref_player })
-          animation_player.current.complete = () => {
-            setPlayerAnimationState(ANIMATION_STATE.VISIBLE)
-          }
+          animation_player.current = ANIMATIONS.animatePlayerShow({
+            target_player: ref_player,
+            delay: useStateAnimation.getState().player_animation_delay
+          })
+
+          animation_player.current.complete = () => setPlayerAnimationState(ANIMATION_STATE.VISIBLE)
         }
         else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-          animation_player.current = ANIMATIONS.animatePlayerHide({ target_player: ref_player })
-          animation_player.current.complete = () => {
-            setPlayerAnimationState(ANIMATION_STATE.HIDDEN)
-          }
+          animation_player.current = ANIMATIONS.animatePlayerHide({
+            target_player: ref_player,
+            delay: useStateAnimation.getState().player_animation_delay
+          })
+
+          animation_player.current.complete = () => setPlayerAnimationState(ANIMATION_STATE.HIDDEN)
         }
       }
     )

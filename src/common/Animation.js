@@ -100,40 +100,41 @@ const
   },
 
   /** ANIMATION - SHOW ROOM */
-  animateRoomShow = ({ target_walls }) => {
-    // NOTE HERE ONLY "anime" IS USED VS. "anime.timeline"
-    // - timeline ALLOWS FOR A SEQUENCE OF ANIMATIONS, EACH WITH IT'S OWN .complete CALLBACK
-    //   AND ALSO A .complete CALLBACK FOR THE ENTIRE TIMELINE
-    // - HERE, ONLY A SINGLE ANIMATION / .complete IS NEEDED
-    //   ...SEE Room.jsx >> useEffect > subscribeAnimation
-    const animation = anime({
-      targets: [
-        target_walls.north.current.position,
-        target_walls.south.current.position,
-        target_walls.east.current.position,
-        target_walls.west.current.position
-      ],
-
-      y: POSITIONS.WALLS.y.visible,
-      duration: 1000,
-      delay: anime.stagger([0, 400]),
-      easing: 'easeInOutSine'
-    })
-
-    return animation
-  },
-
-  /** ANIMATION - HIDE ROOM */
-  animateRoomHide = ({ target_walls }) => {
+  animateRoomShow = ({ target_walls, delay = 0 }) => {
     const timeline = anime.timeline()
 
     timeline.add(
       {
         targets: [
-          target_walls.north.current.position,
-          target_walls.south.current.position,
-          target_walls.east.current.position,
-          target_walls.west.current.position
+          target_walls.north.wall.current.position,
+          target_walls.south.wall.current.position,
+          target_walls.east.wall.current.position,
+          target_walls.west.wall.current.position
+        ],
+
+        y: POSITIONS.WALLS.y.visible,
+        duration: 1000,
+        delay: anime.stagger([0, 400]),
+        easing: 'easeInOutSine'
+      },
+
+      delay
+    )
+
+    return timeline
+  },
+
+  /** ANIMATION - HIDE ROOM */
+  animateRoomHide = ({ target_walls, delay = 0 }) => {
+    const timeline = anime.timeline()
+
+    timeline.add(
+      {
+        targets: [
+          target_walls.north.wall.current.position,
+          target_walls.south.wall.current.position,
+          target_walls.east.wall.current.position,
+          target_walls.west.wall.current.position
         ],
 
         y: POSITIONS.WALLS.y.hidden,
@@ -142,89 +143,96 @@ const
         easing: 'easeInOutSine',
 
         complete: () => {
-          target_walls.north.current.visible = false
-          target_walls.south.current.visible = false
-          target_walls.east.current.visible = false
-          target_walls.west.current.visible = false
+          target_walls.north.wall.current.visible = false
+          target_walls.south.wall.current.visible = false
+          target_walls.east.wall.current.visible = false
+          target_walls.west.wall.current.visible = false
         }
-      }
+      },
+
+      delay
     )
 
     return timeline
   },
 
   /** ANIMATION - SHOW PLAYER */
-  animatePlayerShow = ({ target_player }) => {
-    const animation = anime.timeline()
+  animatePlayerShow = ({ target_player, delay = 0 }) => {
+    const timeline = anime.timeline()
 
     target_player.current.visible = true
 
-    animation.add(
+    timeline.add(
       {
         targets: target_player.current.position,
         y: POSITIONS.PLAYER.y.visible,
         duration: 1000,
         easing: 'easeInOutSine'
-      }
+      },
+
+      delay
     )
 
-    return animation
+    return timeline
   },
 
   /** ANIMATION - HIDE PLAYER */
-  animatePlayerHide = ({ target_player }) => {
-    const animation = anime.timeline()
+  animatePlayerHide = ({ target_player, delay = 0 }) => {
+    const timeline = anime.timeline()
 
-    animation.add(
+    timeline.add(
       {
         targets: target_player.current.position,
         y: POSITIONS.PLAYER.y.hidden,
         duration: 1000,
         easing: 'easeInOutSine',
         complete: () => target_player.current.visible = false
-      }
+      },
+
+      delay
     )
 
-    return animation
+    return timeline
   },
 
   /** ANIMATION - SHOW MONSTER SIGN */
-  animateSignShow = ({ target_sign }) => {
-    const animation = anime.timeline()
+  animateSignShow = ({ target_sign, delay = 0 }) => {
+    const timeline = anime.timeline()
 
     target_sign.current.visible = true
 
-    animation.add(
+    timeline.add(
       {
         targets: target_sign.current.position,
         y: POSITIONS.MONSTER_SIGN.y.visible,
         duration: 1000,
         easing: 'spring(0.8, 60, 9, 3)'
-      }
+      },
+
+      delay
     )
 
-    return animation
+    return timeline
   },
 
   /** ANIMATION - HIDE MONSTER SIGN */
-  animateSignHide = ({ target_sign }) => {
-    const animation = anime.timeline()
+  animateSignHide = ({ target_sign, delay = 0 }) => {
+    const timeline = anime.timeline()
 
-    animation.add(
+    timeline.add(
       {
         targets: target_sign.current.position,
         y: POSITIONS.MONSTER_SIGN.y.hidden,
         duration: 500,
         easing: 'easeInOutSine',
         complete: () => target_sign.current.visible = false
-      }
+      },
+
+      delay
     )
 
-    return animation
+    return timeline
   }
-
-/** ANIMATION - SHOW DICE */
-/** ANIMATION - HIDE DICE */
 
 const ANIMATIONS = {
   animateHUDShow,

@@ -165,16 +165,20 @@ const D20Enemy = ({ castShadow = false, position, visible = false }) => {
       // CALLBACK
       dice_animation_state => {
         if (dice_animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
-          ref_d20.body.current.setTranslation(getRandomPosition())
-          ref_d20.body.current.setGravityScale(1)
-          ref_d20.body.current.wakeUp()
-          ref_d20.mesh.current.visible = true
-          setDiceState(DICE_STATE.FALLING)
+          setTimeout(() => {
+            ref_d20.body.current.setTranslation(getRandomPosition())
+            ref_d20.body.current.setGravityScale(1)
+            ref_d20.body.current.wakeUp()
+            ref_d20.mesh.current.visible = true
+            setDiceState(DICE_STATE.FALLING)
+          }, useStateAnimation.getState().dice_animation_delay)
         }
         else if (dice_animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-          ref_d20.body.current.setGravityScale(-(0.2 + 0.5 * Math.random()))
-          ref_d20.body.current.wakeUp()
-          setDiceState(DICE_STATE.HIDING)
+          setTimeout(() => {
+            ref_d20.body.current.setGravityScale(-(0.2 + 0.5 * Math.random()))
+            ref_d20.body.current.wakeUp()
+            setDiceState(DICE_STATE.HIDING)
+          }, useStateAnimation.getState().dice_animation_delay)
         }
       }
     )
