@@ -80,6 +80,16 @@ const useStateGame = create(
                 if (new_phase === GAME_PHASE.ROOM_SHOWING) {
                   return { phase: new_phase }
                 }
+
+                break
+
+              // ROOM_SHOWING -> PLAYER_COMBAT or PLAYER_MOVEMENT
+              case GAME_PHASE.ROOM_SHOWING:
+                if (new_phase === GAME_PHASE.PLAYER_COMBAT || new_phase === GAME_PHASE.PLAYER_MOVEMENT) {
+                  return { phase: new_phase }
+                }
+
+                break
             }
           }
 

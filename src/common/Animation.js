@@ -100,7 +100,7 @@ const
   },
 
   /** ANIMATION - SHOW ROOM */
-  animateRoomShow = ({ target_walls, delay = 0 }) => {
+  animateRoomShow = ({ target_walls, target_arrows, delay = 0 }) => {
     const timeline = anime.timeline()
 
     timeline.add(
@@ -120,6 +120,19 @@ const
 
       delay
     )
+
+    if (target_arrows) {
+      timeline.add(
+        {
+          targets: target_arrows,
+          opacity: 1,
+          duration: 1000,
+          easing: 'easeInSine'
+        },
+
+        1000
+      )
+    }
 
     return timeline
   },

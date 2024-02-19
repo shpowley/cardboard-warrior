@@ -2,16 +2,15 @@ import { useEffect, useRef, lazy } from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { Environment, OrbitControls, useHelper } from '@react-three/drei'
-import { useControls, folder, button } from 'leva'
+import { useControls, folder } from 'leva'
 
 import { GAME_PHASE, useStateGame } from './stores/useStateGame'
-import { parameterEnabled } from './common/Utils'
-import { CAMERA_DEFAULTS, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
-import ANIMATIONS from './common/Animation'
-import ScreenOverlay from './components/overlay/ScreenOverlay'
-import { generateLevel } from './common/Level'
 import { useStatePlayer } from './stores/useStatePlayer'
+import ScreenOverlay from './components/overlay/ScreenOverlay'
 import SceneContent from './components/scene/SceneContent'
+import { CAMERA_DEFAULTS, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
+import { parameterEnabled } from './common/Utils'
+import { generateLevel } from './common/Level'
 
 // LEVA DEBUG
 const debug_enabled = parameterEnabled('DEBUG') || parameterEnabled('debug')
@@ -21,25 +20,6 @@ let Perf = null
 
 if (parameterEnabled('PERF') || parameterEnabled('perf')) {
   Perf = lazy(() => import('r3f-perf').then(module => ({ default: module.Perf })))
-}
-
-// COMMON MATERIALS
-const material_box = new THREE.MeshStandardMaterial({ color: '#d8d0d1' })
-
-// COMMON GEOMETRIES
-const geometry_box = new THREE.BoxGeometry(1, 1, 1)
-
-// ANIMATION TIMELINES
-const TIMELINES = {
-  up: {
-    y: 4,
-    duration: 1500
-  },
-
-  down: {
-    y: 0.7,
-    duration: 300
-  }
 }
 
 /**
@@ -59,16 +39,7 @@ const Experience = () => {
   const
     ref_orbit_controls = useRef(),
     ref_directional_light = useRef(),
-    ref_shadow_camera = useRef(),
-
-    ref_cubes = {
-      left: useRef(),
-      center: useRef(),
-      right: useRef()
-    }
-
-  // ANIMATIONS (anime.js)
-  const animation = useRef() // MOSTLY FOR LEVA TEST ACTIONS
+    ref_shadow_camera = useRef()
 
   // ZUSTAND GAME STATE
   const

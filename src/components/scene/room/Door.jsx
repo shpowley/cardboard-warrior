@@ -10,6 +10,8 @@ useGLTF.preload(FILE_DOOR)
  *   OTHER SCENARIOES (E.G. COIN DROP)
  */
 const Door = ({ forward_ref, position, scale }) => {
+  console.log('RENDER: Door')
+
   const { nodes, materials } = useGLTF(FILE_DOOR)
 
   return (

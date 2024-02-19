@@ -19,9 +19,17 @@ const ROOM_COLLIDER = {
   top_position_y: ROOM_EXTENTS.height * 2 + THICKNESS_EXTENT,
 }
 
+const DIRECTION = {
+  NORTH: 0,
+  SOUTH: 1,
+  EAST: 2,
+  WEST: 3
+}
+
 export {
   THICKNESS_EXTENT,
   POSITIONING_ADJUST,
   ROOM_COLLIDER,
-  ROOM_EXTENTS
+  ROOM_EXTENTS,
+  DIRECTION
 }

@@ -2,15 +2,14 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
+import { useStateGame } from '../../../stores/useStateGame'
+import { useStatePlayer } from '../../../stores/useStatePlayer'
+import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
+import { DIRECTION, POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
+import ANIMATIONS from '../../../common/Animation'
 import Floor from './Floor'
 import Wall from './Wall'
 import Ceiling from './Ceiling'
-import Arrows from './Arrows'
-import { useStateGame } from '../../../stores/useStateGame'
-import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
-import { POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
-import ANIMATIONS from '../../../common/Animation'
-import { useStatePlayer } from '../../../stores/useStatePlayer'
 
 // CALCULATE THE CAMERA'S ANGLE IN DEGREES
 const calculateRange = (prime_angle, camera_yaw) => {
@@ -30,22 +29,26 @@ const Room = () => {
   const ref_walls = {
     north: {
       wall: useRef(),
-      door: useRef()
+      door: useRef(),
+      arrow: useRef()
     },
 
     south: {
       wall: useRef(),
-      door: useRef()
+      door: useRef(),
+      arrow: useRef()
     },
 
     east: {
       wall: useRef(),
-      door: useRef()
+      door: useRef(),
+      arrow: useRef()
     },
 
     west: {
       wall: useRef(),
-      door: useRef()
+      door: useRef(),
+      arrow: useRef()
     }
   }
 
@@ -56,9 +59,7 @@ const Room = () => {
   const controls = useStateGame(state => state.controls)
 
   // ZUSTAND ANIMATION STATE
-  const
-    setWallAnimationState = useStateAnimation(state => state.setWallAnimationState),
-    setRoomAnimationState = useStateAnimation(state => state.setRoomAnimationState)
+  const setWallAnimationState = useStateAnimation(state => state.setWallAnimationState)
 
   /** WALL VISIBLE LOGIC
    * - WALLS ARE AUTOMATICALLY HIDDEN DUE TO BACKFACE CULLING, BUT DOORS ARE NOT
@@ -102,18 +103,32 @@ const Room = () => {
       animation_state => {
         if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
           const active_room = useStatePlayer.getState().room
+          let target_arrows
 
           if (active_room) {
             ref_walls.north.door.current.visible = active_room.doors.N
             ref_walls.south.door.current.visible = active_room.doors.S
             ref_walls.east.door.current.visible = active_room.doors.E
             ref_walls.west.door.current.visible = active_room.doors.W
+
+            ref_walls.north.arrow.current.visible = active_room.doors.N
+            ref_walls.south.arrow.current.visible = active_room.doors.S
+            ref_walls.east.arrow.current.visible = active_room.doors.E
+            ref_walls.west.arrow.current.visible = active_room.doors.W
+
+            // ADD ONLY THE ARROWS WITH CORRESPONDING DOORS
+            target_arrows = []
+            if (active_room.doors.N) target_arrows.push(ref_walls.north.arrow.current.material)
+            if (active_room.doors.S) target_arrows.push(ref_walls.south.arrow.current.material)
+            if (active_room.doors.E) target_arrows.push(ref_walls.east.arrow.current.material)
+            if (active_room.doors.W) target_arrows.push(ref_walls.west.arrow.current.material)
           }
 
           checkWallsVisible()
 
           animation_room.current = ANIMATIONS.animateRoomShow({
             target_walls: ref_walls,
+            target_arrows,
             delay: useStateAnimation.getState().wall_animation_delay
           })
 
@@ -139,27 +154,30 @@ const Room = () => {
   return <>
     <Ceiling />
     <Floor />
-    <Arrows />
 
     <Wall
       forward_ref={ref_walls.north}
+      direction={DIRECTION.NORTH}
       position={[0, ROOM_COLLIDER.wall_position_y, -POSITIONING_ADJUST]}
     />
 
     <Wall
       forward_ref={ref_walls.south}
+      direction={DIRECTION.SOUTH}
       position={[0, ROOM_COLLIDER.wall_position_y, POSITIONING_ADJUST]}
       rotation={[0, Math.PI, 0]}
     />
 
     <Wall
       forward_ref={ref_walls.east}
+      direction={DIRECTION.EAST}
       position={[POSITIONING_ADJUST, ROOM_COLLIDER.wall_position_y, 0]}
       rotation={[0, -Math.PI * 0.5, 0]}
     />
 
     <Wall
       forward_ref={ref_walls.west}
+      direction={DIRECTION.WEST}
       position={[-POSITIONING_ADJUST, ROOM_COLLIDER.wall_position_y, 0]}
       rotation={[0, Math.PI * 0.5, 0]}
     />

@@ -4,12 +4,12 @@ import { button, useControls } from 'leva'
 
 import { LEVA_SORT_ORDER } from '../../common/Constants'
 import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
+import { useStatePlayer } from '../../stores/useStatePlayer'
 import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 import Room from './room/Room'
 import Sign from './Sign'
 import Warrior from './Warrior'
 import Dice from './dice/Dice'
-import { useStatePlayer } from '../../stores/useStatePlayer'
 
 /**
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
@@ -20,6 +20,7 @@ const SceneContent = () => {
   // ZUSTAND STATES
   const
     phase = useStateGame(state => state.phase),
+    setGamePhase = useStateGame(state => state.setGamePhase),
     setRoomAnimationState = useStateAnimation(state => state.setRoomAnimationState),
     setWallAnimationState = useStateAnimation(state => state.setWallAnimationState),
     setMonsterSignAnimationState = useStateAnimation(state => state.setMonsterSignAnimationState),
@@ -187,27 +188,40 @@ const SceneContent = () => {
 
   useEffect(() => {
 
-    // GAME PHASE SUBSCRIPTION (ZUSTAND)
+    // --- GAME PHASE SUBSCRIPTION (ZUSTAND) ---
     const subscribeGamePhase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 
       // CALLBACK
       phase_subscribed => {
+
+        // TRIGGERS ROOM CONSTRUCTION ANIMATIONS
         if (phase_subscribed === GAME_PHASE.ROOM_SHOWING) {
           console.log('useEffect > SceneContent: GAME_PHASE.ROOM_SHOWING')
 
           buildRoom()
         }
+
+        else if (phase_subscribed ===  GAME_PHASE.PLAYER_MOVEMENT) {
+          console.log('useEffect > SceneContent: GAME_PHASE.PLAYER_MOVEMENT')
+        }
+
+        else if (phase_subscribed ===  GAME_PHASE.PLAYER_COMBAT) {
+          console.log('useEffect > SceneContent: GAME_PHASE.PLAYER_COMBAT')
+        }
       }
     )
 
-    // SCENE ANIMATIONS SUBSCRIPTION (ZUSTAND)
+    // --- SCENE ANIMATIONS SUBSCRIPTION (ZUSTAND) ---
+    // - TRIGGERED BY 'buildRoom()' FUNCTION >> ANIMATIONS >> ULTIMATELY HERE
+
+    // SCENARIO 1: NO MONSTER IN ROOM
     const subscribeWallAnimationState = useStateAnimation.subscribe(
       // SELECTOR
       state => state.wall_animation_state,
 
-      // CALLBACK - NO MONSTER, THEN THIS IS THE FINAL ANIMATION
+      // CALLBACK - NO MONSTER, THEN SHOWING THE WALLS IS THE FINAL ANIMATION
       wall_animation_state => {
         const active_room = useStatePlayer.getState().room
 
@@ -222,11 +236,12 @@ const SceneContent = () => {
       }
     )
 
+    // SCENARIO 2: MONSTER IN ROOM
     const subscribeDiceAnimationState = useStateAnimation.subscribe(
       // SELECTOR
       state => state.dice_animation_state,
 
-      // CALLBACK - IF THERE IS A MONSTER IN THIS ROOM, THEN THIS IS THE FINAL ANIMATION
+      // CALLBACK - IF THERE IS A MONSTER IN THIS ROOM, THEN SHOWING THE DICE IS THE FINAL ANIMATION
       dice_animation_state => {
         const active_room = useStatePlayer.getState().room
 
@@ -241,6 +256,7 @@ const SceneContent = () => {
       }
     )
 
+    // "room_animation_state" IS ANIMATION STATE FOR THE ENTIRE ROOM (BASICALLY ALL THE REQUIRED ANIMATIONS ARE COMPLETE)
     const subscribeRoomAnimationState = useStateAnimation.subscribe(
       // SELECTOR
       state => state.room_animation_state,
@@ -248,12 +264,10 @@ const SceneContent = () => {
       // CALLBACK
       room_animation_state => {
         if (room_animation_state === ANIMATION_STATE.VISIBLE) {
+          const active_room = useStatePlayer.getState().room
 
-
-          // STOPPED HERE -- FINAL ROOM CONSTRUCT ANIMATION COMPLETE >> GAME PHASE BASED ON MONSTER PRESENCE
-
-
-          console.log('useEffect > SceneContent: room_animation_state', room_animation_state)
+          // GAME PHASE BASED ON WHETHER A MONSTER IS PRESENT
+          setGamePhase(active_room.monster ? GAME_PHASE.PLAYER_COMBAT : GAME_PHASE.PLAYER_MOVEMENT)
         }
       }
     )

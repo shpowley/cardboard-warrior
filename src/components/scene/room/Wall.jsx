@@ -2,9 +2,10 @@ import { memo } from 'react'
 import * as THREE from 'three'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
-import Door from './Door'
 import { ROOM_COLLIDER, ROOM_EXTENTS, THICKNESS_EXTENT } from './Constants'
 import { POSITIONS } from '../../../common/Positions'
+import Door from './Door'
+import Arrow from './Arrow'
 
 const geometry_wall = new THREE.PlaneGeometry(
   ROOM_EXTENTS.width * 2,
@@ -13,7 +14,7 @@ const geometry_wall = new THREE.PlaneGeometry(
 
 const material_wall = new THREE.MeshStandardMaterial({ color: '#dbd7d2' })
 
-const Wall = ({ forward_ref, position, rotation, visible = false }) => {
+const Wall = ({ forward_ref, position, rotation, visible = false, direction }) => {
   console.log('RENDER: Wall')
 
   return <>
@@ -49,6 +50,10 @@ const Wall = ({ forward_ref, position, rotation, visible = false }) => {
         material={material_wall}
       />
     </group>
+    <Arrow
+      forward_ref={forward_ref.arrow}
+      direction={direction}
+    />
   </>
 }
 
