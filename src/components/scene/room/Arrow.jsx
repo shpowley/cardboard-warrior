@@ -1,34 +1,38 @@
 import { memo } from 'react'
 import { Image } from '@react-three/drei'
 
+import { useStateGame } from '../../../stores/useStateGame'
 import HUDImages from '../../../common/HUDImages'
-import { mouse_pointer } from '../../../common/Utils'
-import { DIRECTION } from './Constants'
+import { COMMAND, DIRECTION } from '../../../common/Constants'
 
 const DIRECTION_DATA = {
   NORTH: {
     url: HUDImages.DIRECTION_NORTH.path,
     scale: HUDImages.DIRECTION_NORTH.scale,
     position: [0, 0.2, -6],
-    rotation: [-Math.PI * 0.5, 0, 0]
+    rotation: [-Math.PI * 0.5, 0, 0],
+    command: COMMAND.NORTH
   },
   SOUTH: {
     url: HUDImages.DIRECTION_SOUTH.path,
     scale: HUDImages.DIRECTION_SOUTH.scale,
     position: [0, 0.2, 6],
-    rotation: [-Math.PI * 0.5, 0, Math.PI]
+    rotation: [-Math.PI * 0.5, 0, Math.PI],
+    command: COMMAND.SOUTH
   },
   EAST: {
     url: HUDImages.DIRECTION_EAST.path,
     scale: HUDImages.DIRECTION_EAST.scale,
     position: [6, 0.2, 0],
-    rotation: [-Math.PI * 0.5, 0, -Math.PI * 0.5]
+    rotation: [-Math.PI * 0.5, 0, -Math.PI * 0.5],
+    command: COMMAND.EAST
   },
   WEST: {
     url: HUDImages.DIRECTION_WEST.path,
     scale: HUDImages.DIRECTION_WEST.scale,
     position: [-6, 0.2, 0],
-    rotation: [-Math.PI * 0.5, 0, Math.PI * 0.5]
+    rotation: [-Math.PI * 0.5, 0, Math.PI * 0.5],
+    command: COMMAND.WEST
   }
 }
 
@@ -51,6 +55,8 @@ const getDirectionData = (direction) => {
 const Arrow = ({ forward_ref, direction = DIRECTION.NORTH, visible = false }) => {
   console.log('RENDER: Arrow')
 
+  const setCommand = useStateGame(state => state.setCommand)
+
   const data = getDirectionData(direction)
 
   return <Image
@@ -65,8 +71,8 @@ const Arrow = ({ forward_ref, direction = DIRECTION.NORTH, visible = false }) =>
     opacity={0}
     dispose={null}
 
-    onPointerOver={mouse_pointer.over}
-    onPointerOut={mouse_pointer.out}
+    // onPointerOver/onPointerOut HANDLED IN ROOM.JSX useEffect IMPERATIVE CODE
+    onClick={() => setCommand(data.command)}
   />
 }
 

@@ -5,8 +5,10 @@ import { useThree } from '@react-three/fiber'
 import { useStateGame } from '../../../stores/useStateGame'
 import { useStatePlayer } from '../../../stores/useStatePlayer'
 import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
-import { DIRECTION, POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
+import { POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
+import { DIRECTION } from '../../../common/Constants'
 import ANIMATIONS from '../../../common/Animation'
+import { mouse_pointer } from '../../../common/Utils'
 import Floor from './Floor'
 import Wall from './Wall'
 import Ceiling from './Ceiling'
@@ -106,22 +108,67 @@ const Room = () => {
           let target_arrows
 
           if (active_room) {
-            ref_walls.north.door.current.visible = active_room.doors.N
-            ref_walls.south.door.current.visible = active_room.doors.S
-            ref_walls.east.door.current.visible = active_room.doors.E
-            ref_walls.west.door.current.visible = active_room.doors.W
-
-            ref_walls.north.arrow.current.visible = active_room.doors.N
-            ref_walls.south.arrow.current.visible = active_room.doors.S
-            ref_walls.east.arrow.current.visible = active_room.doors.E
-            ref_walls.west.arrow.current.visible = active_room.doors.W
-
-            // ADD ONLY THE ARROWS WITH CORRESPONDING DOORS
             target_arrows = []
-            if (active_room.doors.N) target_arrows.push(ref_walls.north.arrow.current.material)
-            if (active_room.doors.S) target_arrows.push(ref_walls.south.arrow.current.material)
-            if (active_room.doors.E) target_arrows.push(ref_walls.east.arrow.current.material)
-            if (active_room.doors.W) target_arrows.push(ref_walls.west.arrow.current.material)
+
+            // NORTH WALL
+            if (active_room.doors.N) {
+              ref_walls.north.door.current.visible = true
+              ref_walls.north.arrow.current.visible = true
+              ref_walls.north.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
+              ref_walls.north.arrow.current.__r3f.handlers.onPointerOut = mouse_pointer.out
+              target_arrows.push(ref_walls.north.arrow.current.material)
+            }
+            else {
+              ref_walls.north.door.current.visible = false
+              ref_walls.north.arrow.current.visible = false
+              delete ref_walls.north.arrow.current.__r3f.handlers.onPointerOver
+              delete ref_walls.north.arrow.current.__r3f.handlers.onPointerOut
+            }
+
+            // SOUTH WALL
+            if (active_room.doors.S) {
+              ref_walls.south.door.current.visible = true
+              ref_walls.south.arrow.current.visible = true
+              ref_walls.south.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
+              ref_walls.south.arrow.current.__r3f.handlers.onPointerOut = mouse_pointer.out
+              target_arrows.push(ref_walls.south.arrow.current.material)
+            }
+            else {
+              ref_walls.south.door.current.visible = false
+              ref_walls.south.arrow.current.visible = false
+              delete ref_walls.south.arrow.current.__r3f.handlers.onPointerOver
+              delete ref_walls.south.arrow.current.__r3f.handlers.onPointerOut
+            }
+
+            // EAST WALL
+            if (active_room.doors.E) {
+              ref_walls.east.door.current.visible = true
+              ref_walls.east.arrow.current.visible = true
+              ref_walls.east.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
+              ref_walls.east.arrow.current.__r3f.handlers.onPointerOut = mouse_pointer.out
+              target_arrows.push(ref_walls.east.arrow.current.material)
+            }
+            else {
+              ref_walls.east.door.current.visible = false
+              ref_walls.east.arrow.current.visible = false
+              delete ref_walls.east.arrow.current.__r3f.handlers.onPointerOver
+              delete ref_walls.east.arrow.current.__r3f.handlers.onPointerOut
+            }
+
+            // WEST WALL
+            if (active_room.doors.W) {
+              ref_walls.west.door.current.visible = true
+              ref_walls.west.arrow.current.visible = true
+              ref_walls.west.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
+              ref_walls.west.arrow.current.__r3f.handlers.onPointerOut = mouse_pointer.out
+              target_arrows.push(ref_walls.west.arrow.current.material)
+            }
+            else {
+              ref_walls.west.door.current.visible = false
+              ref_walls.west.arrow.current.visible = false
+              delete ref_walls.west.arrow.current.__r3f.handlers.onPointerOver
+              delete ref_walls.west.arrow.current.__r3f.handlers.onPointerOut
+            }
           }
 
           checkWallsVisible()

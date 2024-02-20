@@ -41,22 +41,22 @@ const HUDImages = {
     scale: SCALE_DIRECTION
   },
 
-  DISABLED_BUTTON_EAST: {
+  DISABLED_KEY_EAST: {
     path: HUD_IMAGE_PATH + 'disabled-east.webp',
     scale: SCALE_DEFAULT
   },
 
-  DISABLED_BUTTON_NORTH: {
+  DISABLED_KEY_NORTH: {
     path: HUD_IMAGE_PATH + 'disabled-north.webp',
     scale: SCALE_DEFAULT
   },
 
-  DISABLED_BUTTON_SOUTH: {
+  DISABLED_KEY_SOUTH: {
     path: HUD_IMAGE_PATH + 'disabled-south.webp',
     scale: SCALE_DEFAULT
   },
 
-  DISABLED_BUTTON_WEST: {
+  DISABLED_KEY_WEST: {
     path: HUD_IMAGE_PATH + 'disabled-west.webp',
     scale: SCALE_DEFAULT
   },

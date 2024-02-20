@@ -68,6 +68,22 @@ const ITEM_KEYS = {
   KEY: 2
 }
 
+const DIRECTION = {
+  NORTH: 0,
+  SOUTH: 1,
+  EAST: 2,
+  WEST: 3
+}
+
+const COMMAND = {
+  NORTH: 'NORTH',
+  SOUTH: 'SOUTH',
+  EAST: 'EAST',
+  WEST: 'WEST',
+  ROLL_DICE: 'ROLL_DICE',
+  POTION: 'POTION'
+}
+
 export {
   TONE_MAPPING_OPTIONS,
   CAMERA_DEFAULTS,
@@ -75,5 +91,7 @@ export {
   LEVA_SORT_ORDER,
   FILES,
   LINKS,
-  ITEM_KEYS
+  ITEM_KEYS,
+  DIRECTION,
+  COMMAND
 }

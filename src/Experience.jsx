@@ -1,14 +1,14 @@
 import { useEffect, useRef, lazy } from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
-import { Environment, OrbitControls, useHelper } from '@react-three/drei'
+import { Environment, OrbitControls, useHelper, useKeyboardControls } from '@react-three/drei'
 import { useControls, folder } from 'leva'
 
 import { GAME_PHASE, useStateGame } from './stores/useStateGame'
 import { useStatePlayer } from './stores/useStatePlayer'
 import ScreenOverlay from './components/overlay/ScreenOverlay'
 import SceneContent from './components/scene/SceneContent'
-import { CAMERA_DEFAULTS, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
+import { CAMERA_DEFAULTS, COMMAND, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
 import { parameterEnabled } from './common/Utils'
 import { generateLevel } from './common/Level'
 
@@ -45,10 +45,14 @@ const Experience = () => {
   const
     setFloorIndex = useStatePlayer(state => state.setFloorIndex),
     setRoom = useStatePlayer(state => state.setRoom),
-    setGamePhase = useStateGame(state => state.setGamePhase),
+    setControls = useStateGame(state => state.setControls),
     setLevel = useStateGame(state => state.setLevel),
     setLog = useStateGame(state => state.setLog),
-    setControls = useStateGame(state => state.setControls)
+    setCommand = useStateGame(state => state.setCommand),
+    setGamePhase = useStateGame(state => state.setGamePhase)
+
+  // KEYBOARD CONTROLS
+  const [keyboard_subscribe, keyboard_get] = useKeyboardControls()
 
   // LEVA CAMERA & ORBIT CONTROLS
   const camera = useThree((state) => state.camera)
@@ -382,6 +386,37 @@ const Experience = () => {
     '#ff0'
   )
 
+  // COMMANDS PROCESSING
+  const processCommand = command => {
+    switch (command) {
+      case COMMAND.NORTH:
+        console.log('MOVE NORTH')
+        break
+
+      case COMMAND.SOUTH:
+        console.log('MOVE SOUTH')
+        break
+
+      case COMMAND.EAST:
+        console.log('MOVE EAST')
+        break
+
+      case COMMAND.WEST:
+        console.log('MOVE WEST')
+        break
+
+      case COMMAND.ROLL_DICE:
+        console.log('ROLL DICE')
+        break
+
+      case COMMAND.POTION:
+        console.log('USE POTION')
+        break
+
+      default:
+    }
+  }
+
   useEffect(() => {
     // SET ORBIT CONTROLS REFERENCE TO BE ACCESSIBLE GLOBALY
     setControls(ref_orbit_controls.current)
@@ -417,9 +452,51 @@ const Experience = () => {
       }
     )
 
+    // GAME COMMANDS SUBSCRIPTION (ZUSTAND)
+    const subscribeGameCommand = useStateGame.subscribe(
+      // SELECTOR
+      state => state.command,
+
+      // CALLBACK
+      command_subscribed => processCommand(command_subscribed)
+    )
+
+    // KEYBOARD SUBSCRIPTION
+    // - ROUTE COMMANDS TO ZUSTAND, THEN 'subscribeGameCommand' ABOVE TO PROCESS
+    const subscribeKeyboard = keyboard_subscribe(
+      key => {
+        const
+          phase = useStateGame.getState().phase,
+          previous_command = useStateGame.getState().command
+
+        if (phase === GAME_PHASE.PLAYER_MOVEMENT || phase === GAME_PHASE.PLAYER_COMBAT) {
+          if (key.NORTH && previous_command !== COMMAND.NORTH) {
+            setCommand(COMMAND.NORTH)
+          }
+          else if (key.SOUTH && previous_command !== COMMAND.SOUTH) {
+            setCommand(COMMAND.SOUTH)
+          }
+          else if (key.EAST && previous_command !== COMMAND.EAST) {
+            setCommand(COMMAND.EAST)
+          }
+          else if (key.WEST && previous_command !== COMMAND.WEST) {
+            setCommand(COMMAND.WEST)
+          }
+          else if (key.ROLL_DICE && previous_command !== COMMAND.ROLL_DICE) {
+            setCommand(COMMAND.ROLL_DICE)
+          }
+          else if (key.POTION && previous_command !== COMMAND.POTION) {
+            setCommand(COMMAND.POTION)
+          }
+        }
+      }
+    )
+
     // CLEANUP
     return () => {
       subscribeGamePhase()
+      subscribeGameCommand()
+      subscribeKeyboard()
     }
   }, [])
 

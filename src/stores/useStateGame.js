@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
+import { useStatePlayer } from './useStatePlayer'
+import { COMMAND } from '../common/Constants'
 
 const GAME_PHASE = {
   GAME_INIT: 0,
@@ -22,12 +24,14 @@ const useStateGame = create(
       controls: null, // ORBIT CONTROLS REF TO GRANDCHILD COMPONENT
       level: null,
       log: null,
+      command: null,
       phase: GAME_PHASE.GAME_INIT,
 
       /** METHODS */
       setControls: controls => set({ controls }),
       setLevel: data => set({ level: data }),
       setLog: data => set({ log: data }),
+      setCommand: command => set({ command }),
 
       // STATE MACHINE
       setGamePhase: new_phase => {

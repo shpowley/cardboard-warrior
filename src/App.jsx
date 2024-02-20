@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import { Canvas } from '@react-three/fiber'
+import { KeyboardControls } from '@react-three/drei'
 import { Leva, useControls } from 'leva'
 
-import Experience from './Experience'
+import { CAMERA_DEFAULTS, COMMAND, LEVA_SORT_ORDER, TONE_MAPPING_OPTIONS } from './common/Constants'
 import { parameterEnabled } from './common/Utils'
-import { CAMERA_DEFAULTS, LEVA_SORT_ORDER, TONE_MAPPING_OPTIONS } from './common/Constants'
+import Experience from './Experience'
 
 // LEVA DEBUG
 const debug_enabled = parameterEnabled('DEBUG') || parameterEnabled('debug')
@@ -65,7 +66,18 @@ const App = () => {
         position: CAMERA_DEFAULTS.position
       }}
     >
-      <Experience />
+      <KeyboardControls
+        map={[
+          { name: COMMAND.NORTH, keys: ['KeyW', 'ArrowUp'] },
+          { name: COMMAND.SOUTH, keys: ['KeyS', 'ArrowDown'] },
+          { name: COMMAND.EAST, keys: ['KeyD', 'ArrowRight'] },
+          { name: COMMAND.WEST, keys: ['KeyA', 'ArrowLeft'] },
+          { name: COMMAND.ROLL_DICE, keys: ['Space'] },
+          { name: COMMAND.POTION, keys: ['1'] }
+        ]}
+      >
+        <Experience />
+      </KeyboardControls>
     </Canvas>
   </>
 }

@@ -9,9 +9,9 @@ const POSITIONS = {
   },
 
   KEYS: {
-    x: -0.06,
+    x: -0.04,
     y: {
-      visible: -0.34,
+      visible: -0.385,
       hidden: -0.5
     }
   },
