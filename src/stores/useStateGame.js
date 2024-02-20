@@ -1,7 +1,5 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
-import { useStatePlayer } from './useStatePlayer'
-import { COMMAND } from '../common/Constants'
 
 const GAME_PHASE = {
   GAME_INIT: 0,
