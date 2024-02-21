@@ -100,7 +100,7 @@ const
   },
 
   /** ANIMATION - SHOW ROOM */
-  animateRoomShow = ({ target_walls, target_arrows, delay = 0 }) => {
+  animateWallsShow = ({ target_walls, target_arrows, delay = 0 }) => {
     const timeline = anime.timeline()
 
     timeline.add(
@@ -138,8 +138,19 @@ const
   },
 
   /** ANIMATION - HIDE ROOM */
-  animateRoomHide = ({ target_walls, delay = 0 }) => {
+  animateWallsHide = ({ target_walls, target_arrows, delay = 0 }) => {
     const timeline = anime.timeline()
+
+    if (target_arrows) {
+      timeline.add(
+        {
+          targets: target_arrows,
+          opacity: 0,
+          duration: 1000,
+          easing: 'easeOutSine'
+        }
+      )
+    }
 
     timeline.add(
       {
@@ -251,8 +262,8 @@ const ANIMATIONS = {
   animateHUDShow,
   animatePlayerHide,
   animatePlayerShow,
-  animateRoomHide,
-  animateRoomShow,
+  animateWallsHide,
+  animateWallsShow,
   animateSignHide,
   animateSignShow,
   animateTitleHide,

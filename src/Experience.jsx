@@ -391,21 +391,26 @@ const Experience = () => {
   const processCommand = command => {
     const phase = useStateGame.getState().phase
 
-    if (command === COMMAND.POTION) {
-      if (phase === GAME_PHASE.PLAYER_MOVEMENT || phase === GAME_PHASE.PLAYER_COMBAT) {
-        const potions = useStatePlayer.getState().potions
+    if (![GAME_PHASE.PLAYER_MOVEMENT, GAME_PHASE.PLAYER_COMBAT].includes(phase)) {
+      setCommand(null)
+      return
+    }
 
-        if (potions > 0) {
-          takePotion()
-          setCommand(null)
-          setLog('YOU DRINK A POTION')
-        }
-        else {
-          setLog('NO POTIONS LEFT!')
-        }
+    // POTIONS (COMBAT OR MOVEMENT PHASES)
+    if (command === COMMAND.POTION) {
+      const potions = useStatePlayer.getState().potions
+
+      if (potions > 0) {
+        takePotion()
+        setCommand(null)
+        setLog('YOU DRINK A POTION')
+      }
+      else {
+        setLog('NO POTIONS LEFT!')
       }
     }
 
+    // DICE (COMBAT PHASE ONLY)
     else if (command === COMMAND.ROLL_DICE) {
       if (phase === GAME_PHASE.PLAYER_COMBAT) {
         setLog('ROLLING DICE...')
@@ -413,42 +418,41 @@ const Experience = () => {
       }
     }
 
+    // MOVEMENT (MOVEMENT PHASE ONLY)
     else if ([COMMAND.NORTH, COMMAND.SOUTH, COMMAND.EAST, COMMAND.WEST].includes(command)) {
-      const
-        level_data = useStateGame.getState().level,
-        active_room = useStatePlayer.getState().room
+      if (phase === GAME_PHASE.PLAYER_MOVEMENT) {
+        const
+          level_data = useStateGame.getState().level,
+          active_room = useStatePlayer.getState().room
 
-      let adjacent_room = null
+        let adjacent_room = null
 
-      if (command === COMMAND.NORTH && active_room.doors.N) {
-        adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'N')
-      }
+        if (command === COMMAND.NORTH && active_room.doors.N) {
+          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'N')
+        }
 
-      else if (command === COMMAND.SOUTH && active_room.doors.S) {
-        adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'S')
-      }
+        else if (command === COMMAND.SOUTH && active_room.doors.S) {
+          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'S')
+        }
 
-      else if (command === COMMAND.EAST && active_room.doors.E) {
-        adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'E')
-      }
+        else if (command === COMMAND.EAST && active_room.doors.E) {
+          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'E')
+        }
 
-      else if (command === COMMAND.WEST && active_room.doors.W) {
-        adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'W')
-      }
+        else if (command === COMMAND.WEST && active_room.doors.W) {
+          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'W')
+        }
 
-      if (adjacent_room) {
-        const new_active_room = level_data.rooms[adjacent_room.index]
-        new_active_room.visited = true
-        setRoom(new_active_room)
-        // setCommand(null)
-        setLog('YOU MOVE TO THE NEXT ROOM...')
+        if (adjacent_room) {
+          const new_active_room = level_data.rooms[adjacent_room.index]
+          new_active_room.visited = true
+          setRoom(new_active_room)
+          setCommand(null)
+          setGamePhase(GAME_PHASE.ROOM_HIDING) // SceneContent.jsx useEffect[] SHOULD COORDINATE THIS ANIMATION
+          setLog('MOVING TO THE NEXT ROOM...')
 
-        // STOPPED HERE
-        // - CHECK ANIMATION STATE AT THE BEGINNING OF THIS
-        // - GAME PHASE TRANSITION (ROOM HIDING -> ROOM SHOWING -> ..)
-        // - UPDATE STATE MACHINE
-
-        console.log('new room:', new_active_room)
+          console.log('new room:', new_active_room)
+        }
       }
     }
   }

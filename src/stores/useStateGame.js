@@ -92,6 +92,22 @@ const useStateGame = create(
                 }
 
                 break
+
+              // PLAYER_MOVEMENT -> ROOM_HIDING
+              case GAME_PHASE.PLAYER_MOVEMENT:
+                if (new_phase === GAME_PHASE.ROOM_HIDING) {
+                  return { phase: new_phase }
+                }
+
+                break
+
+              // ROOM_HIDING -> ROOM_SHOWING
+              case GAME_PHASE.ROOM_HIDING:
+                if (new_phase === GAME_PHASE.ROOM_SHOWING) {
+                  return { phase: new_phase }
+                }
+
+                break
             }
           }
 

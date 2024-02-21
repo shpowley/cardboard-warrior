@@ -10,6 +10,7 @@ import { useStateEnemy } from '../../stores/useStateEnemy'
 import { POSITIONS } from '../../common/Positions'
 import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 import ANIMATIONS from '../../common/Animation'
+import { useStatePlayer } from '../../stores/useStatePlayer'
 
 const EXTENT_HEIGHT = 1.85
 const FILE_SIGN = './models/sign-compressed.glb'
@@ -136,6 +137,15 @@ const Sign = ({ castShadow = false, position, rotation, scale, visible = false }
       // CALLBACK
       animation_state => {
         if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          const monster = useStatePlayer.getState().room?.monster
+
+          if (!monster) {
+            console.error('ERROR: Sign.jsx -- no monster data found')
+            return
+          }
+
+          setImageData(monster)
+
           animation_sign.current = ANIMATIONS.animateSignShow({
             target_sign: ref_sign,
             delay: useStateAnimation.getState().monster_sign_animation_delay

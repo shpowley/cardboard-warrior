@@ -12,6 +12,13 @@ const ANIMATION_STATE = {
   ANIMATING_TO_VISIBLE: 3
 }
 
+const FINAL_ANIMATION = {
+  WALL: 0,
+  PLAYER: 1,
+  MONSTER_SIGN: 2,
+  DICE: 3
+}
+
 const useStateAnimation = create(
   subscribeWithSelector(
     set => ({
@@ -21,6 +28,7 @@ const useStateAnimation = create(
       player_animation_state: ANIMATION_STATE.HIDDEN,
       monster_sign_animation_state: ANIMATION_STATE.HIDDEN,
       dice_animation_state: ANIMATION_STATE.HIDDEN,
+      final_animation: FINAL_ANIMATION.WALL,
 
       wall_animation_delay: 0,
       player_animation_delay: 0,
@@ -257,6 +265,10 @@ const useStateAnimation = create(
 
           return {}
         })
+      },
+
+      setFinalAnimation: final_animation => {
+        set({ final_animation })
       }
     })
   )
@@ -264,5 +276,6 @@ const useStateAnimation = create(
 
 export {
   ANIMATION_STATE,
+  FINAL_ANIMATION,
   useStateAnimation
 }

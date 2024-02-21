@@ -5,7 +5,7 @@ import { button, useControls } from 'leva'
 import { LEVA_SORT_ORDER } from '../../common/Constants'
 import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import { useStatePlayer } from '../../stores/useStatePlayer'
-import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
+import { ANIMATION_STATE, FINAL_ANIMATION, useStateAnimation } from '../../stores/useStateAnimation'
 import Room from './room/Room'
 import Sign from './Sign'
 import Warrior from './Warrior'
@@ -25,7 +25,8 @@ const SceneContent = () => {
     setWallAnimationState = useStateAnimation(state => state.setWallAnimationState),
     setMonsterSignAnimationState = useStateAnimation(state => state.setMonsterSignAnimationState),
     setPlayerAnimationState = useStateAnimation(state => state.setPlayerAnimationState),
-    setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState)
+    setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState),
+    setFinalAnimation = useStateAnimation(state => state.setFinalAnimation)
 
   const buildRoom = () => {
     const active_room = useStatePlayer.getState().room
@@ -57,7 +58,43 @@ const SceneContent = () => {
         }
       }
 
+      setFinalAnimation(active_room.monster ? FINAL_ANIMATION.DICE : FINAL_ANIMATION.WALL)
       setRoomAnimationState(ANIMATION_STATE.ANIMATING_TO_VISIBLE)
+    }
+  }
+
+  const deconstructRoom = () => {
+    const active_room = useStatePlayer.getState().room
+
+    const {
+      room_animation_state,
+      wall_animation_state,
+      player_animation_state,
+      monster_sign_animation_state,
+      dice_animation_state
+    } = useStateAnimation.getState()
+
+    if (room_animation_state === ANIMATION_STATE.VISIBLE) {
+      if (active_room.monster) {
+        if (dice_animation_state === ANIMATION_STATE.VISIBLE) {
+          setDiceAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
+        }
+
+        if (monster_sign_animation_state === ANIMATION_STATE.VISIBLE) {
+          setMonsterSignAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, 1000)
+        }
+      }
+
+      if (wall_animation_state === ANIMATION_STATE.VISIBLE) {
+        setWallAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, active_room.monster ? 2000 : 0)
+      }
+
+      if (player_animation_state === ANIMATION_STATE.VISIBLE) {
+        setPlayerAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, active_room.monster ? 3000 : 2000)
+      }
+
+      setFinalAnimation(FINAL_ANIMATION.PLAYER)
+      setRoomAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE)
     }
   }
 
@@ -198,60 +235,63 @@ const SceneContent = () => {
 
         // TRIGGERS ROOM CONSTRUCTION ANIMATIONS
         if (phase_subscribed === GAME_PHASE.ROOM_SHOWING) {
-          console.log('useEffect > SceneContent: GAME_PHASE.ROOM_SHOWING')
-
           buildRoom()
         }
 
-        else if (phase_subscribed ===  GAME_PHASE.PLAYER_MOVEMENT) {
+        // TRIGGERS ROOM DECONSTRUCTION ANIMATIONS
+        else if (phase_subscribed === GAME_PHASE.ROOM_HIDING) {
+          deconstructRoom()
+        }
+
+        else if (phase_subscribed === GAME_PHASE.PLAYER_MOVEMENT) {
           console.log('useEffect > SceneContent: GAME_PHASE.PLAYER_MOVEMENT')
         }
 
-        else if (phase_subscribed ===  GAME_PHASE.PLAYER_COMBAT) {
+        else if (phase_subscribed === GAME_PHASE.PLAYER_COMBAT) {
           console.log('useEffect > SceneContent: GAME_PHASE.PLAYER_COMBAT')
         }
       }
     )
 
     // --- SCENE ANIMATIONS SUBSCRIPTION (ZUSTAND) ---
-    // - TRIGGERED BY 'buildRoom()' FUNCTION >> ANIMATIONS >> ULTIMATELY HERE
-
-    // SCENARIO 1: NO MONSTER IN ROOM
     const subscribeWallAnimationState = useStateAnimation.subscribe(
       // SELECTOR
       state => state.wall_animation_state,
 
-      // CALLBACK - NO MONSTER, THEN SHOWING THE WALLS IS THE FINAL ANIMATION
+      // CALLBACK
       wall_animation_state => {
-        const active_room = useStatePlayer.getState().room
+        const final_animation = useStateAnimation.getState().final_animation
 
-        if (!active_room.monster) {
-          if (wall_animation_state === ANIMATION_STATE.VISIBLE) {
-            setRoomAnimationState(ANIMATION_STATE.VISIBLE)
-          }
-          else if (wall_animation_state === ANIMATION_STATE.HIDDEN) {
-            setRoomAnimationState(ANIMATION_STATE.HIDDEN)
-          }
+        if (final_animation === FINAL_ANIMATION.WALL && [ANIMATION_STATE.VISIBLE, ANIMATION_STATE.HIDDEN].includes(wall_animation_state)) {
+          setRoomAnimationState(wall_animation_state)
         }
       }
     )
 
-    // SCENARIO 2: MONSTER IN ROOM
     const subscribeDiceAnimationState = useStateAnimation.subscribe(
       // SELECTOR
       state => state.dice_animation_state,
 
       // CALLBACK - IF THERE IS A MONSTER IN THIS ROOM, THEN SHOWING THE DICE IS THE FINAL ANIMATION
       dice_animation_state => {
-        const active_room = useStatePlayer.getState().room
+        const final_animation = useStateAnimation.getState().final_animation
 
-        if (active_room.monster) {
-          if (dice_animation_state === ANIMATION_STATE.VISIBLE) {
-            setRoomAnimationState(ANIMATION_STATE.VISIBLE)
-          }
-          else if (dice_animation_state === ANIMATION_STATE.HIDDEN) {
-            setRoomAnimationState(ANIMATION_STATE.HIDDEN)
-          }
+        if (final_animation === FINAL_ANIMATION.DICE && [ANIMATION_STATE.VISIBLE, ANIMATION_STATE.HIDDEN].includes(dice_animation_state)) {
+          setRoomAnimationState(dice_animation_state)
+        }
+      }
+    )
+
+    const subscribePlayerAnimationState = useStateAnimation.subscribe(
+      // SELECTOR
+      state => state.player_animation_state,
+
+      // CALLBACK
+      player_animation_state => {
+        const final_animation = useStateAnimation.getState().final_animation
+
+        if (final_animation === FINAL_ANIMATION.PLAYER && [ANIMATION_STATE.VISIBLE, ANIMATION_STATE.HIDDEN].includes(player_animation_state)) {
+          setRoomAnimationState(player_animation_state)
         }
       }
     )
@@ -269,6 +309,9 @@ const SceneContent = () => {
           // GAME PHASE BASED ON WHETHER A MONSTER IS PRESENT
           setGamePhase(active_room.monster ? GAME_PHASE.PLAYER_COMBAT : GAME_PHASE.PLAYER_MOVEMENT)
         }
+        else if (room_animation_state === ANIMATION_STATE.HIDDEN) {
+          setGamePhase(GAME_PHASE.ROOM_SHOWING)
+        }
       }
     )
 
@@ -277,6 +320,7 @@ const SceneContent = () => {
       subscribeGamePhase()
       subscribeWallAnimationState()
       subscribeDiceAnimationState()
+      subscribePlayerAnimationState
       subscribeRoomAnimationState()
     }
   }, [])

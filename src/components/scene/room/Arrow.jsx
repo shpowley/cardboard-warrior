@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Image } from '@react-three/drei'
 
-import { useStateGame } from '../../../stores/useStateGame'
+import { GAME_PHASE, useStateGame } from '../../../stores/useStateGame'
 import HUDImages from '../../../common/HUDImages'
 import { COMMAND, DIRECTION } from '../../../common/Constants'
 
@@ -72,7 +72,14 @@ const Arrow = ({ forward_ref, direction = DIRECTION.NORTH, visible = false }) =>
     dispose={null}
 
     // onPointerOver/onPointerOut HANDLED IN ROOM.JSX useEffect IMPERATIVE CODE
-    onClick={() => setCommand(data.command)}
+
+    onClick={() => {
+      const phase = useStateGame.getState().phase
+
+      if (phase === GAME_PHASE.PLAYER_MOVEMENT) {
+        setCommand(data.command)
+      }
+    }}
   />
 }
 

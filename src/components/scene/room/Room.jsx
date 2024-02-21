@@ -103,10 +103,15 @@ const Room = () => {
 
       // CALLBACK
       animation_state => {
-        if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
-          const active_room = useStatePlayer.getState().room
-          let target_arrows
+        if (![ANIMATION_STATE.ANIMATING_TO_VISIBLE, ANIMATION_STATE.ANIMATING_TO_HIDE].includes(animation_state)) {
+          return
+        }
 
+        const active_room = useStatePlayer.getState().room
+
+        let target_arrows
+
+        if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
           if (active_room) {
             target_arrows = []
 
@@ -173,7 +178,7 @@ const Room = () => {
 
           checkWallsVisible()
 
-          animation_room.current = ANIMATIONS.animateRoomShow({
+          animation_room.current = ANIMATIONS.animateWallsShow({
             target_walls: ref_walls,
             target_arrows,
             delay: useStateAnimation.getState().wall_animation_delay
@@ -182,12 +187,42 @@ const Room = () => {
           animation_room.current.complete = () => setWallAnimationState(ANIMATION_STATE.VISIBLE)
         }
         else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-          animation_room.current = ANIMATIONS.animateRoomHide({
+          if (active_room) {
+            target_arrows = []
+
+            if (ref_walls.north.arrow.current.visible) {
+              target_arrows.push(ref_walls.north.arrow.current.material)
+            }
+
+            if (ref_walls.south.arrow.current.visible) {
+              target_arrows.push(ref_walls.south.arrow.current.material)
+            }
+
+            if (ref_walls.east.arrow.current.visible) {
+              target_arrows.push(ref_walls.east.arrow.current.material)
+            }
+
+            if (ref_walls.west.arrow.current.visible) {
+              target_arrows.push(ref_walls.west.arrow.current.material)
+            }
+          }
+
+          animation_room.current = ANIMATIONS.animateWallsHide({
             target_walls: ref_walls,
+            target_arrows,
             delay: useStateAnimation.getState().wall_animation_delay
           })
 
-          animation_room.current.complete = () => setWallAnimationState(ANIMATION_STATE.HIDDEN)
+          animation_room.current.complete = () => {
+            if (target_arrows) {
+              ref_walls.north.arrow.current.visible = false
+              ref_walls.south.arrow.current.visible = false
+              ref_walls.east.arrow.current.visible = false
+              ref_walls.west.arrow.current.visible = false
+            }
+
+            setWallAnimationState(ANIMATION_STATE.HIDDEN)
+          }
         }
       }
     )
