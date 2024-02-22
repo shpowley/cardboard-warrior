@@ -34,9 +34,6 @@ if (parameterEnabled('PERF') || parameterEnabled('perf')) {
  *   - https://editor.sbcode.net/84aa7f9383849f49a83f810972f5c51e69721658
  */
 const Experience = () => {
-
-  console.log('RENDER: Experience')
-
   const
     ref_orbit_controls = useRef(),
     ref_directional_light = useRef(),
@@ -483,8 +480,6 @@ const Experience = () => {
       // CALLBACK
       phase_subscribed => {
         if (phase_subscribed === GAME_PHASE.GAME_START) {
-          console.log('useEffect > Experience: GAME_PHASE.GAME_START')
-
           // INITIALIZE LEVEL
           const level_data = generateLevel(1)
           const active_room = level_data.rooms[level_data.room_start.index]

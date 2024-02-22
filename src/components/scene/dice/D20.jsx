@@ -43,8 +43,6 @@ const getRandomPosition = () => ({
 })
 
 const D20 = ({ castShadow = false, position, visible = false }) => {
-  console.log('RENDER: D20')
-
   const ref_d20 = {
     body: useRef(),
     mesh: useRef(),

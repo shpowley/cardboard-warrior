@@ -27,8 +27,6 @@ const FILE_WARRIOR = './models/warrior-compressed.glb'
 useGLTF.preload(FILE_WARRIOR)
 
 const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => {
-  console.log('RENDER: Warrior')
-
   const { nodes, materials, animations } = useGLTF(FILE_WARRIOR)
 
   const ref_player = useRef()

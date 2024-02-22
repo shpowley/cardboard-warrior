@@ -7,8 +7,6 @@ import { FILES, LEVA_SORT_ORDER } from '../../common/Constants'
 import HUDImages from '../../common/HUDImages'
 
 const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
-  console.log('RENDER: PlayerInfo')
-
   const ref_player = {
     health: useRef(),
     potions: useRef(),

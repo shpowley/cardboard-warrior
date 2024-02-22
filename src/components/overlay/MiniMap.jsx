@@ -67,8 +67,6 @@ const drawMap = (rooms, current_room) => {
 }
 
 const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
-  console.log('RENDER: MiniMap')
-
   const ref_minimap = {
     floor: useRef(),
     map_material: useRef()
@@ -92,8 +90,6 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
       // CALLBACK
       level_data => {
-        console.log('useEffect > MiniMap > subscribeLevel', level_data)
-
         if (level_data) {
           ref_minimap.floor.current.text = `FLOOR: ${level_data.floor_number}`
         }
@@ -107,8 +103,6 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       // CALLBACK
       animation_state => {
         if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
-          console.log('useEffect > MiniMap > subscribeRoomAnimation', animation_state)
-
           const
             active_room = useStatePlayer.getState().room,
             level_data = useStateGame.getState().level

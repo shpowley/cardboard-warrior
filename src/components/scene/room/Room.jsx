@@ -26,8 +26,6 @@ const calculateRange = (prime_angle, camera_yaw) => {
 }
 
 const Room = () => {
-  console.log('RENDER: Room')
-
   const ref_walls = {
     north: {
       wall: useRef(),
@@ -67,6 +65,9 @@ const Room = () => {
    * - WALLS ARE AUTOMATICALLY HIDDEN DUE TO BACKFACE CULLING, BUT DOORS ARE NOT
    * - THIS SAME LOGIC COULD HIDE OTHER MESHES 'ATTACHED' TO A WALL (E.G. PAINTINGS, FLAGS, TORCHES, ETC.)
    * ! THIS ASSUMES THE CAMERA IS ALWAYS LOOKING AT [0, 0, 0]
+   *
+   * THE FOLLOWING DISCUSSION MIGHT PROVIDE A BETTER SOLUTION (DOT PRODUCT OF CAMERA DIRECTION AND WALL NORMALS)
+   * * https://discourse.threejs.org/t/is-it-possible-to-make-a-3d-wall-visible-only-from-one-side-in-three-js/57521/7
    */
   const checkWallsVisible = () => {
     if (camera && useStateAnimation.getState().wall_animation_state !== ANIMATION_STATE.HIDDEN) {

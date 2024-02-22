@@ -12,8 +12,6 @@ const geometry_floor = new THREE.PlaneGeometry(
 const material_floor = new THREE.MeshStandardMaterial({ color: '#93836c' })
 
 const Floor = () => {
-  console.log('RENDER: Floor')
-
   return <>
     <RigidBody
       type='fixed'

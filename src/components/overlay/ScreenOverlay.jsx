@@ -5,8 +5,6 @@ import TitleScreen from './TitleScreen'
 import HUDScreen from './HUDScreen'
 
 const ScreenOverlay = () => {
-  console.log('RENDER: ScreenOverlay')
-
   // ZUSTAND GAME STATE
   const phase = useStateGame(state => state.phase)
 

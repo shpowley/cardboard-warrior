@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
 import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
+import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 import { POSITIONS } from '../../common/Positions'
 import ANIMATIONS from '../../common/Animation'
 import HUDKeys from './HUDKeys'
@@ -18,8 +19,6 @@ const material_text = new THREE.MeshBasicMaterial({
 })
 
 const HUDScreen = () => {
-  console.log('RENDER: HUDScreen')
-
   const ref_hud = {
     controls: useRef(),
     minimap: useRef(),
@@ -37,7 +36,6 @@ const HUDScreen = () => {
   // USED TO HELP POSITION 2D HUD ELEMENTS
   const aspect_ratio = useThree(state => state.viewport.aspect)
 
-  // GAME PHASE SUBSCRIPTION
   useEffect(() => {
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
@@ -48,8 +46,6 @@ const HUDScreen = () => {
       // CALLBACK
       phase_subscribed => {
         if (phase_subscribed === GAME_PHASE.HUD_SHOWING) {
-          console.log('useEffect > HUDScreen: GAME_PHASE.HUD_SHOWING')
-
           // INITIAL VALUES
           ref_hud.controls.current.position.set(POSITIONS.KEYS.x, POSITIONS.KEYS.y.hidden, 0)
 
@@ -66,12 +62,41 @@ const HUDScreen = () => {
             setGamePhase(GAME_PHASE.ROOM_SHOWING)
           }, 1000)
         }
+
+        // else if (phase_subscribed === GAME_PHASE.PLAYER_MOVEMENT) {
+        //   ref_hud.minimap.current.visible = true
+        //   ref_hud.enemy.current.visible = false
+        // }
+
+        // else if (phase_subscribed === GAME_PHASE.PLAYER_COMBAT) {
+        //   ref_hud.minimap.current.visible = false
+        //   ref_hud.enemy.current.visible = true
+        // }
+      }
+    )
+
+    // MONSTER ANIMATION SUBSCRIPTION (ZUSTAND)
+    const subscribeMonsterAnimation = useStateAnimation.subscribe(
+      // SELECTOR
+      state => state.monster_sign_animation_state,
+
+      // CALLBACK
+      animation_state => {
+        if (animation_state === ANIMATION_STATE.VISIBLE) {
+          ref_hud.minimap.current.visible = false
+          ref_hud.enemy.current.visible = true
+        }
+        else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
+          ref_hud.minimap.current.visible = true
+          ref_hud.enemy.current.visible = false
+        }
       }
     )
 
     // CLEANUP
     return () => {
       subscribeGamePhase()
+      subscribeMonsterAnimation()
     }
   }, [])
 

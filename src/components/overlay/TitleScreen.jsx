@@ -21,8 +21,6 @@ const
   })
 
 const TitleScreen = () => {
-  console.log('RENDER: TitleScreen')
-
   const ref_text = {
     title: useRef(),
     new_game: useRef(),
@@ -39,7 +37,6 @@ const TitleScreen = () => {
 
   // HANDLERS
   const handlerNewGame = () => {
-    console.log('TitleScreen: NEW GAME handler')
     setGamePhase(GAME_PHASE.TITLE_HIDING)
   }
 
@@ -53,8 +50,6 @@ const TitleScreen = () => {
       // CALLBACK
       phase_subscribed => {
         if (phase_subscribed === GAME_PHASE.TITLE_SHOWING) {
-          console.log('useEffect > TitleScreen: GAME_PHASE.TITLE_SHOWING')
-
           ref_text.title.current.position.set(0, POSITIONS.TITLE.y.start, 0)
           ref_text.new_game.current.material.opacity = 0
           ref_text.github.current.material.opacity = 0
@@ -68,19 +63,11 @@ const TitleScreen = () => {
           // PROMISE WOULD ALSO WORK: ex. animation_title.current.finished.then()
           // .complete() IS USED TO DEMONSTRATE AS OTHER CALLBACKS ARE ALSO AVAILABLE (e.g. update)
           animation_title.current.complete = () => {
-            console.log('useEffect > TitleScreen: SHOW COMPLETE')
             setGamePhase(GAME_PHASE.TITLE_VISIBLE)
           }
         }
 
-        else if (phase_subscribed === GAME_PHASE.TITLE_VISIBLE) {
-          console.log('useEffect > TitleScreen: GAME_PHASE.TITLE_VISIBLE')
-          // WAITING FOR USER INPUT
-        }
-
         else if (phase_subscribed === GAME_PHASE.TITLE_HIDING) {
-          console.log('useEffect > TitleScreen: GAME_PHASE.TITLE_HIDING')
-
           animation_title.current = ANIMATIONS.animateTitleHide({
             target_title: ref_text.title.current.position,
             target_new_game: ref_text.new_game.current.material,
@@ -90,7 +77,6 @@ const TitleScreen = () => {
           // PROMISE WOULD ALSO WORK: ex. animation_title.current.finished.then()
           // .complete() IS USED TO DEMONSTRATE AS OTHER CALLBACKS ARE ALSO AVAILABLE (e.g. update)
           animation_title.current.complete = () => {
-            console.log('useEffect > TitleScreen: HIDE COMPLETE')
             setGamePhase(GAME_PHASE.GAME_START)
           }
         }

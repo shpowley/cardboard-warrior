@@ -2,10 +2,10 @@ import { Suspense, useEffect } from 'react'
 import { Physics } from '@react-three/rapier'
 import { button, useControls } from 'leva'
 
-import { LEVA_SORT_ORDER } from '../../common/Constants'
 import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import { useStatePlayer } from '../../stores/useStatePlayer'
 import { ANIMATION_STATE, FINAL_ANIMATION, useStateAnimation } from '../../stores/useStateAnimation'
+import { LEVA_SORT_ORDER } from '../../common/Constants'
 import Room from './room/Room'
 import Sign from './Sign'
 import Warrior from './Warrior'
@@ -15,12 +15,11 @@ import Dice from './dice/Dice'
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
  */
 const SceneContent = () => {
-  console.log('RENDER: SceneContent')
-
   // ZUSTAND STATES
   const
     phase = useStateGame(state => state.phase),
     setGamePhase = useStateGame(state => state.setGamePhase),
+    setLog = useStateGame(state => state.setLog),
     setRoomAnimationState = useStateAnimation(state => state.setRoomAnimationState),
     setWallAnimationState = useStateAnimation(state => state.setWallAnimationState),
     setMonsterSignAnimationState = useStateAnimation(state => state.setMonsterSignAnimationState),
@@ -299,7 +298,13 @@ const SceneContent = () => {
           const active_room = useStatePlayer.getState().room
 
           // GAME PHASE BASED ON WHETHER A MONSTER IS PRESENT
-          setGamePhase(active_room.monster ? GAME_PHASE.PLAYER_COMBAT : GAME_PHASE.PLAYER_MOVEMENT)
+          if (active_room.monster) {
+            setGamePhase(GAME_PHASE.PLAYER_COMBAT)
+          }
+          else {
+            setLog('WHICH WAY?')
+            setGamePhase(GAME_PHASE.PLAYER_MOVEMENT)
+          }
         }
         else if (room_animation_state === ANIMATION_STATE.HIDDEN) {
           setGamePhase(GAME_PHASE.ROOM_SHOWING)

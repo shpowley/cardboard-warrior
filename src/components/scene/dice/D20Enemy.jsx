@@ -43,8 +43,6 @@ const getRandomPosition = () => ({
 })
 
 const D20Enemy = ({ castShadow = false, position, visible = false }) => {
-  console.log('RENDER: D20Enemy')
-
   const ref_d20 = {
     body: useRef(),
     mesh: useRef(),

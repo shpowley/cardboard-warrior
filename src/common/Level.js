@@ -592,7 +592,7 @@ const generateRooms = (floor_number, prior_room) => {
   }
 
   if (map_attempts > 1) {
-    console.log(`map calculation attempts: ${map_attempts}`)
+    console.warn(`map calculation attempts: ${map_attempts}`)
   }
 
   return {

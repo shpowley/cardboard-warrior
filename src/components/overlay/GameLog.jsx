@@ -5,8 +5,6 @@ import { FILES } from '../../common/Constants'
 import { useStateGame } from '../../stores/useStateGame'
 
 const GameLog = ({ forward_ref, aspect_ratio = 1 }) => {
-  console.log('RENDER: GameLog')
-
   useEffect(() => {
     forward_ref.current.visible = true
 

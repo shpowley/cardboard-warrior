@@ -29,8 +29,6 @@ const KEYS = {
 }
 
 const HUDKeys = ({ forward_ref }) => {
-  console.log('RENDER: HUDKeys')
-
   const [key_enabled, setKeyEnabled] = useState(KEYS.DISABLED)
 
   const setCommand = useStateGame(state => state.setCommand)

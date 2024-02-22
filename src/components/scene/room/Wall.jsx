@@ -15,8 +15,6 @@ const geometry_wall = new THREE.PlaneGeometry(
 const material_wall = new THREE.MeshStandardMaterial({ color: '#dbd7d2' })
 
 const Wall = ({ forward_ref, position, rotation, visible = false, direction }) => {
-  console.log('RENDER: Wall')
-
   return <>
     <RigidBody
       type='fixed'

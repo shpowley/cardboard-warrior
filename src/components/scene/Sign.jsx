@@ -41,8 +41,6 @@ const getCanvasTexture = (texture, x, y, scale) => {
  * ZUSTAND EVENT SUBSCRIPTIONS WILL OVERRIDE THESE VALUES AS NEEDED
  */
 const SignMaterial = ({ material, texture_url, x, y, scale }) => {
-  console.log('RENDER: SignMaterial')
-
   const ref_material = useRef()
 
   let canvas_texture
@@ -94,8 +92,6 @@ const SignMaterial = ({ material, texture_url, x, y, scale }) => {
 }
 
 const Sign = ({ castShadow = false, position, rotation, scale, visible = false }) => {
-  console.log('RENDER: Sign')
-
   const { nodes, materials } = useGLTF(FILE_SIGN)
 
   const ref_sign = useRef()

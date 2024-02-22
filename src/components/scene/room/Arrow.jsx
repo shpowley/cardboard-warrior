@@ -53,8 +53,6 @@ const getDirectionData = (direction) => {
 }
 
 const Arrow = ({ forward_ref, direction = DIRECTION.NORTH, visible = false }) => {
-  console.log('RENDER: Arrow')
-
   const setCommand = useStateGame(state => state.setCommand)
 
   const data = getDirectionData(direction)
