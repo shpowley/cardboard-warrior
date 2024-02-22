@@ -5,6 +5,7 @@ import { FILES } from '../../common/Constants'
 import { memo, useEffect, useRef } from 'react'
 import { useStateGame } from '../../stores/useStateGame'
 import { useStatePlayer } from '../../stores/useStatePlayer'
+import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 
 const CANVAS = {
   size: {
@@ -99,21 +100,24 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribeRoom = useStatePlayer.subscribe(
+    const subscribeRoomAnimation = useStateAnimation.subscribe(
       // SELECTOR
-      state => state.room,
+      state => state.room_animation_state,
 
       // CALLBACK
-      active_room => {
-        console.log('useEffect > MiniMap > subscribeRoom', active_room)
+      animation_state => {
+        if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          console.log('useEffect > MiniMap > subscribeRoomAnimation', animation_state)
 
-        active_room
-        const level_data = useStateGame.getState().level
+          const
+            active_room = useStatePlayer.getState().room,
+            level_data = useStateGame.getState().level
 
-        if (active_room && level_data) {
-          drawMap(level_data.rooms, active_room)
-          ref_minimap.map_material.current.map = new THREE.CanvasTexture(CTX.canvas)
-          ref_minimap.map_material.current.needsUpdate = true
+          if (active_room && level_data) {
+            drawMap(level_data.rooms, active_room)
+            ref_minimap.map_material.current.map = new THREE.CanvasTexture(CTX.canvas)
+            ref_minimap.map_material.current.needsUpdate = true
+          }
         }
       }
     )
@@ -121,7 +125,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     // CLEANUP
     return () => {
       subscribeLevel()
-      subscribeRoom()
+      subscribeRoomAnimation()
     }
   }, [])
 

@@ -6,12 +6,15 @@ import D20Enemy from './D20Enemy'
 import { LEVA_SORT_ORDER } from '../../../common/Constants'
 import { DICE_STATE, useStateDice } from '../../../stores/useStateDice'
 import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
+import { useStateGame } from '../../../stores/useStateGame'
 
 const Dice = () => {
   const
     setDiceStatePlayer = useStateDice(state => state.setDiceStatePlayer),
     setDiceStateEnemy = useStateDice(state => state.setDiceStateEnemy),
-    setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState)
+    setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState),
+    setCommand = useStateGame(state => state.setCommand),
+    setLog = useStateGame(state => state.setLog)
 
   useControls(
     'dice rolling',
@@ -32,6 +35,17 @@ const Dice = () => {
     }
   )
 
+  // BOTH DICE FINISHED ROLLING
+  const diceRollsComplete = () => {
+    const
+      roll_player = useStateDice.getState().dice_value_player,
+      roll_enemy = useStateDice.getState().dice_value_enemy
+
+    setLog(`PLAYER: ${roll_player}\nENEMY: ${roll_enemy}`)
+
+    setCommand(null)
+  }
+
   useEffect(() => {
     // DICE ROLL SUBSCRIPTION (ZUSTAND)
     const
@@ -42,7 +56,11 @@ const Dice = () => {
         // CALLBACK
         dice_state => {
           if (dice_state === DICE_STATE.ROLL_COMPLETE) {
-            console.log('D20 PLAYER ROLL: ', useStateDice.getState().dice_value_player)
+            const dice_state_enemy = useStateDice.getState().dice_state_enemy
+
+            if (dice_state_enemy === DICE_STATE.ROLL_COMPLETE) {
+              diceRollsComplete()
+            }
           }
           else if (dice_state === DICE_STATE.FALL_COMPLETE && useStateDice.getState().dice_state_enemy === DICE_STATE.FALL_COMPLETE) {
             setDiceAnimationState(ANIMATION_STATE.VISIBLE) // A BIT COMPLEX ..BOTH DICE NEED TO HAVE FALLEN BEFORE ANIMATION STATE CAN BE SET. REPEATED BELOW.
@@ -60,7 +78,11 @@ const Dice = () => {
         // CALLBACK
         dice_state => {
           if (dice_state === DICE_STATE.ROLL_COMPLETE) {
-            console.log('D20 ENEMY ROLL: ', useStateDice.getState().dice_value_enemy)
+            const dice_state_player = useStateDice.getState().dice_state_player
+
+            if (dice_state_player === DICE_STATE.ROLL_COMPLETE) {
+              diceRollsComplete()
+            }
           }
           else if (dice_state === DICE_STATE.FALL_COMPLETE && useStateDice.getState().dice_state_player === DICE_STATE.FALL_COMPLETE) {
             setDiceAnimationState(ANIMATION_STATE.VISIBLE)

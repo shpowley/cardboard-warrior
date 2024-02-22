@@ -6,6 +6,7 @@ import { useControls, folder } from 'leva'
 
 import { GAME_PHASE, useStateGame } from './stores/useStateGame'
 import { useStatePlayer } from './stores/useStatePlayer'
+import { DICE_STATE, useStateDice } from './stores/useStateDice'
 import ScreenOverlay from './components/overlay/ScreenOverlay'
 import SceneContent from './components/scene/SceneContent'
 import { CAMERA_DEFAULTS, COMMAND, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
@@ -46,6 +47,8 @@ const Experience = () => {
     setFloorIndex = useStatePlayer(state => state.setFloorIndex),
     setRoom = useStatePlayer(state => state.setRoom),
     takePotion = useStatePlayer(state => state.takePotion),
+    setDiceStatePlayer = useStateDice(state => state.setDiceStatePlayer),
+    setDiceStateEnemy = useStateDice(state => state.setDiceStateEnemy),
     setControls = useStateGame(state => state.setControls),
     setLevel = useStateGame(state => state.setLevel),
     setLog = useStateGame(state => state.setLog),
@@ -414,7 +417,13 @@ const Experience = () => {
     else if (command === COMMAND.ROLL_DICE) {
       if (phase === GAME_PHASE.PLAYER_COMBAT) {
         setLog('ROLLING DICE...')
-        setCommand(null)
+
+        setDiceStatePlayer(DICE_STATE.ROLLING)
+
+        setTimeout(
+          () => setDiceStateEnemy(DICE_STATE.ROLLING),
+          300
+        )
       }
     }
 
@@ -450,8 +459,6 @@ const Experience = () => {
           setCommand(null)
           setGamePhase(GAME_PHASE.ROOM_HIDING) // SceneContent.jsx useEffect[] SHOULD COORDINATE THIS ANIMATION
           setLog('MOVING TO THE NEXT ROOM...')
-
-          console.log('new room:', new_active_room)
         }
       }
     }

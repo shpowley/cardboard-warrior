@@ -151,7 +151,6 @@ const D20Enemy = ({ castShadow = false, position, visible = false }) => {
       // CALLBACK
       dice_state_subscribed => {
         if (dice_state_subscribed === DICE_STATE.ROLLING) {
-          setDiceState(DICE_STATE.ROLLING)
           rollD20()
         }
       }

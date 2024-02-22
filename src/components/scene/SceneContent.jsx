@@ -242,14 +242,6 @@ const SceneContent = () => {
         else if (phase_subscribed === GAME_PHASE.ROOM_HIDING) {
           deconstructRoom()
         }
-
-        else if (phase_subscribed === GAME_PHASE.PLAYER_MOVEMENT) {
-          console.log('useEffect > SceneContent: GAME_PHASE.PLAYER_MOVEMENT')
-        }
-
-        else if (phase_subscribed === GAME_PHASE.PLAYER_COMBAT) {
-          console.log('useEffect > SceneContent: GAME_PHASE.PLAYER_COMBAT')
-        }
       }
     )
 
