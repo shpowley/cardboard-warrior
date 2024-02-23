@@ -44,6 +44,7 @@ const Experience = () => {
     setFloorIndex = useStatePlayer(state => state.setFloorIndex),
     setRoom = useStatePlayer(state => state.setRoom),
     takePotion = useStatePlayer(state => state.takePotion),
+    setDiceStateCombined = useStateDice(state => state.setDiceStateCombined),
     setDiceStatePlayer = useStateDice(state => state.setDiceStatePlayer),
     setDiceStateEnemy = useStateDice(state => state.setDiceStateEnemy),
     setControls = useStateGame(state => state.setControls),
@@ -415,11 +416,12 @@ const Experience = () => {
       if (phase === GAME_PHASE.PLAYER_COMBAT) {
         setLog('ROLLING DICE...')
 
+        setDiceStateCombined(DICE_STATE.ROLLING)
         setDiceStatePlayer(DICE_STATE.ROLLING)
 
         setTimeout(
           () => setDiceStateEnemy(DICE_STATE.ROLLING),
-          300
+          100 + Math.random() * 200
         )
       }
     }

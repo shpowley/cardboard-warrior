@@ -1,6 +1,7 @@
 const
   HUD_IMAGE_PATH = './images/hud/',
   SCALE_DEFAULT = [1, 1],
+  SCALE_DICE = [2, 2.32],
   SCALE_DIRECTION = [1.5, 2.16],
   SCALE_POTION = [1.2, 1],
   SCALE_ROLL = [3.24, 1]
@@ -19,6 +20,16 @@ const HUDImages = {
   COPYRIGHT: {
     path: HUD_IMAGE_PATH + 'copyright.webp',
     scale: SCALE_DEFAULT
+  },
+
+  DICE_ENEMY: {
+    path: HUD_IMAGE_PATH + 'd20-black.webp',
+    scale: SCALE_DICE
+  },
+
+  DICE_PLAYER: {
+    path: HUD_IMAGE_PATH + 'd20-red.webp',
+    scale: SCALE_DICE
   },
 
   DIRECTION_EAST: {

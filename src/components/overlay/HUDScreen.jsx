@@ -11,6 +11,7 @@ import PlayerInfo from './PlayerInfo'
 import EnemyInfo from './EnemyInfo'
 import MiniMap from './MiniMap'
 import GameLog from './GameLog'
+import DiceResults from './DiceResults'
 
 // COMMON MATERIALS
 const material_text = new THREE.MeshBasicMaterial({
@@ -23,6 +24,7 @@ const HUDScreen = () => {
     controls: useRef(),
     minimap: useRef(),
     game_log: useRef(),
+    dice_results: useRef(),
     player: useRef(),
     enemy: useRef()
   }
@@ -62,16 +64,6 @@ const HUDScreen = () => {
             setGamePhase(GAME_PHASE.ROOM_SHOWING)
           }, 1000)
         }
-
-        // else if (phase_subscribed === GAME_PHASE.PLAYER_MOVEMENT) {
-        //   ref_hud.minimap.current.visible = true
-        //   ref_hud.enemy.current.visible = false
-        // }
-
-        // else if (phase_subscribed === GAME_PHASE.PLAYER_COMBAT) {
-        //   ref_hud.minimap.current.visible = false
-        //   ref_hud.enemy.current.visible = true
-        // }
       }
     )
 
@@ -114,6 +106,12 @@ const HUDScreen = () => {
     <GameLog
       forward_ref={ref_hud.game_log}
       aspect_ratio={aspect_ratio}
+    />
+
+    <DiceResults
+      forward_ref={ref_hud.dice_results}
+      aspect_ratio={aspect_ratio}
+      material_text={material_text}
     />
 
     <PlayerInfo

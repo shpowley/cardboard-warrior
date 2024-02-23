@@ -46,7 +46,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
           if (monster) {
             setLog('PREPARE FOR COMBAT!')
-            ref_enemy.label.current.text = `ENEMY: ${monster.label}`
+            ref_enemy.label.current.text = monster.label
             ref_enemy.health.current.text = monster.health
             ref_enemy.attack.current.text = monster.attack
           }
@@ -80,7 +80,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
     {/* MONSTER HEALTH */}
     <group
-      position={[-4.5, -1.4, 0]}
+      position={[-0.7, -1.4, 0]}
       anchorX='right'
     >
       <Image
@@ -93,15 +93,15 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         ref={ref_enemy.health}
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
-        position={[0.7, -0.01, 0]}
-        anchorX='left'
+        position={[-0.8, -0.01, 0]}
+        anchorX='right'
         text='-'
       />
     </group>
 
     {/* MONSTER ATTACK */}
     <group
-      position={[-4.5, -2.8, 0]}
+      position={[-0.7, -2.8, 0]}
       anchorX='right'
     >
       <Image
@@ -114,8 +114,8 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         ref={ref_enemy.attack}
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
-        position={[0.7, -0.01, 0]}
-        anchorX='left'
+        position={[-0.8, -0.01, 0]}
+        anchorX='right'
         text='-'
       />
     </group>

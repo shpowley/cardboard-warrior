@@ -150,7 +150,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         ref={ref_player.health}
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
-        position={[0.7, -0.1, 0]}
+        position={[0.8, -0.1, 0]}
         anchorX='left'
         text={PLAYER_DEFAULTS.health}
       />
@@ -167,7 +167,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       <Text
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
-        position={[0.7, -0.1, 0]}
+        position={[0.8, -0.1, 0]}
         anchorX='left'
         text={PLAYER_DEFAULTS.attack}
       />

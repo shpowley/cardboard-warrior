@@ -1,20 +1,20 @@
 import { useEffect } from 'react'
 import { button, useControls } from 'leva'
 
-import D20 from './D20'
-import D20Enemy from './D20Enemy'
-import { LEVA_SORT_ORDER } from '../../../common/Constants'
+import { useStateGame } from '../../../stores/useStateGame'
 import { DICE_STATE, useStateDice } from '../../../stores/useStateDice'
 import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
-import { useStateGame } from '../../../stores/useStateGame'
+import { LEVA_SORT_ORDER } from '../../../common/Constants'
+import D20Enemy from './D20Enemy'
+import D20 from './D20'
 
 const Dice = () => {
   const
+    setDiceStateCombined = useStateDice(state => state.setDiceStateCombined),
     setDiceStatePlayer = useStateDice(state => state.setDiceStatePlayer),
     setDiceStateEnemy = useStateDice(state => state.setDiceStateEnemy),
     setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState),
-    setCommand = useStateGame(state => state.setCommand),
-    setLog = useStateGame(state => state.setLog)
+    setCommand = useStateGame(state => state.setCommand)
 
   useControls(
     'dice rolling',
@@ -37,13 +37,8 @@ const Dice = () => {
 
   // BOTH DICE FINISHED ROLLING
   const diceRollsComplete = () => {
-    const
-      roll_player = useStateDice.getState().dice_value_player,
-      roll_enemy = useStateDice.getState().dice_value_enemy
-
-    setLog(`PLAYER: ${roll_player}\nENEMY: ${roll_enemy}`)
-
-    setCommand(null)
+    setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
+    setCommand(null) // NECESSARY TO RESET COMMANDS TO NULL BEFORE SETTING NEW COMMANDS
   }
 
   useEffect(() => {

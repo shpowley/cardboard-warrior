@@ -287,7 +287,7 @@ const SceneContent = () => {
       }
     )
 
-    // "room_animation_state" IS ANIMATION STATE FOR THE ENTIRE ROOM (BASICALLY ALL THE REQUIRED ANIMATIONS ARE COMPLETE)
+    // 'room_animation_state' IS ANIMATION STATE FOR THE ENTIRE ROOM (BASICALLY ALL THE REQUIRED ANIMATIONS ARE COMPLETE)
     const subscribeRoomAnimationState = useStateAnimation.subscribe(
       // SELECTOR
       state => state.room_animation_state,
@@ -302,7 +302,29 @@ const SceneContent = () => {
             setGamePhase(GAME_PHASE.PLAYER_COMBAT)
           }
           else {
-            setLog('WHICH WAY?')
+            const level_data = useStateGame.getState().level
+
+            if (level_data.room_start.index === active_room.index) {
+              setLog('LET\'S EXPLORE!')
+            }
+            else {
+              let door_count = 0
+
+              // COUNT THE NUMBER OF DOORS IN THE OBJECT LITERAL active_room.doors
+              Object.values(active_room.doors).forEach(door => {
+                if (door) {
+                  door_count++
+                }
+              })
+
+              if (door_count === 1) {
+                setLog('A DEAD END.')
+              }
+              else {
+                setLog('WHICH WAY?')
+              }
+            }
+
             setGamePhase(GAME_PHASE.PLAYER_MOVEMENT)
           }
         }

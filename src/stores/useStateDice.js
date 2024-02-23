@@ -15,6 +15,8 @@ const useStateDice = create(
   subscribeWithSelector(
     set => ({
       /** PROPERTIES */
+      dice_state_combined: DICE_STATE.NONE,
+
       dice_state_player: DICE_STATE.NONE,
       dice_value_player: 1,
 
@@ -22,6 +24,8 @@ const useStateDice = create(
       dice_value_enemy: 1,
 
       /** METHODS */
+      setDiceStateCombined: dice_state_combined => set({ dice_state_combined }),
+
       setDiceStatePlayer: dice_state_player => set({ dice_state_player }),
       setDiceValuePlayer: dice_value_player => set({ dice_value_player }),
 

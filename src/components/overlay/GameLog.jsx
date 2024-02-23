@@ -30,7 +30,7 @@ const GameLog = ({ forward_ref, aspect_ratio = 1 }) => {
   return <Text
     ref={forward_ref}
     font={FILES.FONT_BEBAS_NEUE}
-    position={[-0.4 * aspect_ratio, -0.23, 0]}
+    position={[-0.4 * aspect_ratio, -0.31, 0]}
     scale={0.025}
     anchorX='left'
     anchorY='bottom'
