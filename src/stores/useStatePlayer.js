@@ -4,6 +4,7 @@ import { MESH_ANIMATIONS } from '../components/scene/Warrior'
 
 const PLAYER_DEFAULTS = {
   attack: 10,
+  max_health: 100,
   health: 100,
   potions: 3,
   gold: 0,
@@ -17,6 +18,7 @@ const useStatePlayer = create(
       attack: PLAYER_DEFAULTS.attack,
       floor_index: null,
       room: null,
+      max_health: PLAYER_DEFAULTS.max_health,
       health: PLAYER_DEFAULTS.health,
       potions: PLAYER_DEFAULTS.potions,
       gold: PLAYER_DEFAULTS.gold,

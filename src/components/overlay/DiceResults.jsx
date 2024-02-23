@@ -75,7 +75,7 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
   >
     {/* PLAYER */}
     <group
-      position={[-0.385 * aspect_ratio, 0.22, 0]}
+      position={[-0.39 * aspect_ratio, 0.18, 0]}
       scale={0.021}
       anchorX='left'
     >
@@ -87,18 +87,17 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       />
       <Text
         ref={ref_text.player}
-        position={[1.2 * aspect_ratio, -0.1, 0]}
+        position={[0, -2.4, 0]}
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         scale={1.5}
         text='-'
-        anchorX='left'
       />
     </group>
 
     {/* ENEMY */}
     <group
-      position={[0.385 * aspect_ratio, 0.22, 0]}
+      position={[0.39 * aspect_ratio, 0.18, 0]}
       scale={0.021}
       anchorX='right'
     >
@@ -110,12 +109,11 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       />
       <Text
         ref={ref_text.enemy}
-        position={[-1.2 * aspect_ratio, -0.1, 0]}
+        position={[0, -2.4, 0]}
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         scale={1.5}
         text='-'
-        anchorX='right'
       />
     </group>
   </group>

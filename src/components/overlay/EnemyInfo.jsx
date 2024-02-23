@@ -4,6 +4,7 @@ import { useControls } from 'leva'
 
 import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 import { useStatePlayer } from '../../stores/useStatePlayer'
+import { useStateEnemy } from '../../stores/useStateEnemy'
 import { useStateGame } from '../../stores/useStateGame'
 import { FILES, LEVA_SORT_ORDER } from '../../common/Constants'
 import HUDImages from '../../common/HUDImages'
@@ -15,7 +16,9 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     attack: useRef()
   }
 
-  const setLog = useStateGame(state => state.setLog)
+  const
+    setLog = useStateGame(state => state.setLog),
+    setMonsterHealth = useStateEnemy(state => state.setHealth)
 
   // LEVA DEBUG ENEMY STATE
   const controls_enemy = useControls(
@@ -46,17 +49,30 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
           if (monster) {
             setLog('PREPARE FOR COMBAT!')
+            setMonsterHealth(monster.health)
+
             ref_enemy.label.current.text = monster.label
-            ref_enemy.health.current.text = monster.health
             ref_enemy.attack.current.text = monster.attack
           }
         }
       }
     )
 
+    // MONSTER HEALTH SUBSCRIPTION (ZUSTAND)
+    const subscribeMonsterHealth = useStateEnemy.subscribe(
+      // SELECTOR
+      state => state.health,
+
+      // CALLBACK
+      health => {
+        ref_enemy.health.current.text = health
+      }
+    )
+
     // CLEANUP
     return () => {
       subscribeMonsterAnimation()
+      subscribeMonsterHealth()
     }
   }, [])
 

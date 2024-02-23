@@ -7,6 +7,7 @@ import HUDImages from '../../common/HUDImages'
 import { mouse_pointer } from '../../common/Utils'
 import { POSITIONS } from '../../common/Positions'
 import { COMMAND } from '../../common/Constants'
+import { DICE_STATE, useStateDice } from '../../stores/useStateDice'
 
 const KEYS = {
   DISABLED: {
@@ -79,9 +80,32 @@ const HUDKeys = ({ forward_ref }) => {
       }
     )
 
+    // SUBSCRIBE TO DICE ROLLING STATE (ENABLES/DISABLES DICE-ROLLING KEY)
+    const subscribeDiceRollingState = useStateDice.subscribe(
+      // SELECTOR
+      state => state.dice_state_combined,
+
+      // CALLBACK
+      dice_state_combined => {
+        if (dice_state_combined === DICE_STATE.ROLLING) {
+          setKeyEnabled(prev_state => ({
+            ...prev_state,
+            roll: false
+          }))
+        }
+        else if (dice_state_combined === DICE_STATE.ROLL_COMPLETE) {
+          setKeyEnabled(prev_state => ({
+            ...prev_state,
+            roll: true
+          }))
+        }
+      }
+    )
+
     // CLEAN UP
     return () => {
       subscribeRoomAnimationState()
+      subscribeDiceRollingState()
     }
   }, [])
 
