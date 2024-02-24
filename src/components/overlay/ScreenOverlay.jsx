@@ -24,7 +24,9 @@ const ScreenOverlay = () => {
       GAME_PHASE.ROOM_SHOWING,
       GAME_PHASE.ROOM_HIDING,
       GAME_PHASE.PLAYER_MOVEMENT,
-      GAME_PHASE.PLAYER_COMBAT
+      GAME_PHASE.PLAYER_COMBAT,
+      GAME_PHASE.MONSTER_DEFEATED,
+      GAME_PHASE.GAME_OVER
     ].includes(phase)
 
   return <ScreenSpace depth={1}>

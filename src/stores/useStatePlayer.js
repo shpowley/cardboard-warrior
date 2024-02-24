@@ -30,6 +30,10 @@ const useStatePlayer = create(
       setRoom: room => set({ room }),
 
       // HEALTH
+      addPotion: () => {
+        set(state => ({ potions: state.potions + 1 }))
+      },
+
       takePotion: () => {
         set(state => {
           if (state.potions > 0) {

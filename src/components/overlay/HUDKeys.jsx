@@ -69,6 +69,7 @@ const HUDKeys = ({ forward_ref }) => {
           // MOVEMENT-RELATED KEYS (NORTH, SOUTH, EAST, WEST + POTION) -- DISABLED
           case GAME_PHASE.ROOM_HIDING:
           case GAME_PHASE.ROOM_SHOWING:
+          case GAME_PHASE.MONSTER_DEFEATED:
             setKeyEnabled(KEYS.DISABLED)
             break
 

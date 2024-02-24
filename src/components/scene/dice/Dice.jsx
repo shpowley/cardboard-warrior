@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { button, useControls } from 'leva'
 
-import { useStateGame } from '../../../stores/useStateGame'
+import { GAME_PHASE, useStateGame } from '../../../stores/useStateGame'
 import { useStatePlayer } from '../../../stores/useStatePlayer'
 import { useStateEnemy } from '../../../stores/useStateEnemy'
 import { DICE_STATE, useStateDice } from '../../../stores/useStateDice'
 import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
-import { LEVA_SORT_ORDER } from '../../../common/Constants'
+import { ITEM_KEYS, LEVA_SORT_ORDER } from '../../../common/Constants'
 import D20Enemy from './D20Enemy'
 import D20 from './D20'
 
@@ -17,7 +17,11 @@ const Dice = () => {
     setDiceStateEnemy = useStateDice(state => state.setDiceStateEnemy),
     setDiceAnimationState = useStateAnimation(state => state.setDiceAnimationState),
     setMonsterHealth = useStateEnemy(state => state.setHealth),
+    addPotion = useStatePlayer(state => state.addPotion),
+    addGold = useStatePlayer(state => state.addGold),
+    getKey = useStatePlayer(state => state.getKey),
     playerTakeDamage = useStatePlayer(state => state.takeDamage),
+    setGamePhase = useStateGame(state => state.setGamePhase),
     setCommand = useStateGame(state => state.setCommand),
     setLog = useStateGame(state => state.setLog)
 
@@ -46,11 +50,11 @@ const Dice = () => {
       dice_roll_player = useStateDice.getState().dice_value_player,
       dice_roll_monster = useStateDice.getState().dice_value_enemy
 
-    let log_text
-
     // --- TIE (NO DAMAGE - ROLL AGAIN) ---
     if (dice_roll_player === dice_roll_monster) {
-      log_text = 'TIE! ROLL AGAIN.'
+      setLog('TIE! ROLL AGAIN.')
+      setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
+      setCommand(null) // NECESSARY TO RESET COMMANDS TO NULL BEFORE SETTING NEW COMMANDS
     }
 
     else {
@@ -73,7 +77,8 @@ const Dice = () => {
 
       let
         attack = 0,
-        damage = 0
+        damage = 0,
+        log_text
 
       // --- PLAYER WINS ---
       if (dice_roll_player > dice_roll_monster) {
@@ -90,7 +95,7 @@ const Dice = () => {
 
         // -- CALCULATE DAMAGE
         if (dice_roll_monster === 1) {
-          log_text += '\nDEFENSE CRITICAL FAILURE ..MAX DAMAGE!'
+          log_text += '\nDEFENSE CRITICAL FAIL -- MAX DAMAGE TAKEN!'
           damage = attack // DEFENSE CRITICAL FAIL
         }
         else {
@@ -103,20 +108,53 @@ const Dice = () => {
 
         // -- APPLY DAMAGE
         log_text += `\n${monster.name} TAKES ${damage} DAMAGE!`
+
         monster.health -= damage
 
         if (monster.health <= 0) {
           monster.health = 0
           log_text += `\n${monster.name} DEFEATED!`
+
+          if (active_room.item) {
+            log_text += `\n${active_room.item.name} FOUND!`
+
+            switch (active_room.item.type) {
+              case ITEM_KEYS.HEALTH_POTION:
+                addPotion()
+                break
+
+              case ITEM_KEYS.TREASURE_CHEST:
+                addGold(active_room.item.value)
+                break
+
+              case ITEM_KEYS.KEY:
+                getKey()
+            }
+
+            delete active_room.item
+            delete active_room.monster
+          }
+
+          monster_data.health = monster.health // GLOBAL MONSTER HEALTH STATE UPDATE
+
+          setLog(log_text)
+          setMonsterHealth(monster.health) // UPDATES DISPLAYED MONSTER HEALTH
+          // setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
+
+          // -- A BIT CONVOLUTED DUE TO SUBSCRIPTIONS BEING SCATTERED --
+          // > TRIGGERS SceneContent.jsx useEffect() MONSTER DEFEATED
+          // > DICE & MONSTER SIGN ARE HIDDEN
+          // > ONCE MONSTER SIGN ANIMATION IS COMPLETE, GAME PHASE IS SET TO PLAYER_MOVEMENT
+          setGamePhase(GAME_PHASE.MONSTER_DEFEATED)
         }
+        else {
+          monster_data.health = monster.health // GLOBAL MONSTER HEALTH STATE UPDATE
 
-        monster_data.health = monster.health
-        setMonsterHealth(monster.health)
-
-
-        const level_data = useStateGame.getState().level
-        console.log('ACTIVE_ROOM', active_room)
-        console.log('LEVEL_DATA', level_data)
+          setLog(log_text)
+          setMonsterHealth(monster.health) // UPDATES DISPLAYED MONSTER HEALTH
+          setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
+          setCommand(null) // NECESSARY TO RESET COMMANDS TO NULL BEFORE SETTING NEW COMMANDS
+        }
       }
 
       // --- MONSTER WINS ---
@@ -134,7 +172,7 @@ const Dice = () => {
 
         // -- CALCULATE DAMAGE
         if (dice_roll_player === 1) {
-          log_text += '\nDEFENSE CRITICAL FAILURE ..MAX DAMAGE!'
+          log_text += '\nDEFENSE CRITICAL FAIL -- MAX DAMAGE TAKEN!'
           damage = attack // DEFENSE CRITICAL FAIL
         }
         else {
@@ -153,15 +191,16 @@ const Dice = () => {
         if (player.health <= 0) {
           player.health = 0
           log_text += '\nOH NOES!! PLAYER DEFEATED!'
+
+          // GAME OVER
+          console.log('TODO - GAME OVER')
         }
+
+        setLog(log_text)
+        setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
+        setCommand(null) // NECESSARY TO RESET COMMANDS TO NULL BEFORE SETTING NEW COMMANDS
       }
     }
-
-    // -- MESSAGE LOG
-    setLog(log_text)
-
-    setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
-    setCommand(null) // NECESSARY TO RESET COMMANDS TO NULL BEFORE SETTING NEW COMMANDS
   }
 
   useEffect(() => {

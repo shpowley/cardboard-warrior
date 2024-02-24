@@ -78,7 +78,7 @@ const HUDScreen = () => {
           ref_hud.minimap.current.visible = false
           ref_hud.enemy.current.visible = true
         }
-        else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
+        else if (animation_state === ANIMATION_STATE.HIDDEN) {
           ref_hud.minimap.current.visible = true
           ref_hud.enemy.current.visible = false
         }

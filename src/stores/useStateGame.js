@@ -12,7 +12,8 @@ const GAME_PHASE = {
   ROOM_HIDING: 7,
   PLAYER_MOVEMENT: 8,
   PLAYER_COMBAT: 9,
-  GAME_OVER: 10
+  MONSTER_DEFEATED: 10,
+  GAME_OVER: 11
 }
 
 const useStateGame = create(
@@ -88,6 +89,22 @@ const useStateGame = create(
               // ROOM_SHOWING -> PLAYER_COMBAT or PLAYER_MOVEMENT
               case GAME_PHASE.ROOM_SHOWING:
                 if (new_phase === GAME_PHASE.PLAYER_COMBAT || new_phase === GAME_PHASE.PLAYER_MOVEMENT) {
+                  return { phase: new_phase }
+                }
+
+                break
+
+              // PLAYER_COMBAT -> MONSTER_DEFEATED
+              case GAME_PHASE.PLAYER_COMBAT:
+                if (new_phase === GAME_PHASE.MONSTER_DEFEATED) {
+                  return { phase: new_phase }
+                }
+
+                break
+
+              // MONSTER_DEFEATED -> PLAYER_MOVEMENT
+              case GAME_PHASE.MONSTER_DEFEATED:
+                if (new_phase === GAME_PHASE.PLAYER_MOVEMENT) {
                   return { phase: new_phase }
                 }
 

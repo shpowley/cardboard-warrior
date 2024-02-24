@@ -21,6 +21,8 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       // CALLBACK
       dice_animation_state => {
         if (dice_animation_state === ANIMATION_STATE.VISIBLE) {
+          ref_text.player.current.text = '-'
+          ref_text.enemy.current.text = '-'
           forward_ref.current.visible = true
         }
         else if (dice_animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {

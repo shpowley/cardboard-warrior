@@ -213,15 +213,6 @@ const SceneContent = () => {
     }
   )
 
-  // DETERMINE COMPONENTS TO RENDER
-  const render_scene = [
-    GAME_PHASE.HUD_SHOWING,
-    GAME_PHASE.ROOM_SHOWING,
-    GAME_PHASE.ROOM_HIDING,
-    GAME_PHASE.PLAYER_MOVEMENT,
-    GAME_PHASE.PLAYER_COMBAT
-  ].includes(phase)
-
   useEffect(() => {
 
     // --- GAME PHASE SUBSCRIPTION (ZUSTAND) ---
@@ -240,6 +231,35 @@ const SceneContent = () => {
         // TRIGGERS ROOM DECONSTRUCTION ANIMATIONS
         else if (phase_subscribed === GAME_PHASE.ROOM_HIDING) {
           deconstructRoom()
+        }
+
+        // MONSTER DEFEATED
+        else if (phase_subscribed === GAME_PHASE.MONSTER_DEFEATED) {
+          const
+            monster_animation_state = useStateAnimation.getState().monster_sign_animation_state,
+            dice_animation_state = useStateAnimation.getState().dice_animation_state
+
+          if (dice_animation_state === ANIMATION_STATE.VISIBLE) {
+            setDiceAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, 3000)
+          }
+
+          if (monster_animation_state === ANIMATION_STATE.VISIBLE) {
+            setMonsterSignAnimationState(ANIMATION_STATE.ANIMATING_TO_HIDE, 4000)
+          }
+        }
+      }
+    )
+
+    // --- SCENE ANIMATIONS SUBSCRIPTION (ZUSTAND) (MONSTER DEFEATED) ---
+    // - SPECIAL CASE: MONSTER DEFEATED
+    const subscribeMonsterAnimationState = useStateAnimation.subscribe(
+      // SELECTOR
+      state => state.monster_sign_animation_state,
+
+      // CALLBACK
+      monster_animation_state => {
+        if (monster_animation_state === ANIMATION_STATE.HIDDEN) {
+          setGamePhase(GAME_PHASE.PLAYER_MOVEMENT)
         }
       }
     )
@@ -288,6 +308,7 @@ const SceneContent = () => {
     )
 
     // 'room_animation_state' IS ANIMATION STATE FOR THE ENTIRE ROOM (BASICALLY ALL THE REQUIRED ANIMATIONS ARE COMPLETE)
+    // - THE RESULT OF THE SUBSCRIPTIONS (WALL, DICE, PLAYER) -- ONLY ONE OF THESE WILL BE THE FINAL ANIMATION
     const subscribeRoomAnimationState = useStateAnimation.subscribe(
       // SELECTOR
       state => state.room_animation_state,
@@ -337,12 +358,24 @@ const SceneContent = () => {
     // CLEANUP
     return () => {
       subscribeGamePhase()
+      subscribeMonsterAnimationState()
       subscribeWallAnimationState()
       subscribeDiceAnimationState()
       subscribePlayerAnimationState
       subscribeRoomAnimationState()
     }
   }, [])
+
+  // DETERMINE COMPONENTS TO RENDER
+  const render_scene = [
+    GAME_PHASE.HUD_SHOWING,
+    GAME_PHASE.ROOM_SHOWING,
+    GAME_PHASE.ROOM_HIDING,
+    GAME_PHASE.PLAYER_MOVEMENT,
+    GAME_PHASE.PLAYER_COMBAT,
+    GAME_PHASE.MONSTER_DEFEATED,
+    GAME_PHASE.GAME_OVER
+  ].includes(phase)
 
   return render_scene ?
     <Suspense fallback={null}>
