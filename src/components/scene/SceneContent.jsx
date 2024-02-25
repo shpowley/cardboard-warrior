@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { Physics } from '@react-three/rapier'
 import { button, useControls } from 'leva'
 
@@ -15,9 +15,10 @@ import Dice from './dice/Dice'
  * RAPIER PHYSICS: https://github.com/pmndrs/react-three-rapier
  */
 const SceneContent = () => {
+  const ref_group = useRef()
+
   // ZUSTAND STATES
   const
-    phase = useStateGame(state => state.phase),
     setGamePhase = useStateGame(state => state.setGamePhase),
     setLog = useStateGame(state => state.setLog),
     setRoomAnimationState = useStateAnimation(state => state.setRoomAnimationState),
@@ -214,7 +215,6 @@ const SceneContent = () => {
   )
 
   useEffect(() => {
-
     // --- GAME PHASE SUBSCRIPTION (ZUSTAND) ---
     const subscribeGamePhase = useStateGame.subscribe(
       // SELECTOR
@@ -222,6 +222,25 @@ const SceneContent = () => {
 
       // CALLBACK
       phase_subscribed => {
+        // DETERMINE VISIBILITY BASED ON GAME PHASE
+        if ([
+          GAME_PHASE.HUD_SHOWING,
+          GAME_PHASE.ROOM_SHOWING,
+          GAME_PHASE.ROOM_HIDING,
+          GAME_PHASE.PLAYER_MOVEMENT,
+          GAME_PHASE.PLAYER_COMBAT,
+          GAME_PHASE.MONSTER_DEFEATED,
+          GAME_PHASE.GAME_OVER
+        ].includes(phase_subscribed)) {
+          if (!ref_group.current.visible) {
+            ref_group.current.visible = true
+          }
+        }
+        else {
+          if (ref_group.current.visible) {
+            ref_group.current.visible = false
+          }
+        }
 
         // TRIGGERS ROOM CONSTRUCTION ANIMATIONS
         if (phase_subscribed === GAME_PHASE.ROOM_SHOWING) {
@@ -366,22 +385,14 @@ const SceneContent = () => {
     }
   }, [])
 
-  // DETERMINE COMPONENTS TO RENDER
-  const render_scene = [
-    GAME_PHASE.HUD_SHOWING,
-    GAME_PHASE.ROOM_SHOWING,
-    GAME_PHASE.ROOM_HIDING,
-    GAME_PHASE.PLAYER_MOVEMENT,
-    GAME_PHASE.PLAYER_COMBAT,
-    GAME_PHASE.MONSTER_DEFEATED,
-    GAME_PHASE.GAME_OVER
-  ].includes(phase)
-
-  return render_scene ?
-    <Suspense fallback={null}>
-      <Physics
-        gravity={[0, -9.81, 0]}
-        debug={controls_physics.debug}
+  return <Suspense fallback={null}>
+    <Physics
+      gravity={[0, -9.81, 0]}
+      debug={controls_physics.debug}
+    >
+      <group
+        ref={ref_group}
+        visible={false}
       >
         <Room />
         <Warrior
@@ -397,10 +408,9 @@ const SceneContent = () => {
           scale={2}
         />
         <Dice />
-      </Physics>
-    </Suspense>
-    :
-    null
+      </group>
+    </Physics>
+  </Suspense>
 }
 
 export default SceneContent

@@ -20,14 +20,17 @@ const material_text = new THREE.MeshBasicMaterial({
 })
 
 const HUDScreen = () => {
-  const ref_hud = {
-    controls: useRef(),
-    minimap: useRef(),
-    game_log: useRef(),
-    dice_results: useRef(),
-    player: useRef(),
-    enemy: useRef()
-  }
+  const
+    ref_group = useRef(),
+
+    ref_hud = {
+      controls: useRef(),
+      minimap: useRef(),
+      game_log: useRef(),
+      dice_results: useRef(),
+      player: useRef(),
+      enemy: useRef()
+    }
 
   // ANIMATIONS (anime.js)
   const animation = useRef()
@@ -47,6 +50,26 @@ const HUDScreen = () => {
 
       // CALLBACK
       phase_subscribed => {
+        // DETERMINE VISIBILITY BASED ON GAME PHASE
+        if ([
+          GAME_PHASE.HUD_SHOWING,
+          GAME_PHASE.ROOM_SHOWING,
+          GAME_PHASE.ROOM_HIDING,
+          GAME_PHASE.PLAYER_MOVEMENT,
+          GAME_PHASE.PLAYER_COMBAT,
+          GAME_PHASE.MONSTER_DEFEATED,
+          GAME_PHASE.GAME_OVER
+        ].includes(phase_subscribed)) {
+          if (!ref_group.current.visible) {
+            ref_group.current.visible = true
+          }
+        }
+        else {
+          if (ref_group.current.visible) {
+            ref_group.current.visible = false
+          }
+        }
+
         if (phase_subscribed === GAME_PHASE.HUD_SHOWING) {
           // INITIAL VALUES
           ref_hud.controls.current.position.set(POSITIONS.KEYS.x, POSITIONS.KEYS.y.hidden, 0)
@@ -92,7 +115,10 @@ const HUDScreen = () => {
     }
   }, [])
 
-  return <>
+  return <group
+    ref={ref_group}
+    visible={false}
+  >
     <HUDKeys
       forward_ref={ref_hud.controls}
     />
@@ -125,7 +151,7 @@ const HUDScreen = () => {
       aspect_ratio={aspect_ratio}
       material_text={material_text}
     />
-  </>
+  </group>
 }
 
 export default HUDScreen

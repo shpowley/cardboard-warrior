@@ -21,19 +21,20 @@ const
   })
 
 const TitleScreen = () => {
-  const ref_text = {
-    title: useRef(),
-    new_game: useRef(),
-    github: useRef()
-  }
+  const
+    ref_group = useRef(),
+
+    ref_text = {
+      title: useRef(),
+      new_game: useRef(),
+      github: useRef()
+    }
 
   // ANIMATIONS (anime.js)
   const animation_title = useRef()
 
   // ZUSTAND GAME STATE
-  const
-    setGamePhase = useStateGame(state => state.setGamePhase),
-    phase = useStateGame(state => state.phase)
+  const setGamePhase = useStateGame(state => state.setGamePhase)
 
   // HANDLERS
   const handlerNewGame = () => {
@@ -49,6 +50,31 @@ const TitleScreen = () => {
 
       // CALLBACK
       phase_subscribed => {
+        // DETERMINE VISIBILITY BASED ON GAME PHASE
+        if ([
+          GAME_PHASE.GAME_INIT,
+          GAME_PHASE.TITLE_SHOWING,
+          GAME_PHASE.TITLE_VISIBLE,
+          GAME_PHASE.TITLE_HIDING
+        ].includes(phase_subscribed)) {
+          if (!ref_group.current.visible) {
+            ref_group.current.visible = true
+          }
+        }
+        else {
+          if (ref_group.current.visible) {
+            ref_group.current.visible = false
+          }
+        }
+
+        if (phase_subscribed === GAME_PHASE.TITLE_VISIBLE) {
+          ref_text.new_game.current.__r3f.handlers.onPointerOver = mouse_pointer.over
+        }
+        else if (ref_text.new_game.current.__r3f.handlers.onPointerOver) {
+          delete ref_text.new_game.current.__r3f.handlers.onPointerOver
+        }
+
+        // ANIMATIONS
         if (phase_subscribed === GAME_PHASE.TITLE_SHOWING) {
           ref_text.title.current.position.set(0, POSITIONS.TITLE.y.start, 0)
           ref_text.new_game.current.material.opacity = 0
@@ -90,6 +116,7 @@ const TitleScreen = () => {
   }, [])
 
   return <group
+    ref={ref_group}
     scale={0.1}
     visible={true}
     dispose={null}
@@ -114,7 +141,6 @@ const TitleScreen = () => {
       text='NEW GAME'
 
       onClick={handlerNewGame}
-      onPointerOver={phase === GAME_PHASE.TITLE_VISIBLE && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
     />
     <Text
