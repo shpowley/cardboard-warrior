@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import * as THREE from 'three'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
@@ -55,4 +54,4 @@ const Wall = ({ forward_ref, position, rotation, visible = false, direction }) =
   </>
 }
 
-export default memo(Wall)
+export default Wall

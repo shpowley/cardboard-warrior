@@ -43,6 +43,7 @@ const Experience = () => {
   const
     setFloorIndex = useStatePlayer(state => state.setFloorIndex),
     setRoom = useStatePlayer(state => state.setRoom),
+    useKey = useStatePlayer(state => state.useKey),
     takePotion = useStatePlayer(state => state.takePotion),
     setDiceStateCombined = useStateDice(state => state.setDiceStateCombined),
     setDiceStatePlayer = useStateDice(state => state.setDiceStatePlayer),
@@ -51,7 +52,8 @@ const Experience = () => {
     setLevel = useStateGame(state => state.setLevel),
     setLog = useStateGame(state => state.setLog),
     setCommand = useStateGame(state => state.setCommand),
-    setGamePhase = useStateGame(state => state.setGamePhase)
+    setGamePhase = useStateGame(state => state.setGamePhase),
+    setRenderTitleScreen = useStateGame(state => state.setRenderTitleScreen)
 
   // KEYBOARD CONTROLS
   const [keyboard_subscribe, keyboard_get] = useKeyboardControls()
@@ -452,12 +454,34 @@ const Experience = () => {
         }
 
         if (adjacent_room) {
-          const new_active_room = level_data.rooms[adjacent_room.index]
-          new_active_room.visited = true
-          setRoom(new_active_room)
+          // CHECK IF THE NEXT ROOM IS THE END/BOSS ROOM
+          if (adjacent_room.index === level_data.room_end.index) {
+            const player_has_key = useStatePlayer.getState().key
+
+            if (player_has_key) {
+              setLog('ENTERING THE BOSS ROOM...')
+
+              useKey()
+              const new_active_room = level_data.rooms[adjacent_room.index]
+              new_active_room.visited = true
+              new_active_room.locked = false
+              setRoom(new_active_room)
+              setGamePhase(GAME_PHASE.ROOM_HIDING) // SceneContent.jsx useEffect[] SHOULD COORDINATE THIS ANIMATION
+            }
+            else {
+              setLog('YOU NEED A KEY...')
+            }
+          }
+          else {
+            setLog('MOVING TO THE NEXT ROOM...')
+
+            const new_active_room = level_data.rooms[adjacent_room.index]
+            new_active_room.visited = true
+            setRoom(new_active_room)
+            setGamePhase(GAME_PHASE.ROOM_HIDING) // SceneContent.jsx useEffect[] SHOULD COORDINATE THIS ANIMATION
+          }
+
           setCommand(null)
-          setGamePhase(GAME_PHASE.ROOM_HIDING) // SceneContent.jsx useEffect[] SHOULD COORDINATE THIS ANIMATION
-          setLog('MOVING TO THE NEXT ROOM...')
         }
       }
     }
@@ -492,6 +516,7 @@ const Experience = () => {
           setRoom(active_room)
           setGamePhase(GAME_PHASE.HUD_SHOWING)
           setLog('THE ADVENTURE BEGINS...')
+          setRenderTitleScreen(false)
         }
       }
     )

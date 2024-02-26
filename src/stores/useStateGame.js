@@ -20,6 +20,7 @@ const useStateGame = create(
   subscribeWithSelector(
     set => ({
       /** PROPERTIES */
+      render_title_screen: true, // FLAG TO RENDER TITLE SCREEN
       controls: null, // ORBIT CONTROLS REF TO GRANDCHILD COMPONENT
       level: null,
       log: null,
@@ -27,6 +28,7 @@ const useStateGame = create(
       phase: GAME_PHASE.GAME_INIT,
 
       /** METHODS */
+      setRenderTitleScreen: data => set({ render_title_screen: data }),
       setControls: controls => set({ controls }),
       setLevel: data => set({ level: data }),
       setLog: data => set({ log: data }),

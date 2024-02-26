@@ -369,7 +369,9 @@ const SceneContent = () => {
           }
         }
         else if (room_animation_state === ANIMATION_STATE.HIDDEN) {
-          setGamePhase(GAME_PHASE.ROOM_SHOWING)
+          setTimeout(() => {
+            setGamePhase(GAME_PHASE.ROOM_SHOWING)
+          }, 1000)
         }
       }
     )

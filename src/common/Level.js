@@ -673,4 +673,4 @@ const generateLevel = (level_number, prior_room) => {
   return level
 }
 
-export { FLOOR_ITEMS, generateLevel }
+export { DIRECTION, FLOOR_ITEMS, generateLevel }

@@ -7,11 +7,13 @@ import { useStatePlayer } from '../../../stores/useStatePlayer'
 import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
 import { POSITIONING_ADJUST, ROOM_COLLIDER } from './Constants'
 import { DIRECTION } from '../../../common/Constants'
+import { DIRECTION as LEVEL_DIRECTION } from '../../../common/Level'
 import ANIMATIONS from '../../../common/Animation'
 import { mouse_pointer } from '../../../common/Utils'
 import Floor from './Floor'
 import Wall from './Wall'
 import Ceiling from './Ceiling'
+import DoorIndicator from './DoorIndicator'
 
 // CALCULATE THE CAMERA'S ANGLE IN DEGREES
 const calculateRange = (prime_angle, camera_yaw) => {
@@ -117,7 +119,7 @@ const Room = () => {
             target_arrows = []
 
             // NORTH WALL
-            if (active_room.doors.N) {
+            if (active_room.doors.N || (active_room.level_door && active_room.level_door === LEVEL_DIRECTION.N)) {
               ref_walls.north.door.current.visible = true
               ref_walls.north.arrow.current.visible = true
               ref_walls.north.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
@@ -132,7 +134,7 @@ const Room = () => {
             }
 
             // SOUTH WALL
-            if (active_room.doors.S) {
+            if (active_room.doors.S || (active_room.level_door && active_room.level_door === LEVEL_DIRECTION.S)) {
               ref_walls.south.door.current.visible = true
               ref_walls.south.arrow.current.visible = true
               ref_walls.south.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
@@ -147,7 +149,7 @@ const Room = () => {
             }
 
             // EAST WALL
-            if (active_room.doors.E) {
+            if (active_room.doors.E || (active_room.level_door && active_room.level_door === LEVEL_DIRECTION.E)) {
               ref_walls.east.door.current.visible = true
               ref_walls.east.arrow.current.visible = true
               ref_walls.east.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
@@ -162,7 +164,7 @@ const Room = () => {
             }
 
             // WEST WALL
-            if (active_room.doors.W) {
+            if (active_room.doors.W || (active_room.level_door && active_room.level_door === LEVEL_DIRECTION.W)) {
               ref_walls.west.door.current.visible = true
               ref_walls.west.arrow.current.visible = true
               ref_walls.west.arrow.current.__r3f.handlers.onPointerOver = mouse_pointer.over
@@ -235,6 +237,7 @@ const Room = () => {
   }, [])
 
   return <>
+    <DoorIndicator />
     <Ceiling />
     <Floor />
 
