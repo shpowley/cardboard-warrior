@@ -38,18 +38,18 @@ const DoorIndicator = () => {
 
         // STARTING ROOM
         if (active_room.index === level_data.room_start.index) {
-          if (level_data.room_start.level_door) {
+          if (active_room.level_door) {
             show_indicator = true
-            indicator_direction = level_data.room_end.level_door
-            HUD_image = HUDImages.EXIT
+            indicator_direction = active_room.level_door
+            HUD_image = HUDImages.RED_X
           }
         }
 
         // ENDING ROOM
         else if (active_room.index === level_data.room_end.index) {
-          if (level_data.room_end.level_door) {
+          if (active_room.level_door) {
             show_indicator = true
-            indicator_direction = level_data.room_start.level_door
+            indicator_direction = active_room.level_door
             HUD_image = HUDImages.EXIT
           }
         }

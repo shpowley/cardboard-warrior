@@ -11,7 +11,7 @@ import ScreenOverlay from './components/overlay/ScreenOverlay'
 import SceneContent from './components/scene/SceneContent'
 import { CAMERA_DEFAULTS, COMMAND, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
 import { parameterEnabled } from './common/Utils'
-import { generateLevel } from './common/Level'
+import { DIRECTION, generateLevel } from './common/Level'
 
 // LEVA DEBUG
 const debug_enabled = parameterEnabled('DEBUG') || parameterEnabled('debug')
@@ -435,22 +435,49 @@ const Experience = () => {
           level_data = useStateGame.getState().level,
           active_room = useStatePlayer.getState().room
 
-        let adjacent_room = null
+        let
+          adjacent_room = null,
+          move_to_next_level = false
 
-        if (command === COMMAND.NORTH && active_room.doors.N) {
-          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'N')
+        if (command === COMMAND.NORTH) {
+          if (active_room.doors.N) {
+            adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.N)
+          }
+
+          // STOPPED HERE - MOVE UP TO IF, CHECK VS END ROOM LEVEL DOOR
+          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.N) {
+            move_to_next_level = true
+          }
         }
 
-        else if (command === COMMAND.SOUTH && active_room.doors.S) {
-          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'S')
+        else if (command === COMMAND.SOUTH) {
+          if (active_room.doors.S) {
+            adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.S)
+          }
+
+          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.S) {
+            move_to_next_level = true
+          }
         }
 
-        else if (command === COMMAND.EAST && active_room.doors.E) {
-          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'E')
+        else if (command === COMMAND.EAST) {
+          if (active_room.doors.E) {
+            adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.E)
+          }
+
+          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.E) {
+            move_to_next_level = true
+          }
         }
 
-        else if (command === COMMAND.WEST && active_room.doors.W) {
-          adjacent_room = active_room.adjacent_blocks.find(block => block.direction === 'W')
+        else if (command === COMMAND.WEST) {
+          if (active_room.doors.W) {
+            adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.W)
+          }
+
+          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.W) {
+            move_to_next_level = true
+          }
         }
 
         if (adjacent_room) {
@@ -458,7 +485,7 @@ const Experience = () => {
           if (adjacent_room.index === level_data.room_end.index) {
             const player_has_key = useStatePlayer.getState().key
 
-            if (player_has_key) {
+            if (!level_data.rooms[adjacent_room.index].locked || player_has_key) {
               setLog('ENTERING THE BOSS ROOM...')
 
               useKey()
@@ -480,9 +507,32 @@ const Experience = () => {
             setRoom(new_active_room)
             setGamePhase(GAME_PHASE.ROOM_HIDING) // SceneContent.jsx useEffect[] SHOULD COORDINATE THIS ANIMATION
           }
-
-          setCommand(null)
         }
+        else if (move_to_next_level) {
+          setLog('MOVING TO THE NEXT LEVEL...')
+
+          let floor_index = useStatePlayer.getState().floor_index
+          floor_index++
+
+          const level_data = generateLevel(
+            floor_index,
+
+            {
+              index: active_room.index,
+              level_door: active_room.level_door
+            }
+          )
+
+          const new_active_room = level_data.rooms[level_data.room_start.index]
+          new_active_room.visited = true
+
+          setLevel(level_data)
+          setFloorIndex(floor_index)
+          setRoom(new_active_room)
+          setGamePhase(GAME_PHASE.ROOM_HIDING)
+        }
+
+        setCommand(null)
       }
     }
   }

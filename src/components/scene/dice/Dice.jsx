@@ -132,9 +132,9 @@ const Dice = () => {
             }
 
             delete active_room.item
-            delete active_room.monster
           }
 
+          delete active_room.monster
           monster_data.health = monster.health // GLOBAL MONSTER HEALTH STATE UPDATE
 
           setLog(log_text)
