@@ -9,7 +9,7 @@ const GameLog = ({ forward_ref, aspect_ratio = 1 }) => {
     forward_ref.current.visible = true
 
     // LOG DATA SUBSCRIPTION (ZUSTAND)
-    const subscribeLog = useStateGame.subscribe(
+    const subscribe_log = useStateGame.subscribe(
       // SELECTOR
       state => state.log,
 
@@ -23,7 +23,7 @@ const GameLog = ({ forward_ref, aspect_ratio = 1 }) => {
 
     // CLEANUP
     return () => {
-      subscribeLog()
+      subscribe_log()
     }
   }, [])
 

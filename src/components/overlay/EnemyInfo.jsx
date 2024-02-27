@@ -38,7 +38,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
   useEffect(() => {
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeMonsterAnimation = useStateAnimation.subscribe(
+    const subscribe_monster_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.monster_sign_animation_state,
 
@@ -59,7 +59,7 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     )
 
     // MONSTER HEALTH SUBSCRIPTION (ZUSTAND)
-    const subscribeMonsterHealth = useStateEnemy.subscribe(
+    const subscribe_monster_health = useStateEnemy.subscribe(
       // SELECTOR
       state => state.health,
 
@@ -71,8 +71,8 @@ const EnemyInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
     // CLEANUP
     return () => {
-      subscribeMonsterAnimation()
-      subscribeMonsterHealth()
+      subscribe_monster_animation()
+      subscribe_monster_health()
     }
   }, [])
 

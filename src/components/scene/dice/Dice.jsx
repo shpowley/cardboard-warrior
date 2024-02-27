@@ -210,7 +210,7 @@ const Dice = () => {
   useEffect(() => {
     // DICE ROLL SUBSCRIPTION (ZUSTAND)
     const
-      subscribePlayerDiceRollComplete = useStateDice.subscribe(
+      subscribe_player_dice_roll_complete = useStateDice.subscribe(
         // SELECTOR
         state => state.dice_state_player,
 
@@ -232,7 +232,7 @@ const Dice = () => {
         }
       ),
 
-      subscribeEnemyDiceRollComplete = useStateDice.subscribe(
+      subscribe_enemy_dice_roll_complete = useStateDice.subscribe(
         // SELECTOR
         state => state.dice_state_enemy,
 
@@ -256,8 +256,8 @@ const Dice = () => {
 
     // CLEANUP
     return () => {
-      subscribePlayerDiceRollComplete()
-      subscribeEnemyDiceRollComplete()
+      subscribe_player_dice_roll_complete()
+      subscribe_enemy_dice_roll_complete()
     }
   }, [])
 

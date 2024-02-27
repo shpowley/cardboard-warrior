@@ -12,7 +12,7 @@ const DoorIndicator = () => {
 
   useEffect(() => {
     // ROOM SUBSCRIPTION (ZUSTAND)
-    const subscribeAnimation = useStateAnimation.subscribe(
+    const subscribe_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.wall_animation_state,
 
@@ -106,7 +106,7 @@ const DoorIndicator = () => {
 
     // CLEANUP
     return () => {
-      subscribeAnimation()
+      subscribe_animation()
     }
   }, [])
 

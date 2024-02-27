@@ -59,7 +59,7 @@ const FILES = {
 }
 
 const LINKS = {
-  GITHUB: 'https://github.com/shpowley/cardboard-warrior/blob/master/credits.txt'
+  GITHUB: 'https://github.com/shpowley/cardboard-warrior-fixed/blob/main/credits.txt'
 }
 
 const ITEM_KEYS = {

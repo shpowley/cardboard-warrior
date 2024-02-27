@@ -216,7 +216,7 @@ const SceneContent = () => {
 
   useEffect(() => {
     // --- GAME PHASE SUBSCRIPTION (ZUSTAND) ---
-    const subscribeGamePhase = useStateGame.subscribe(
+    const subscribe_game_phase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 
@@ -271,7 +271,7 @@ const SceneContent = () => {
 
     // --- SCENE ANIMATIONS SUBSCRIPTION (ZUSTAND) (MONSTER DEFEATED) ---
     // - SPECIAL CASE: MONSTER DEFEATED
-    const subscribeMonsterAnimationState = useStateAnimation.subscribe(
+    const subscribe_monster_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.monster_sign_animation_state,
 
@@ -284,7 +284,7 @@ const SceneContent = () => {
     )
 
     // --- SCENE ANIMATIONS SUBSCRIPTION (ZUSTAND) ---
-    const subscribeWallAnimationState = useStateAnimation.subscribe(
+    const subscribe_wall_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.wall_animation_state,
 
@@ -298,7 +298,7 @@ const SceneContent = () => {
       }
     )
 
-    const subscribeDiceAnimationState = useStateAnimation.subscribe(
+    const subscribe_dice_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.dice_animation_state,
 
@@ -312,7 +312,7 @@ const SceneContent = () => {
       }
     )
 
-    const subscribePlayerAnimationState = useStateAnimation.subscribe(
+    const subscribe_player_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.player_animation_state,
 
@@ -328,7 +328,7 @@ const SceneContent = () => {
 
     // 'room_animation_state' IS ANIMATION STATE FOR THE ENTIRE ROOM (BASICALLY ALL THE REQUIRED ANIMATIONS ARE COMPLETE)
     // - THE RESULT OF THE SUBSCRIPTIONS (WALL, DICE, PLAYER) -- ONLY ONE OF THESE WILL BE THE FINAL ANIMATION
-    const subscribeRoomAnimationState = useStateAnimation.subscribe(
+    const subscribe_room_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.room_animation_state,
 
@@ -378,12 +378,12 @@ const SceneContent = () => {
 
     // CLEANUP
     return () => {
-      subscribeGamePhase()
-      subscribeMonsterAnimationState()
-      subscribeWallAnimationState()
-      subscribeDiceAnimationState()
-      subscribePlayerAnimationState
-      subscribeRoomAnimationState()
+      subscribe_game_phase()
+      subscribe_monster_animation()
+      subscribe_wall_animation()
+      subscribe_dice_animation()
+      subscribe_player_animation
+      subscribe_room_animation()
     }
   }, [])
 

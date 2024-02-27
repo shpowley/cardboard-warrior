@@ -84,7 +84,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     forward_ref.current.visible = true
 
     // STATE DATA SUBSCRIPTION (ZUSTAND)
-    const subscribeLevel = useStateGame.subscribe(
+    const subscribe_level = useStateGame.subscribe(
       // SELECTOR
       state => state.level,
 
@@ -96,7 +96,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribeRoomAnimation = useStateAnimation.subscribe(
+    const subscribe_room_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.room_animation_state,
 
@@ -118,8 +118,8 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
     // CLEANUP
     return () => {
-      subscribeLevel()
-      subscribeRoomAnimation()
+      subscribe_level()
+      subscribe_room_animation()
     }
   }, [])
 

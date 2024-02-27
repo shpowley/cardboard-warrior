@@ -44,7 +44,7 @@ const TitleScreen = () => {
   useEffect(() => {
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeGamePhase = useStateGame.subscribe(
+    const subscribe_game_phase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 
@@ -111,7 +111,7 @@ const TitleScreen = () => {
 
     // CLEAN UP
     return () => {
-      subscribeGamePhase()
+      subscribe_game_phase()
     }
   }, [])
 

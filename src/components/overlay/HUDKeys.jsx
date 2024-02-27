@@ -34,26 +34,33 @@ const HUDKeys = ({ forward_ref }) => {
 
   const setCommand = useStateGame(state => state.setCommand)
 
-  // SUBSCRIBE TO GAME PHASE
   useEffect(() => {
-    // SUBSCRIBE TO room_animation_state + GAME PHASE
-    const subscribeRoomAnimationState = useStateGame.subscribe(
+    // SUBSCRIBE TO GAME PHASE
+    const subscribe_game_phase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 
       // CALLBACK
       phase_subscribed => {
+        let potion_count
+
         switch (phase_subscribed) {
           // COMBAT ONLY KEYS (ROLL, POTION)
           case GAME_PHASE.PLAYER_COMBAT:
-            setKeyEnabled({ ...KEYS.DISABLED, roll: true, potion: true })
+            potion_count = useStatePlayer.getState().potions
+
+            setKeyEnabled({
+              ...KEYS.DISABLED,
+              roll: true,
+              potion: potion_count > 0
+            })
+
             break
 
           // MOVEMENT-RELATED KEYS (NORTH, SOUTH, EAST, WEST + POTION)
           case GAME_PHASE.PLAYER_MOVEMENT:
-            const
-              active_room = useStatePlayer.getState().room,
-              potions = useStatePlayer.getState().potions
+            const active_room = useStatePlayer.getState().room
+            potion_count = useStatePlayer.getState().potions
 
             setKeyEnabled({
               north: active_room.doors.N,
@@ -61,7 +68,7 @@ const HUDKeys = ({ forward_ref }) => {
               east: active_room.doors.E,
               west: active_room.doors.W,
               roll: false,
-              potion: potions > 0
+              potion: potion_count > 0
             })
 
             break
@@ -82,7 +89,7 @@ const HUDKeys = ({ forward_ref }) => {
     )
 
     // SUBSCRIBE TO DICE ROLLING STATE (ENABLES/DISABLES DICE-ROLLING KEY)
-    const subscribeDiceRollingState = useStateDice.subscribe(
+    const subscribe_dice_rolling_state = useStateDice.subscribe(
       // SELECTOR
       state => state.dice_state_combined,
 
@@ -92,21 +99,36 @@ const HUDKeys = ({ forward_ref }) => {
           setKeyEnabled(KEYS.DISABLED)
         }
         else if (dice_state_combined === DICE_STATE.ROLL_COMPLETE) {
-          const potions = useStatePlayer.getState().potions
+          const potion_count = useStatePlayer.getState().potions
 
           setKeyEnabled({
             ...KEYS.DISABLED,
             roll: true,
-            potion: potions > 0
+            potion: potion_count > 0
           })
         }
       }
     )
 
+    // SUBSCRIBE TO PLAYER POTIONS COUNT (ENABLES/DISABLES POTION KEY)
+    const subscribe_player_potions = useStatePlayer.subscribe(
+      // SELECTOR
+      state => state.potions,
+
+      // CALLBACK
+      potions => {
+        setKeyEnabled(state => ({
+          ...state,
+          potion: potions > 0
+        }))
+      }
+    )
+
     // CLEAN UP
     return () => {
-      subscribeRoomAnimationState()
-      subscribeDiceRollingState()
+      subscribe_game_phase()
+      subscribe_dice_rolling_state()
+      subscribe_player_potions()
     }
   }, [])
 

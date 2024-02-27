@@ -548,7 +548,7 @@ const Experience = () => {
     }, 500)
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeGamePhase = useStateGame.subscribe(
+    const subscribe_game_phase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 
@@ -571,7 +571,7 @@ const Experience = () => {
     )
 
     // GAME COMMANDS SUBSCRIPTION (ZUSTAND)
-    const subscribeGameCommand = useStateGame.subscribe(
+    const subscribe_game_command = useStateGame.subscribe(
       // SELECTOR
       state => state.command,
 
@@ -580,8 +580,8 @@ const Experience = () => {
     )
 
     // KEYBOARD SUBSCRIPTION
-    // - ROUTE COMMANDS TO ZUSTAND, THEN 'subscribeGameCommand' ABOVE TO PROCESS
-    const subscribeKeyboard = keyboard_subscribe(
+    // - ROUTE COMMANDS TO ZUSTAND, THEN 'subscribe_game_command' ABOVE TO PROCESS
+    const subscribe_keyboard = keyboard_subscribe(
       key => {
         const
           phase = useStateGame.getState().phase,
@@ -612,9 +612,9 @@ const Experience = () => {
 
     // CLEANUP
     return () => {
-      subscribeGamePhase()
-      subscribeGameCommand()
-      subscribeKeyboard()
+      subscribe_game_phase()
+      subscribe_game_command()
+      subscribe_keyboard()
     }
   }, [])
 

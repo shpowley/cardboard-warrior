@@ -128,7 +128,7 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
   useEffect(() => {
 
     // MODEL ANIMATION SUBSCRIPTION (ZUSTAND) (GLTF ANIMATION)
-    const subscribeModelAnimation = useStatePlayer.subscribe(
+    const subscribe_model_animation = useStatePlayer.subscribe(
       // SELECTOR
       state => state.animation,
 
@@ -142,7 +142,7 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
     )
 
     // PLAYER ANIMATION SUBSCRIPTION (ZUSTAND) (ANIME.JS ANIMATION)
-    const subscribePlayerAnimation = useStateAnimation.subscribe(
+    const subscribe_player_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.player_animation_state,
 
@@ -169,8 +169,8 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
 
     // CLEANUP
     return () => {
-      subscribeModelAnimation()
-      subscribePlayerAnimation()
+      subscribe_model_animation()
+      subscribe_player_animation()
     }
   }, [])
 

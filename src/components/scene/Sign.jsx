@@ -53,7 +53,7 @@ const SignMaterial = ({ material, texture_url, x, y, scale }) => {
   useEffect(() => {
 
     // ENEMY IMAGE SUBSCRIPTION (ZUSTAND)
-    const subscribeEnemyImage = useStateEnemy.subscribe(
+    const subscribe_enemy_image = useStateEnemy.subscribe(
       // SELECTOR
       state => state.image_data,
 
@@ -79,7 +79,7 @@ const SignMaterial = ({ material, texture_url, x, y, scale }) => {
 
     // CLEAN UP
     return () => {
-      subscribeEnemyImage()
+      subscribe_enemy_image()
     }
   }, [])
 
@@ -126,7 +126,7 @@ const Sign = ({ castShadow = false, position, rotation, scale, visible = false }
 
   useEffect(() => {
     // SIGN ANIMATION SUBSCRIPTION (ZUSTAND)
-    const subscribeSignAnimation = useStateAnimation.subscribe(
+    const subscribe_sign_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.monster_sign_animation_state,
 
@@ -166,7 +166,7 @@ const Sign = ({ castShadow = false, position, rotation, scale, visible = false }
 
     // CLEAN UP
     return () => {
-      subscribeSignAnimation()
+      subscribe_sign_animation()
     }
   }, [])
 

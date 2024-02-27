@@ -71,7 +71,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     forward_ref.current.visible = true
 
     // PLAYER STATE SUBSCRIPTIONS (ZUSTAND)
-    const subscribeHealth = useStatePlayer.subscribe(
+    const subscribe_health = useStatePlayer.subscribe(
       // SELECTOR
       state => state.health,
 
@@ -81,7 +81,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribePotions = useStatePlayer.subscribe(
+    const subscribe_potions = useStatePlayer.subscribe(
       // SELECTOR
       state => state.potions,
 
@@ -91,7 +91,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribeGold = useStatePlayer.subscribe(
+    const subscribe_gold = useStatePlayer.subscribe(
       // SELECTOR
       state => state.gold,
 
@@ -101,7 +101,7 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       }
     )
 
-    const subscribeKey = useStatePlayer.subscribe(
+    const subscribe_key = useStatePlayer.subscribe(
       // SELECTOR
       state => state.key,
 
@@ -113,10 +113,10 @@ const PlayerInfo = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
     // CLEANUP
     return () => {
-      subscribeHealth()
-      subscribePotions()
-      subscribeGold()
-      subscribeKey()
+      subscribe_health()
+      subscribe_potions()
+      subscribe_gold()
+      subscribe_key()
     }
   }, [])
 

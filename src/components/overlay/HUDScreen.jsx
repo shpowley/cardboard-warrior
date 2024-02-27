@@ -44,7 +44,7 @@ const HUDScreen = () => {
   useEffect(() => {
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
-    const subscribeGamePhase = useStateGame.subscribe(
+    const subscribe_game_phase = useStateGame.subscribe(
       // SELECTOR
       state => state.phase,
 
@@ -91,7 +91,7 @@ const HUDScreen = () => {
     )
 
     // MONSTER ANIMATION SUBSCRIPTION (ZUSTAND)
-    const subscribeMonsterAnimation = useStateAnimation.subscribe(
+    const subscribe_monster_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.monster_sign_animation_state,
 
@@ -110,8 +110,8 @@ const HUDScreen = () => {
 
     // CLEANUP
     return () => {
-      subscribeGamePhase()
-      subscribeMonsterAnimation()
+      subscribe_game_phase()
+      subscribe_monster_animation()
     }
   }, [])
 

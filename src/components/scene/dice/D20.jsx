@@ -142,7 +142,7 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
 
   useEffect(() => {
     // DICE ROLL TRIGGER SUBSCRIPTION (ZUSTAND)
-    const subscribeDiceRoll = useStateDice.subscribe(
+    const subscribe_dice_roll = useStateDice.subscribe(
       // SELECTOR
       state => state.dice_state_player,
 
@@ -155,7 +155,7 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
     )
 
     // DICE HIDE/SHOW ANIMATION SUBSCRIPTION (ZUSTAND)
-    const subscribeDiceAnimation = useStateAnimation.subscribe(
+    const subscribe_dice_animation = useStateAnimation.subscribe(
       // SELECTOR
       state => state.dice_animation_state,
 
@@ -182,8 +182,8 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
 
     // CLEANUP
     return () => {
-      subscribeDiceRoll()
-      subscribeDiceAnimation()
+      subscribe_dice_roll()
+      subscribe_dice_animation()
     }
   }, [])
 

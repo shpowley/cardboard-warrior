@@ -14,7 +14,7 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
   useEffect(() => {
     // DICE VISIBILITY SUBSCRIPTION (ZUSTAND)
-    const subscribeDiceVisibility = useStateAnimation.subscribe(
+    const subscribe_dice_visibility = useStateAnimation.subscribe(
       // SELECTOR
       state => state.dice_animation_state,
 
@@ -32,7 +32,7 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     )
 
     // PLAYER DICE ROLL SUBSCRIPTION (ZUSTAND)
-    const subscribeDiceRollPlayer = useStateDice.subscribe(
+    const subscribe_dice_roll_player = useStateDice.subscribe(
       // SELECTOR
       state => state.dice_state_player,
 
@@ -48,7 +48,7 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
     )
 
     // ENEMY DICE ROLL SUBSCRIPTION (ZUSTAND)
-    const subscribeDiceRollEnemy = useStateDice.subscribe(
+    const subscribe_dice_roll_enemy = useStateDice.subscribe(
       // SELECTOR
       state => state.dice_state_enemy,
 
@@ -65,9 +65,9 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
     // CLEANUP
     return () => {
-      subscribeDiceVisibility()
-      subscribeDiceRollPlayer()
-      subscribeDiceRollEnemy()
+      subscribe_dice_visibility()
+      subscribe_dice_roll_player()
+      subscribe_dice_roll_enemy()
     }
   }, [])
 
