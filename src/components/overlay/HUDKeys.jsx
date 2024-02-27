@@ -89,16 +89,16 @@ const HUDKeys = ({ forward_ref }) => {
       // CALLBACK
       dice_state_combined => {
         if (dice_state_combined === DICE_STATE.ROLLING) {
-          setKeyEnabled(prev_state => ({
-            ...prev_state,
-            roll: false
-          }))
+          setKeyEnabled(KEYS.DISABLED)
         }
         else if (dice_state_combined === DICE_STATE.ROLL_COMPLETE) {
-          setKeyEnabled(prev_state => ({
-            ...prev_state,
-            roll: true
-          }))
+          const potions = useStatePlayer.getState().potions
+
+          setKeyEnabled({
+            ...KEYS.DISABLED,
+            roll: true,
+            potion: potions > 0
+          })
         }
       }
     )

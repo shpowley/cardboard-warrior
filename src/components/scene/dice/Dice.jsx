@@ -94,8 +94,10 @@ const Dice = () => {
         }
 
         // -- CALCULATE DAMAGE
+        log_text += `\n${monster.name} ROLLS ${dice_roll_monster}`
+
         if (dice_roll_monster === 1) {
-          log_text += '\nDEFENSE CRITICAL FAIL -- MAX DAMAGE TAKEN!'
+          log_text += ' ..CRITICAL FAIL (MAX DAMAGE)!'
           damage = attack // DEFENSE CRITICAL FAIL
         }
         else {
@@ -139,7 +141,7 @@ const Dice = () => {
 
           setLog(log_text)
           setMonsterHealth(monster.health) // UPDATES DISPLAYED MONSTER HEALTH
-          // setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
+          setDiceStateCombined(DICE_STATE.ROLL_COMPLETE)
 
           // -- A BIT CONVOLUTED DUE TO SUBSCRIPTIONS BEING SCATTERED --
           // > TRIGGERS SceneContent.jsx useEffect() MONSTER DEFEATED
@@ -171,8 +173,10 @@ const Dice = () => {
         }
 
         // -- CALCULATE DAMAGE
+        log_text += `\nPLAYER ROLLS ${dice_roll_player}`
+
         if (dice_roll_player === 1) {
-          log_text += '\nDEFENSE CRITICAL FAIL -- MAX DAMAGE TAKEN!'
+          log_text += ' ..CRITICAL FAIL (MAX DAMAGE)!'
           damage = attack // DEFENSE CRITICAL FAIL
         }
         else {

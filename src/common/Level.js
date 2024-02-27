@@ -25,7 +25,8 @@ const FLOOR_TEMPLATE = {
   index: null,
   items: [FLOOR_ITEMS.KEY, FLOOR_ITEMS.HEALTH_POTION, FLOOR_ITEMS.TREASURE_CHEST],
   monsters: [MONSTERS.DEATH_KNIGHT],
-  boss: MONSTERS.DEATH_KNIGHT
+  boss: MONSTERS.DEATH_KNIGHT,
+  boss_item: FLOOR_ITEMS.HEALTH_POTION
 }
 
 const FLOOR_MAX = 30
@@ -96,6 +97,12 @@ const FLOOR_DATA = new Array(FLOOR_MAX)
       case 10:
         new_floor.monsters = [MONSTERS.SKELETON, MONSTERS.SLIME_SKULL, MONSTERS.BLUE_SLIME, MONSTERS.GREEN_SLIME]
         new_floor.boss = MONSTERS.SKELETON
+
+        new_floor.boss_item = {
+          ...FLOOR_ITEMS.TREASURE_CHEST,
+          value: 50
+        }
+
         break
 
       case 11:
@@ -146,6 +153,12 @@ const FLOOR_DATA = new Array(FLOOR_MAX)
       case 20:
         new_floor.monsters = [MONSTERS.RAT, MONSTERS.GIANT_RAT, MONSTERS.MIMIC]
         new_floor.boss = MONSTERS.WERERAT
+
+        new_floor.boss_item = {
+          ...FLOOR_ITEMS.TREASURE_CHEST,
+          value: 200
+        }
+
         break
 
       case 21:
@@ -191,6 +204,11 @@ const FLOOR_DATA = new Array(FLOOR_MAX)
       case 29:
         new_floor.monsters = [MONSTERS.GRIM_REAPER, MONSTERS.SKELETON, MONSTERS.SLIME_ZOMBIE]
         new_floor.boss = MONSTERS.DEATH_KNIGHT
+
+        new_floor.boss_item = {
+          ...FLOOR_ITEMS.TREASURE_CHEST,
+          value: 1000
+        }
     }
 
     return new_floor
@@ -614,7 +632,9 @@ const generateRooms = (floor_number, prior_room) => {
 
 // retrieve floor data used to populate the level with monsters and items
 const getFloorData = (floor_number) => {
-  const actual_floor_number = floor_number > FLOOR_MAX ? FLOOR_MAX : floor_number - 1
+  const actual_floor_number = (floor_number > FLOOR_MAX ? FLOOR_MAX : floor_number) - 1
+
+  console.log('FLOOR DATA:', FLOOR_DATA)
 
   return FLOOR_DATA[actual_floor_number]
 }
@@ -644,7 +664,9 @@ const generateLevel = (level_number, prior_room) => {
     }
   }
 
-  const floor_data = getFloorData(level.floor_number)
+  const
+    floor_data = getFloorData(level.floor_number),
+    items_copy = floor_data.items.map(item => ({ ...item }))
 
   // 1) pick 3-5 random rooms (not including the start and end rooms)
   // 2) pick a random monster from the level's monster list and place it in the room
@@ -661,14 +683,23 @@ const generateLevel = (level_number, prior_room) => {
           ? { ...floor_data.monsters[0] }
           : { ...floor_data.monsters[Math.floor(Math.random() * floor_data.monsters.length)] }
 
-        if (floor_data.items.length > 0) {
-          room.item = floor_data.items.pop()
+        if (items_copy.length > 0) {
+          room.item = items_copy.pop()
+
+          // DEBUG
+          console.log(`ROOM ID: ${room.index} | MONSTER: ${room.monster.label} | ITEM: ${room.item.name}`)
         }
       }
     })
 
   // place the boss in the end room
-  level.rooms[level.room_end.index].monster = { ...floor_data.boss }
+  const boss_room = level.rooms[level.room_end.index]
+  boss_room.monster = { ...floor_data.boss }
+  boss_room.item = { ...floor_data.boss_item }
+
+  // DEBUG
+  console.log(`BOSS ROOM ID: ${boss_room.index} | MONSTER: ${boss_room.monster.label} | ITEM: ${boss_room.item.name}`)
+  console.log('LEVEL:', level)
 
   return level
 }

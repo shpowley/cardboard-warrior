@@ -11,7 +11,7 @@ import ScreenOverlay from './components/overlay/ScreenOverlay'
 import SceneContent from './components/scene/SceneContent'
 import { CAMERA_DEFAULTS, COMMAND, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
 import { parameterEnabled } from './common/Utils'
-import { DIRECTION, generateLevel } from './common/Level'
+import { DIRECTION, FLOOR_ITEMS, generateLevel } from './common/Level'
 
 // LEVA DEBUG
 const debug_enabled = parameterEnabled('DEBUG') || parameterEnabled('debug')
@@ -404,7 +404,7 @@ const Experience = () => {
       const potions = useStatePlayer.getState().potions
 
       if (potions > 0) {
-        takePotion()
+        takePotion(FLOOR_ITEMS.HEALTH_POTION.value)
         setCommand(null)
         setLog('YOU DRINK A POTION')
       }
@@ -442,41 +442,40 @@ const Experience = () => {
         if (command === COMMAND.NORTH) {
           if (active_room.doors.N) {
             adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.N)
-          }
 
-          // STOPPED HERE - MOVE UP TO IF, CHECK VS END ROOM LEVEL DOOR
-          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.N) {
-            move_to_next_level = true
+            if (!adjacent_room && active_room.index === level_data.room_end.index && active_room.level_door && active_room.level_door === DIRECTION.N) {
+              move_to_next_level = true
+            }
           }
         }
 
         else if (command === COMMAND.SOUTH) {
           if (active_room.doors.S) {
             adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.S)
-          }
 
-          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.S) {
-            move_to_next_level = true
+            if (!adjacent_room && active_room.index === level_data.room_end.index && active_room.level_door && active_room.level_door === DIRECTION.S) {
+              move_to_next_level = true
+            }
           }
         }
 
         else if (command === COMMAND.EAST) {
           if (active_room.doors.E) {
             adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.E)
-          }
 
-          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.E) {
-            move_to_next_level = true
+            if (!adjacent_room && active_room.index === level_data.room_end.index && active_room.level_door && active_room.level_door === DIRECTION.E) {
+              move_to_next_level = true
+            }
           }
         }
 
         else if (command === COMMAND.WEST) {
           if (active_room.doors.W) {
             adjacent_room = active_room.adjacent_blocks.find(block => block.direction === DIRECTION.W)
-          }
 
-          if (!adjacent_room && active_room.level_door && active_room.level_door === DIRECTION.W) {
-            move_to_next_level = true
+            if (!adjacent_room && active_room.index === level_data.room_end.index && active_room.level_door && active_room.level_door === DIRECTION.W) {
+              move_to_next_level = true
+            }
           }
         }
 

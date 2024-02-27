@@ -34,11 +34,11 @@ const useStatePlayer = create(
         set(state => ({ potions: state.potions + 1 }))
       },
 
-      takePotion: () => {
+      takePotion: heal_amount => {
         set(state => {
           if (state.potions > 0) {
             return {
-              health: Math.min(state.health + 10, 100), // max 100
+              health: Math.min(state.health + heal_amount, 100), // max 100
               potions: state.potions - 1
             }
           }
