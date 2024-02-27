@@ -142,7 +142,7 @@ const Sign = ({ castShadow = false, position, rotation, scale, visible = false }
 
           setImageData(monster)
 
-          animation_sign.current = ANIMATIONS.animateSignShow({
+          animation_sign.current = ANIMATIONS.monster_sign.show({
             target_sign: ref_sign,
             delay: useStateAnimation.getState().monster_sign_animation_delay
           })
@@ -152,7 +152,7 @@ const Sign = ({ castShadow = false, position, rotation, scale, visible = false }
           }
         }
         else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-          animation_sign.current = ANIMATIONS.animateSignHide({
+          animation_sign.current = ANIMATIONS.monster_sign.hide({
             target_sign: ref_sign,
             delay: useStateAnimation.getState().monster_sign_animation_delay
           })

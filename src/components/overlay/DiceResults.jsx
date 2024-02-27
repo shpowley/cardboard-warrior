@@ -5,12 +5,16 @@ import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimati
 import { DICE_STATE, useStateDice } from '../../stores/useStateDice'
 import HUDImages from '../../common/HUDImages'
 import { FILES } from '../../common/Constants'
+import ANIMATIONS from '../../common/Animation'
 
 const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
-  const ref_text = {
-    player: useRef(),
-    enemy: useRef()
+  const ref_dice = {
+    text_player: useRef(),
+    text_enemy: useRef()
   }
+
+  // ANIMATIONS (anime.js)
+  const animation = useRef()
 
   useEffect(() => {
     // DICE VISIBILITY SUBSCRIPTION (ZUSTAND)
@@ -20,13 +24,23 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
 
       // CALLBACK
       dice_animation_state => {
-        if (dice_animation_state === ANIMATION_STATE.VISIBLE) {
-          ref_text.player.current.text = '-'
-          ref_text.enemy.current.text = '-'
+        if (dice_animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          ref_dice.text_player.current.text = '-'
+          ref_dice.text_enemy.current.text = '-'
           forward_ref.current.visible = true
+
+          animation.current = ANIMATIONS.dice_results.show({
+            target_dice: forward_ref.current
+          })
         }
-        else if (dice_animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-          forward_ref.current.visible = false
+        else if (dice_animation_state === ANIMATION_STATE.HIDDEN) {
+          animation.current = ANIMATIONS.dice_results.hide({
+            target_dice: forward_ref.current
+          })
+
+          animation.current.complete = () => {
+            forward_ref.current.visible = false
+          }
         }
       }
     )
@@ -39,10 +53,10 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       // CALLBACK
       dice_state_player => {
         if (dice_state_player === DICE_STATE.ROLLING) {
-          ref_text.player.current.text = '-'
+          ref_dice.text_player.current.text = '-'
         }
         else if (dice_state_player === DICE_STATE.ROLL_COMPLETE) {
-          ref_text.player.current.text = useStateDice.getState().dice_value_player
+          ref_dice.text_player.current.text = useStateDice.getState().dice_value_player
         }
       }
     )
@@ -55,10 +69,10 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       // CALLBACK
       dice_state_enemy => {
         if (dice_state_enemy === DICE_STATE.ROLLING) {
-          ref_text.enemy.current.text = '-'
+          ref_dice.text_enemy.current.text = '-'
         }
         else if (dice_state_enemy === DICE_STATE.ROLL_COMPLETE) {
-          ref_text.enemy.current.text = useStateDice.getState().dice_value_enemy
+          ref_dice.text_enemy.current.text = useStateDice.getState().dice_value_enemy
         }
       }
     )
@@ -74,6 +88,7 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
   return <group
     ref={forward_ref}
     visible={false}
+    opacity={0}
   >
     {/* PLAYER */}
     <group
@@ -86,14 +101,16 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         scale={HUDImages.DICE_PLAYER.scale}
         toneMapped={false}
         transparent
+        opacity={0}
       />
       <Text
-        ref={ref_text.player}
+        ref={ref_dice.text_player}
         position={[0, -2.4, 0]}
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         scale={1.5}
         text='-'
+        opacity={0}
       />
     </group>
 
@@ -108,14 +125,16 @@ const DiceResults = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         scale={HUDImages.DICE_ENEMY.scale}
         toneMapped={false}
         transparent
+        opacity={0}
       />
       <Text
-        ref={ref_text.enemy}
+        ref={ref_dice.text_enemy}
         position={[0, -2.4, 0]}
         font={FILES.FONT_BEBAS_NEUE}
         material={material_text}
         scale={1.5}
         text='-'
+        opacity={0}
       />
     </group>
   </group>

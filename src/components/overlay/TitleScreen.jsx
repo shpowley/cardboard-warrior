@@ -80,7 +80,7 @@ const TitleScreen = () => {
           ref_text.new_game.current.material.opacity = 0
           ref_text.github.current.material.opacity = 0
 
-          animation_title.current = ANIMATIONS.animateTitleShow({
+          animation_title.current = ANIMATIONS.title.show({
             target_title: ref_text.title.current.position,
             target_new_game: ref_text.new_game.current.material,
             target_github: ref_text.github.current.material
@@ -94,7 +94,7 @@ const TitleScreen = () => {
         }
 
         else if (phase_subscribed === GAME_PHASE.TITLE_HIDING) {
-          animation_title.current = ANIMATIONS.animateTitleHide({
+          animation_title.current = ANIMATIONS.title.hide({
             target_title: ref_text.title.current.position,
             target_new_game: ref_text.new_game.current.material,
             target_github: ref_text.github.current.material

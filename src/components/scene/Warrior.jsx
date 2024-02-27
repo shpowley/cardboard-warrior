@@ -149,7 +149,7 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
       // CALLBACK
       animation_state => {
         if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
-          animation_player.current = ANIMATIONS.animatePlayerShow({
+          animation_player.current = ANIMATIONS.player.show({
             target_player: ref_player,
             delay: useStateAnimation.getState().player_animation_delay
           })
@@ -157,7 +157,7 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
           animation_player.current.complete = () => setPlayerAnimationState(ANIMATION_STATE.VISIBLE)
         }
         else if (animation_state === ANIMATION_STATE.ANIMATING_TO_HIDE) {
-          animation_player.current = ANIMATIONS.animatePlayerHide({
+          animation_player.current = ANIMATIONS.player.hide({
             target_player: ref_player,
             delay: useStateAnimation.getState().player_animation_delay
           })

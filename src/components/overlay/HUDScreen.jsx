@@ -74,7 +74,7 @@ const HUDScreen = () => {
           // INITIAL VALUES
           ref_hud.controls.current.position.set(POSITIONS.KEYS.x, POSITIONS.KEYS.y.hidden, 0)
 
-          animation.current = ANIMATIONS.animateHUDShow({
+          animation.current = ANIMATIONS.hud.show({
             target_controls: ref_hud.controls.current.position,
             target_player: ref_hud.player.current,
             target_minimap: ref_hud.minimap.current,
@@ -97,13 +97,23 @@ const HUDScreen = () => {
 
       // CALLBACK
       animation_state => {
-        if (animation_state === ANIMATION_STATE.VISIBLE) {
-          ref_hud.minimap.current.visible = false
-          ref_hud.enemy.current.visible = true
+        if (animation_state === ANIMATION_STATE.ANIMATING_TO_VISIBLE) {
+          animation.current = ANIMATIONS.minimap.hide({
+            target_minimap: ref_hud.minimap.current
+          })
+
+          animation.current.complete = () => {
+            ref_hud.enemy.current.visible = true
+            ref_hud.minimap.current.visible = false
+          }
         }
         else if (animation_state === ANIMATION_STATE.HIDDEN) {
-          ref_hud.minimap.current.visible = true
           ref_hud.enemy.current.visible = false
+          ref_hud.minimap.current.visible = true
+
+          animation.current = ANIMATIONS.minimap.show({
+            target_minimap: ref_hud.minimap.current
+          })
         }
       }
     )

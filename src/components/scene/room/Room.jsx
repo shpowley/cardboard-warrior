@@ -181,7 +181,7 @@ const Room = () => {
 
           checkWallsVisible()
 
-          animation_room.current = ANIMATIONS.animateWallsShow({
+          animation_room.current = ANIMATIONS.walls.show({
             target_walls: ref_walls,
             target_arrows,
             delay: useStateAnimation.getState().wall_animation_delay
@@ -210,7 +210,7 @@ const Room = () => {
             }
           }
 
-          animation_room.current = ANIMATIONS.animateWallsHide({
+          animation_room.current = ANIMATIONS.walls.hide({
             target_walls: ref_walls,
             target_arrows,
             delay: useStateAnimation.getState().wall_animation_delay
