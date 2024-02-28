@@ -147,6 +147,16 @@ const HUDImages = {
     scale: SCALE_DEFAULT
   },
 
+  SKULL: {
+    path: HUD_IMAGE_PATH + 'skull.webp',
+    scale: SCALE_DEFAULT
+  },
+
+  STAR: {
+    path: HUD_IMAGE_PATH + 'star.webp',
+    scale: SCALE_DEFAULT
+  },
+
   SWORD: {
     path: HUD_IMAGE_PATH + 'sword.webp',
     scale: [1, 1.16]
