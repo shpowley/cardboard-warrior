@@ -4,6 +4,13 @@
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <title>Template Project</title>
+
+    <!--
+      Preload the HDR environment map
+      https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/preload
+      https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
+    -->
+    <link rel='preload' href='./environment/sunset.hdr' as='fetch' crossorigin='anonymous' />
   </head>
   <body>
     <div id='root'></div>

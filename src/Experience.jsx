@@ -9,7 +9,7 @@ import { useStatePlayer } from './stores/useStatePlayer'
 import { DICE_STATE, useStateDice } from './stores/useStateDice'
 import ScreenOverlay from './components/overlay/ScreenOverlay'
 import SceneContent from './components/scene/SceneContent'
-import { CAMERA_DEFAULTS, COMMAND, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
+import { CAMERA_DEFAULTS, COMMAND, FILES, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
 import { parameterEnabled } from './common/Utils'
 import { DIRECTION, FLOOR_ITEMS, generateLevel } from './common/Level'
 
@@ -639,7 +639,7 @@ const Experience = () => {
       }}
     />
 
-    <Environment preset='sunset' />
+    <Environment files={FILES.ENVIRONMENT_SUNSET} />
 
     <color
       attach='background'

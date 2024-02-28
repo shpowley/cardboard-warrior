@@ -52,6 +52,7 @@ const LIGHTING_DEFAULTS = {
 }
 
 const FILES = {
+  ENVIRONMENT_SUNSET: './environment/sunset.hdr',
   FONT_BEBAS_NEUE: './fonts/bebas-neue-v9-latin-regular.woff',
   D20_MODEL: './models/d20-compressed.glb',
   D20_ENEMY_MODEL: './models/d20-obsidian-compressed.glb',
