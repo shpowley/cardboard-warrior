@@ -30,6 +30,11 @@ const CANVAS = {
     h: 30
   },
 
+  door: {
+    w: 16,
+    h: 10
+  },
+
   spacing: 10
 }
 
@@ -37,12 +42,69 @@ const CTX = document.createElement('canvas').getContext('2d')
 CTX.canvas.width = CANVAS.size.w
 CTX.canvas.height = CANVAS.size.h
 
+// LOAD MINI-MAP ICONS EARLY
 const
   image_skull = new Image(),
   image_star = new Image()
 
 image_skull.src = HUDImages.SKULL.path
 image_star.src = HUDImages.STAR.path
+
+const door_data = {
+  north_south: new Array(20),
+  east_west: new Array(20)
+}
+
+// DOORS REFERENCE DESIGN DOC https://docs.google.com/drawings/d/1HuJxtY-n_d_3A1jeMOfFPoDAuFGfjTaGAsPFqcbh6o4
+const drawDoors = () => {
+  CTX.fillStyle = '#5481d6'
+
+  // DRAW THE NORTH-SOUTH DOORS
+  door_data.north_south.forEach((door, i) => {
+    if (door) {
+      const
+        room_x = CANVAS.start.x + (i % 4) * (CANVAS.room.w + CANVAS.spacing) + (CANVAS.room.w - CANVAS.door.w) / 2,
+        room_y = CANVAS.start.y + Math.floor(i / 4) * (CANVAS.room.h + CANVAS.spacing) - CANVAS.door.h
+
+      CTX.fillRect(
+        room_x,
+        room_y,
+        CANVAS.door.w,
+        CANVAS.door.h
+      )
+    }
+  })
+
+  // DRAW THE EAST-WEST DOORS (DOOR WIDTH AND HEIGHT ARE SWAPPED)
+  door_data.east_west.forEach((door, i) => {
+    if (door) {
+      const
+        room_x = CANVAS.start.x + (i % 5) * (CANVAS.room.w + CANVAS.spacing) - CANVAS.door.h,
+        room_y = CANVAS.start.y + Math.floor(i / 5) * (CANVAS.room.h + CANVAS.spacing) + (CANVAS.room.h - CANVAS.door.w) / 2
+
+      CTX.fillRect(
+        room_x,
+        room_y,
+        CANVAS.door.h,
+        CANVAS.door.w
+      )
+    }
+  })
+}
+
+const getDoorData = room => {
+  door_data.north_south[room.index] = room.doors.N
+  door_data.north_south[room.index + 4] = room.doors.S
+
+  const
+    row = Math.floor(room.index / 4),
+    row_start_index = row * 5,
+    row_offset = room.index % 4,
+    room_west_index = row_start_index + row_offset
+
+  door_data.east_west[room_west_index] = room.doors.W
+  door_data.east_west[room_west_index + 1] = room.doors.E
+}
 
 const drawVisitedRoom = (i, current_room) => {
   const
@@ -112,6 +174,7 @@ const drawMap = (level_data, current_room) => {
 
     // DRAW THE VISITED ROOMS
     if (room.is_room && room.visited) {
+      getDoorData(room)
       drawVisitedRoom(i, current_room)
     }
 
@@ -125,6 +188,8 @@ const drawMap = (level_data, current_room) => {
       drawStarIcon(i)
     }
   }
+
+  drawDoors()
 }
 
 /** REACT */
@@ -153,6 +218,10 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
       // CALLBACK
       level_data => {
         if (level_data) {
+          // RESET DOOR DATA ARRAYS
+          door_data.north_south.fill(false)
+          door_data.east_west.fill(false)
+
           ref_minimap.floor.current.text = `FLOOR: ${level_data.floor_number}`
         }
       }
@@ -211,6 +280,7 @@ const MiniMap = ({ forward_ref, aspect_ratio = 1, material_text }) => {
         ref={ref_minimap.map_material}
         color='white'
         toneMapped={false}
+        transparent
       />
     </mesh>
   </group>
