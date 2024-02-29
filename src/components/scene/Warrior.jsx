@@ -6,6 +6,7 @@ import { useControls } from 'leva'
 
 import { LEVA_SORT_ORDER } from '../../common/Constants'
 import { useStatePlayer } from '../../stores/useStatePlayer'
+import { DICE_STATE, useStateDice } from '../../stores/useStateDice'
 import { ANIMATION_STATE, useStateAnimation } from '../../stores/useStateAnimation'
 import { POSITIONS } from '../../common/Positions'
 import ANIMATIONS from '../../common/Animation'
@@ -66,67 +67,69 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
   // https://codesandbox.io/s/pecl6
   const { mixer, actions } = useAnimations(animations, nodes._rootJoint)
 
-  let loop_count = 0
-
-  const onSlashAnimationLoop = e => {
-    loop_count++
-
-    if (loop_count === 3) {
-      mixer.removeEventListener('loop', onSlashAnimationLoop)
-
-      actions[MESH_ANIMATIONS.SLASH].stop()
-
-      actions[MESH_ANIMATIONS.IDLE]
-        .reset()
-        .setLoop(THREE.LoopRepeat)
-        .fadeIn(0.5)
-        .play()
-    }
+  const onAnimationFinished = e => {
+    console.log('ANIMATION FINISHED')
+    mixer.removeEventListener('finished', onAnimationFinished)
+    setAnimation(MESH_ANIMATIONS.IDLE)
   }
 
-  const handleAnimation = (selected_animation) => {
+  // IDLE IS THE FALLBACK/COMPLETE ANIMATION THAT ALL OTHER ANIMATIONS TRANSITION TO
+  // BLOCK ANIMATION IS A SPECIAL CASE IN THAT IT USES A TIMEOUT FOR A SMOOTH TRANSITION TO IDLE
+  // -- I COULDN'T SEE HOW TO DO THIS WITH THE THREE.JS ANIMATION API
+  const handleAnimation = selected_animation => {
     if (selected_animation === MESH_ANIMATIONS.NONE) {
       mixer.stopAllAction()
     }
     else {
       switch (selected_animation) {
         case MESH_ANIMATIONS.IDLE:
-          actions[selected_animation].setLoop(THREE.LoopRepeat)
+          actions[selected_animation]
+            .reset()
+            .setLoop(THREE.LoopRepeat)
+            .fadeIn(0.5)
+            .play()
+
           break
 
         case MESH_ANIMATIONS.BLOCK:
-          actions[selected_animation].setLoop(THREE.LoopRepeat)
+          actions[selected_animation]
+            .reset()
+            .setLoop(THREE.LoopRepeat)
+            .fadeIn(0.5)
+            .play()
 
           // SMOOTH TRANSITION TO IDLE
           setTimeout(() => {
-            actions[MESH_ANIMATIONS.IDLE]
-              .reset()
-              .setLoop(THREE.LoopRepeat)
-              .crossFadeFrom(actions[selected_animation], 0.5)
-              .play()
+            setAnimation(MESH_ANIMATIONS.IDLE)
           }, 3000)
 
           break
 
         case MESH_ANIMATIONS.SLASH:
-          actions[selected_animation].setLoop(THREE.LoopRepeat)
+          mixer.addEventListener('finished', onAnimationFinished)
 
-          loop_count = 0
-          mixer.addEventListener('loop', onSlashAnimationLoop)
+          actions[selected_animation]
+            .reset()
+            .setLoop(THREE.LoopRepeat, 3)
+            .fadeIn(0.5)
+            .play()
 
           break
 
         case MESH_ANIMATIONS.WALK:
         case MESH_ANIMATIONS.RUN:
-          actions[selected_animation].setLoop(THREE.LoopOnce)
-      }
+          mixer.addEventListener('finished', onAnimationFinished)
 
-      actions[selected_animation].reset().fadeIn(0.5).play()
+          actions[selected_animation]
+            .reset()
+            .setLoop(THREE.LoopOnce)
+            .fadeIn(0.5)
+            .play()
+      }
     }
   }
 
   useEffect(() => {
-
     // MODEL ANIMATION SUBSCRIPTION (ZUSTAND) (GLTF ANIMATION)
     const subscribe_model_animation = useStatePlayer.subscribe(
       // SELECTOR
@@ -135,7 +138,7 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
       // CALLBACK
       (animation, prev) => {
         actions[prev]?.fadeOut(0.5)
-        mixer.stopAllAction()
+        // mixer.stopAllAction()
         handleAnimation(animation)
         prev = animation
       }
@@ -164,6 +167,34 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
 
           animation_player.current.complete = () => setPlayerAnimationState(ANIMATION_STATE.HIDDEN)
         }
+        else if (animation_state === ANIMATION_STATE.VISIBLE) {
+          setAnimation(MESH_ANIMATIONS.IDLE)
+        }
+      }
+    )
+
+    // DICE ROLL SUBSCRIPTION (ZUSTAND)
+    const subscribe_combat_dice_rolls = useStateDice.subscribe(
+      // SELECTOR
+      state => state.dice_state_combined,
+
+      // CALLBACK
+      dice_state_combined => {
+        if (dice_state_combined === DICE_STATE.ROLL_COMPLETE) {
+          const
+            dice_roll_player = useStateDice.getState().dice_value_player,
+            dice_roll_enemy = useStateDice.getState().dice_value_enemy
+
+          if (dice_roll_player > dice_roll_enemy) {
+            setAnimation(MESH_ANIMATIONS.SLASH)
+          }
+          else if (dice_roll_player < dice_roll_enemy) {
+            setAnimation(MESH_ANIMATIONS.BLOCK)
+          }
+          else {
+            setAnimation(MESH_ANIMATIONS.IDLE)
+          }
+        }
       }
     )
 
@@ -171,6 +202,7 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
     return () => {
       subscribe_model_animation()
       subscribe_player_animation()
+      subscribe_combat_dice_rolls()
     }
   }, [])
 
