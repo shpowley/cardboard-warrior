@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
+import { Sparkles } from '@react-three/drei'
 
 import { useStateGame } from '../../../stores/useStateGame'
 import { useStatePlayer } from '../../../stores/useStatePlayer'
@@ -62,6 +63,13 @@ const Room = () => {
 
   // ZUSTAND ANIMATION STATE
   const setWallAnimationState = useStateAnimation(state => state.setWallAnimationState)
+
+  // SPARKLES
+  const
+    sparkle_count = 100,
+    sparkle_sizes = new Float32Array(sparkle_count).fill(0).map((_, i) => {
+      return Math.random() * 10 + 0.1
+    })
 
   /** WALL VISIBLE LOGIC
    * - WALLS ARE AUTOMATICALLY HIDDEN DUE TO BACKFACE CULLING, BUT DOORS ARE NOT
@@ -237,6 +245,14 @@ const Room = () => {
   }, [])
 
   return <>
+    <Sparkles
+      count={sparkle_count}
+      size={sparkle_sizes}
+      scale={[ROOM_COLLIDER.floor_extents[0] * 2, 6, ROOM_COLLIDER.floor_extents[0] * 2]}
+      speed={0.8}
+      position-y={3}
+    />
+
     <DoorIndicator />
     <Ceiling />
     <Floor />

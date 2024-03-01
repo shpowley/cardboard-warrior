@@ -1,8 +1,8 @@
+import { memo } from 'react'
 import * as THREE from 'three'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
 import { ROOM_COLLIDER } from './Constants'
-import { memo } from 'react'
 
 const geometry_floor = new THREE.PlaneGeometry(
   ROOM_COLLIDER.floor_extents[0] * 2,
