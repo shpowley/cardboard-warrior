@@ -68,7 +68,6 @@ const Warrior = ({ position, rotation, scale, visible = false, castShadow }) => 
   const { mixer, actions } = useAnimations(animations, nodes._rootJoint)
 
   const onAnimationFinished = e => {
-    console.log('ANIMATION FINISHED')
     mixer.removeEventListener('finished', onAnimationFinished)
     setAnimation(MESH_ANIMATIONS.IDLE)
   }

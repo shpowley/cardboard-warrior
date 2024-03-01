@@ -12,6 +12,7 @@ import SceneContent from './components/scene/SceneContent'
 import { CAMERA_DEFAULTS, COMMAND, FILES, LEVA_SORT_ORDER, LIGHTING_DEFAULTS } from './common/Constants'
 import { parameterEnabled } from './common/Utils'
 import { DIRECTION, FLOOR_ITEMS, generateLevel } from './common/Level'
+import BackgroundMusic from './components/BackgroundMusic'
 
 // LEVA DEBUG
 const debug_enabled = parameterEnabled('DEBUG') || parameterEnabled('debug')
@@ -39,7 +40,7 @@ const Experience = () => {
     ref_directional_light = useRef(),
     ref_shadow_camera = useRef()
 
-  // ZUSTAND GAME STATE
+  // ZUSTAND
   const
     setFloorIndex = useStatePlayer(state => state.setFloorIndex),
     setRoom = useStatePlayer(state => state.setRoom),
@@ -59,7 +60,7 @@ const Experience = () => {
   const [keyboard_subscribe, keyboard_get] = useKeyboardControls()
 
   // LEVA CAMERA & ORBIT CONTROLS
-  const camera = useThree((state) => state.camera)
+  const camera = useThree(state => state.camera)
 
   const [_, setControlsCamera] = useControls(
     'camera',
@@ -679,6 +680,8 @@ const Experience = () => {
       intensity={controls_lighting.ambient_intensity}
       color={controls_lighting.ambient_color}
     />
+
+    <BackgroundMusic />
 
     {/* 2D ELEMENTS */}
     <ScreenOverlay />

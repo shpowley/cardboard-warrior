@@ -1,13 +1,14 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import { RigidBody } from '@react-three/rapier'
 
-import { FILES } from '../../../common/Constants'
 import { DICE_STATE, useStateDice } from '../../../stores/useStateDice'
-import { randomFloat } from '../../../common/Utils'
 import { ANIMATION_STATE, useStateAnimation } from '../../../stores/useStateAnimation'
-import { useFrame } from '@react-three/fiber'
+import { useStateBGM } from '../../../stores/useStateBGM'
+import { FILES } from '../../../common/Constants'
+import { randomFloat } from '../../../common/Utils'
 
 // FACE ID LOOKUP TABLE -- SPECIFIC TO THIS MODEL ONLY!
 // SEE NOTES.TXT ON HOW TO DETERMINE FACE IDS -- PROGRAMATIC RAYCASTER TRIAL-AND-ERROR
@@ -48,10 +49,12 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
     mesh: useRef(),
   }
 
-  // ZUSTAND DICE STATE
+  // ZUSTAND
   const
     setDiceState = useStateDice(state => state.setDiceStatePlayer),
     setDiceValue = useStateDice(state => state.setDiceValuePlayer)
+
+  let sound_enabled = true
 
   const { nodes, materials } = useGLTF(FILES.D20_MODEL)
 
@@ -89,7 +92,7 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
   }
 
   const handleDiceSound = force => {
-    if (force > 100 && !dice_sound.is_playing) {
+    if (sound_enabled && force > 100 && !dice_sound.is_playing) {
       dice_sound.media.currentTime = 0
       dice_sound.media.volume = Math.min(force / 2000, 1)
 
@@ -180,10 +183,22 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
       }
     )
 
+    // ZUSTAND SOUND ENABLED
+    const subscribe_sound_enabled = useStateBGM.subscribe(
+      // SELECTOR
+      state => state.sound_enabled,
+
+      // CALLBACK
+      sound_enabled_subscribed => {
+        sound_enabled = sound_enabled_subscribed
+      }
+    )
+
     // CLEANUP
     return () => {
       subscribe_dice_roll()
       subscribe_dice_animation()
+      subscribe_sound_enabled()
     }
   }, [])
 

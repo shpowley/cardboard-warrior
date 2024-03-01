@@ -11,7 +11,7 @@ const
 
   /** ANIMATION - TITLE SCREEN */
   title = {
-    show: ({ target_title, target_new_game, target_github }) => {
+    show: ({ target_title, target_new_game, target_sound, target_github }) => {
       const timeline = anime.timeline()
 
       timeline.add(
@@ -25,7 +25,7 @@ const
 
       timeline.add(
         {
-          targets: [target_new_game, target_github],
+          targets: [target_new_game, target_sound, target_github],
           opacity: 1,
           duration: 400,
           easing: 'easeInSine'
@@ -37,12 +37,12 @@ const
       return timeline
     },
 
-    hide: ({ target_title, target_new_game, target_github }) => {
+    hide: ({ target_title, target_new_game, target_sound, target_github }) => {
       const timeline = anime.timeline()
 
       timeline.add(
         {
-          targets: [target_new_game, target_github],
+          targets: [target_new_game, target_sound, target_github],
           opacity: 0,
           duration: 1000,
           easing: 'easeOutSine'

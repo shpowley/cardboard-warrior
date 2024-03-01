@@ -2,8 +2,9 @@ import { memo, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { Text } from '@react-three/drei'
 
-import { FILES, LINKS } from '../../common/Constants'
 import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
+import { TRACKS, useStateBGM } from '../../stores/useStateBGM'
+import { FILES, LINKS } from '../../common/Constants'
 import ANIMATIONS from '../../common/Animation'
 import { POSITIONS } from '../../common/Positions'
 import { mouse_pointer } from '../../common/Utils'
@@ -27,21 +28,41 @@ const TitleScreen = () => {
     ref_text = {
       title: useRef(),
       new_game: useRef(),
+      sound: useRef(),
       github: useRef()
     }
 
   // ANIMATIONS (anime.js)
   const animation_title = useRef()
 
-  // ZUSTAND GAME STATE
-  const setGamePhase = useStateGame(state => state.setGamePhase)
+  // SOUND
+  let sound_enabled = true
+
+  // ZUSTAND
+  const
+    setGamePhase = useStateGame(state => state.setGamePhase),
+    setSoundEnabled = useStateBGM(state => state.setSoundEnabled)
 
   // HANDLERS
   const handlerNewGame = () => {
     setGamePhase(GAME_PHASE.TITLE_HIDING)
   }
 
+  const handlerSound = () => {
+    setSoundEnabled(!sound_enabled)
+    getSoundState()
+  }
+
+  const getSoundState = () => {
+    sound_enabled = useStateBGM.getState().sound_enabled
+
+    if (ref_text.sound.current) {
+      ref_text.sound.current.text = `SOUND: ${sound_enabled ? 'ON' : 'OFF'}`
+    }
+  }
+
   useEffect(() => {
+    getSoundState()
 
     // GAME PHASE SUBSCRIPTION (ZUSTAND)
     const subscribe_game_phase = useStateGame.subscribe(
@@ -78,11 +99,13 @@ const TitleScreen = () => {
         if (phase_subscribed === GAME_PHASE.TITLE_SHOWING) {
           ref_text.title.current.position.set(0, POSITIONS.TITLE.y.start, 0)
           ref_text.new_game.current.material.opacity = 0
+          ref_text.sound.current.material.opacity = 0
           ref_text.github.current.material.opacity = 0
 
           animation_title.current = ANIMATIONS.title.show({
             target_title: ref_text.title.current.position,
             target_new_game: ref_text.new_game.current.material,
+            target_sound: ref_text.sound.current.material,
             target_github: ref_text.github.current.material
           })
 
@@ -97,6 +120,7 @@ const TitleScreen = () => {
           animation_title.current = ANIMATIONS.title.hide({
             target_title: ref_text.title.current.position,
             target_new_game: ref_text.new_game.current.material,
+            target_sound: ref_text.sound.current.material,
             target_github: ref_text.github.current.material
           })
 
@@ -144,13 +168,25 @@ const TitleScreen = () => {
       onPointerOut={mouse_pointer.out}
     />
     <Text
+      ref={ref_text.sound}
+      font={FILES.FONT_BEBAS_NEUE}
+      material={material_title_details}
+      position={[0, -3.2, 0]}
+      scale={0.23}
+      anchorY='top'
+      text='SOUND: ON'
+
+      onClick={handlerSound}
+      onPointerOver={mouse_pointer.over}
+      onPointerOut={mouse_pointer.out}
+    />
+    <Text
       ref={ref_text.github}
       font={FILES.FONT_BEBAS_NEUE}
       material={material_title_details}
       position={[0, -3.6, 0]}
       scale={0.23}
       anchorY='top'
-      textAlign={'left'}
       text='GITHUB / ATTRIBUTIONS'
 
       onClick={() => window.open(LINKS.GITHUB, '_blank')}
