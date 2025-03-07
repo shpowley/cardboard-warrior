@@ -54,7 +54,7 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
     setDiceState = useStateDice(state => state.setDiceStatePlayer),
     setDiceValue = useStateDice(state => state.setDiceValuePlayer)
 
-  let sound_enabled = true
+  let sound_enabled = useRef(true)
 
   const { nodes, materials } = useGLTF(FILES.D20_MODEL)
 
@@ -92,13 +92,13 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
   }
 
   const handleDiceSound = force => {
-    if (sound_enabled && force > 100 && !dice_sound.is_playing) {
+    if (sound_enabled.current && force > 100 && !dice_sound.is_playing) {
       dice_sound.media.currentTime = 0
       dice_sound.media.volume = Math.min(force / 2000, 1)
 
       dice_sound.media.play()
         .then(() => dice_sound.is_playing = true)
-        .catch(err => dice_sound.is_playing = false)
+        .catch(() => dice_sound.is_playing = false)
     }
   }
 
@@ -190,7 +190,7 @@ const D20 = ({ castShadow = false, position, visible = false }) => {
 
       // CALLBACK
       sound_enabled_subscribed => {
-        sound_enabled = sound_enabled_subscribed
+        sound_enabled.current = sound_enabled_subscribed
       }
     )
 

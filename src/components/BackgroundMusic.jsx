@@ -125,7 +125,7 @@ const BackgroundMusic = () => {
       subscribe_game_phase()
       subscribe_monster_animation()
     }
-  }, [])
+  }, [bgm, camera, setTrack])
 
   return <></>
 }

@@ -538,7 +538,7 @@ const Experience = () => {
   }
 
   useEffect(() => {
-    // SET ORBIT CONTROLS REFERENCE TO BE ACCESSIBLE GLOBALY
+    // SET ORBIT CONTROLS REFERENCE TO BE ACCESSIBLE GLOBALLY
     setControls(ref_orbit_controls.current)
 
     // -- START GAME ON MOUNT --

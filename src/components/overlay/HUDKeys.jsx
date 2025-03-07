@@ -1,13 +1,13 @@
-import { memo, useEffect, useState } from 'react'
-import { Image } from '@react-three/drei'
+import { Image, useTexture } from '@react-three/drei'
+import { memo, useCallback, useEffect, useRef } from 'react'
 
+import { COMMAND } from '../../common/Constants'
+import HUDImages from '../../common/HUDImages'
+import { POSITIONS } from '../../common/Positions'
+import { mouse_pointer } from '../../common/Utils'
+import { DICE_STATE, useStateDice } from '../../stores/useStateDice'
 import { GAME_PHASE, useStateGame } from '../../stores/useStateGame'
 import { useStatePlayer } from '../../stores/useStatePlayer'
-import HUDImages from '../../common/HUDImages'
-import { mouse_pointer } from '../../common/Utils'
-import { POSITIONS } from '../../common/Positions'
-import { COMMAND } from '../../common/Constants'
-import { DICE_STATE, useStateDice } from '../../stores/useStateDice'
 
 const KEYS = {
   DISABLED: {
@@ -17,20 +17,70 @@ const KEYS = {
     west: false,
     roll: false,
     potion: false
-  },
-
-  ENABLED: {
-    north: true,
-    south: true,
-    east: true,
-    west: true,
-    roll: true,
-    potion: true
   }
 }
 
 const HUDKeys = ({ forward_ref }) => {
-  const [key_enabled, setKeyEnabled] = useState(KEYS.DISABLED)
+  const refs = {
+    north: useRef(),
+    south: useRef(),
+    east: useRef(),
+    west: useRef(),
+    roll: useRef(),
+    potion: useRef()
+  }
+
+  const key_state = useRef({
+    north: false,
+    south: false,
+    east: false,
+    west: false,
+    roll: false,
+    potion: false
+  })
+
+  const textures = {
+    north: {
+      enabled: useTexture(HUDImages.KEY_NORTH.path),
+      disabled: useTexture(HUDImages.DISABLED_KEY_NORTH.path)
+    },
+
+    south: {
+      enabled: useTexture(HUDImages.KEY_SOUTH.path),
+      disabled: useTexture(HUDImages.DISABLED_KEY_SOUTH.path)
+    },
+
+    east: {
+      enabled: useTexture(HUDImages.KEY_EAST.path),
+      disabled: useTexture(HUDImages.DISABLED_KEY_EAST.path)
+    },
+
+    west: {
+      enabled: useTexture(HUDImages.KEY_WEST.path),
+      disabled: useTexture(HUDImages.DISABLED_KEY_WEST.path)
+    },
+
+    roll: {
+      enabled: useTexture(HUDImages.KEY_ROLL.path),
+      disabled: useTexture(HUDImages.DISABLED_ROLL.path)
+    },
+
+    potion: {
+      enabled: useTexture(HUDImages.KEY_POTION.path),
+      disabled: useTexture(HUDImages.KEY_POTION.path)
+    }
+  }
+
+  const setKeys = useCallback(data => {
+    key_state.current = {...data}
+
+    refs.north.current.material.map = key_state.current.north ? textures.north.enabled : textures.north.disabled
+    refs.south.current.material.map = key_state.current.south ? textures.south.enabled : textures.south.disabled
+    refs.east.current.material.map = key_state.current.east ? textures.east.enabled : textures.east.disabled
+    refs.west.current.material.map = key_state.current.west ? textures.west.enabled : textures.west.disabled
+    refs.roll.current.material.map = key_state.current.roll ? textures.roll.enabled : textures.roll.disabled
+    refs.potion.current.material.map = key_state.current.potion ? textures.potion.enabled : textures.potion.disabled
+  } , [])
 
   const setCommand = useStateGame(state => state.setCommand)
 
@@ -49,7 +99,7 @@ const HUDKeys = ({ forward_ref }) => {
           case GAME_PHASE.PLAYER_COMBAT:
             potion_count = useStatePlayer.getState().potions
 
-            setKeyEnabled({
+            setKeys({
               ...KEYS.DISABLED,
               roll: true,
               potion: potion_count > 0
@@ -62,7 +112,7 @@ const HUDKeys = ({ forward_ref }) => {
             const active_room = useStatePlayer.getState().room
             potion_count = useStatePlayer.getState().potions
 
-            setKeyEnabled({
+            setKeys({
               north: active_room.doors.N,
               south: active_room.doors.S,
               east: active_room.doors.E,
@@ -77,12 +127,12 @@ const HUDKeys = ({ forward_ref }) => {
           case GAME_PHASE.ROOM_HIDING:
           case GAME_PHASE.ROOM_SHOWING:
           case GAME_PHASE.MONSTER_DEFEATED:
-            setKeyEnabled(KEYS.DISABLED)
+            setKeys(KEYS.DISABLED)
             break
 
           // MAKE SURE KEYS ARE NOT VISIBLE
           default:
-            setKeyEnabled(KEYS.DISABLED)
+            setKeys(KEYS.DISABLED)
             forward_ref.current.position.y = POSITIONS.KEYS.y.hidden
         }
       }
@@ -96,12 +146,12 @@ const HUDKeys = ({ forward_ref }) => {
       // CALLBACK
       dice_state_combined => {
         if (dice_state_combined === DICE_STATE.ROLLING) {
-          setKeyEnabled(KEYS.DISABLED)
+          setKeys(KEYS.DISABLED)
         }
         else if (dice_state_combined === DICE_STATE.ROLL_COMPLETE) {
           const potion_count = useStatePlayer.getState().potions
 
-          setKeyEnabled({
+          setKeys({
             ...KEYS.DISABLED,
             roll: true,
             potion: potion_count > 0
@@ -117,10 +167,10 @@ const HUDKeys = ({ forward_ref }) => {
 
       // CALLBACK
       potions => {
-        setKeyEnabled(state => ({
-          ...state,
+        setKeys({
+          ...key_state.current,
           potion: potions > 0
-        }))
+        })
       }
     )
 
@@ -140,76 +190,83 @@ const HUDKeys = ({ forward_ref }) => {
   >
     {/* NORTH KEY */}
     <Image
-      url={key_enabled.north ? HUDImages.KEY_NORTH.path : HUDImages.DISABLED_KEY_NORTH.path}
+      ref={refs.north}
+      url={key_state.current.north ? HUDImages.KEY_NORTH.path : HUDImages.DISABLED_KEY_NORTH.path}
       transparent
       toneMapped={false}
       position={[0, 1.2, 0]}
 
-      onPointerOver={key_enabled.north && mouse_pointer.over}
+      onPointerOver={key_state.current.north && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
-      onClick={() => key_enabled.north && setCommand(COMMAND.NORTH)}
+      onClick={() => key_state.current.north && setCommand(COMMAND.NORTH)}
     />
 
     {/* SOUTH KEY */}
     <Image
-      url={key_enabled.south ? HUDImages.KEY_SOUTH.path : HUDImages.DISABLED_KEY_SOUTH.path}
+      ref={refs.south}
+      url={key_state.current.south ? HUDImages.KEY_SOUTH.path : HUDImages.DISABLED_KEY_SOUTH.path}
       transparent
       toneMapped={false}
       position={[0, 0, 0]}
 
-      onPointerOver={key_enabled.south && mouse_pointer.over}
+      onPointerOver={key_state.current.south && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
-      onClick={() => key_enabled.south && setCommand(COMMAND.SOUTH)}
+      onClick={() => key_state.current.south && setCommand(COMMAND.SOUTH)}
     />
 
     {/* EAST KEY */}
     <Image
-      url={key_enabled.east ? HUDImages.KEY_EAST.path : HUDImages.DISABLED_KEY_EAST.path}
+      ref={refs.east}
+      url={key_state.current.east ? HUDImages.KEY_EAST.path : HUDImages.DISABLED_KEY_EAST.path}
       transparent
       toneMapped={false}
       position={[1.2, 0, 0]}
 
-      onPointerOver={key_enabled.east && mouse_pointer.over}
+      onPointerOver={key_state.current.east && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
-      onClick={() => key_enabled.east && setCommand(COMMAND.EAST)}
+      onClick={() => key_state.current.east && setCommand(COMMAND.EAST)}
     />
 
     {/* WEST KEY */}
     <Image
-      url={key_enabled.west ? HUDImages.KEY_WEST.path : HUDImages.DISABLED_KEY_WEST.path}
+      ref={refs.west}
+      url={key_state.current.west ? HUDImages.KEY_WEST.path : HUDImages.DISABLED_KEY_WEST.path}
       transparent
       toneMapped={false}
       position={[-1.2, 0, 0]}
 
-      onPointerOver={key_enabled.west && mouse_pointer.over}
+      onPointerOver={key_state.current.west && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
-      onClick={() => key_enabled.west && setCommand(COMMAND.WEST)}
+      onClick={() => key_state.current.west && setCommand(COMMAND.WEST)}
     />
 
     {/* ROLL KEY */}
     <Image
-      url={key_enabled.roll ? HUDImages.KEY_ROLL.path : HUDImages.DISABLED_ROLL.path}
+      ref={refs.roll}
+      url={key_state.current.roll ? HUDImages.KEY_ROLL.path : HUDImages.DISABLED_ROLL.path}
       transparent
       toneMapped={false}
       position={[3.5, 0, 0]}
       scale={HUDImages.KEY_ROLL.scale}
 
-      onPointerOver={key_enabled.roll && mouse_pointer.over}
+      onPointerOver={key_state.current.roll && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
-      onClick={() => key_enabled.roll && setCommand(COMMAND.ROLL_DICE)}
+      onClick={() => key_state.current.roll && setCommand(COMMAND.ROLL_DICE)}
     />
 
     {/* POTION KEY */}
     <Image
-      url={key_enabled.potion ? HUDImages.KEY_POTION.path : HUDImages.DISABLED_POTION.path}
+      ref={refs.potion}
+      url={key_state.current.potion ? HUDImages.KEY_POTION.path : HUDImages.DISABLED_POTION.path}
+
       transparent
       toneMapped={false}
       position={[-2.5, 0, 0]}
       scale={HUDImages.KEY_POTION.scale}
 
-      onPointerOver={key_enabled.potion && mouse_pointer.over}
+      onPointerOver={key_state.current.potion && mouse_pointer.over}
       onPointerOut={mouse_pointer.out}
-      onClick={() => key_enabled.potion && setCommand(COMMAND.POTION)}
+      onClick={() => key_state.current.potion && setCommand(COMMAND.POTION)}
     />
   </group>
 }
